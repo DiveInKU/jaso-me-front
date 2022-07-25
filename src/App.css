@@ -11,16 +11,17 @@
 
 .Main-body {
   background-color: #FAFAFA;
-
   display: flex;
   flex-direction: row;
  
 }
 
 .Main-logo {
-  height: 100%;
+  width: 7%;
   pointer-events: none;
-  margin: 19px;
+  margin-left: 18px;
+  margin-top: 15px;
+  margin-bottom: 8px;
 }
 
 .Main-illust {
@@ -72,7 +73,7 @@
   margin-bottom: 20px;
 }
 
-.input-id,.input-pw{
+.input-property{
   width: 300px;
   font-family: 'Notosans-medium';
   font-style: normal;
@@ -95,6 +96,42 @@
   justify-content: center;
   text-align: center;
   align-items: center;
+}
+/* --------------------------------------------------------- */
+/* signUp.tsx 페이지  */
+
+.Signup-body{
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+  flex-direction: column;
+}
+
+.text-property{
+  width: 390px;
+  font-family: 'Notosans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.signup-text{
+  font-family: 'Notosans-bold';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 45px;
+  color: #000000;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.back-icon{
+  margin-left: 5px;
+  margin-top: 5px;
+  color: #333333;
 }
 
 @font-face {
