@@ -1,0 +1,135 @@
+
+.Main {
+  /* text-align: center; */
+  background-color: #FAFAFA;
+  height: 100vh;
+}
+
+.Main-header {
+  background-color: #FAFAFA;
+}
+
+.Main-body {
+  background-color: #FAFAFA;
+
+  display: flex;
+  flex-direction: row;
+ 
+}
+
+.Main-logo {
+  height: 100%;
+  pointer-events: none;
+  margin: 19px;
+}
+
+.Main-illust {
+  height: 350px;
+  pointer-events: none;
+  margin-left: 150px;
+  margin-top: 70px;
+}
+
+.Main-text1{
+  font-family: 'Notosans-extrabold';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 33px;
+  line-height: 45px;
+  margin-left: 185px;
+  color: #000000;
+}
+
+.Main-text2,.Main-text3{
+  font-family: 'Opensans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 31px;
+  margin-left: 185px;
+  color: #000000;
+
+}
+
+
+.body2{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 200px;
+}
+
+.login{
+  font-family: 'Notosans-bold';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 45px;
+  color: #000000;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.input-id,.input-pw{
+  width: 300px;
+  font-family: 'Notosans-medium';
+  font-style: normal;
+  font-weight: 500;
+}
+
+.button-login,.button-google{
+  width: 300px;
+  height: 40px;
+}
+
+.icon-google{
+  margin-right: 10px;
+  width: 7%;
+}
+
+
+.grid-divider{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+@font-face {
+  font-family: "Notosans-extrabold";
+  src: url("./styles/fonts/NotoSans-ExtraBold.ttf") format("truetype");
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Notosans-bold";
+  src: url("./styles/fonts/NotoSans-Bold.ttf") format("truetype");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Notosans-medium";
+  src: url("./styles/fonts/NotoSans-Medium.ttf") format("truetype");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Opensans-medium";
+  src: url("./styles/fonts/OpenSans-Medium.ttf") format("truetype");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Notosans-semibold";
+  src: url("./styles/fonts/NotoSans-SemiBold.ttf") format("truetype");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Opensans-semibold";
+  src: url("./styles/fonts/OpenSans-SemiBold.ttf") format("truetype");
+  font-style: normal;
+}
