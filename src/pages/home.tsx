@@ -37,7 +37,7 @@ const Home: React.FC = () => {
 
     return (
       <GlobalStyles.ViewCol>
-        <TopNavigationBar />
+        <TopNavigationBar state={''} />
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
         <MainInfoBg>

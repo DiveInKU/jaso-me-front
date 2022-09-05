@@ -5,7 +5,11 @@ import jasoMeLogo from '../assets/svgs/jasoMeLogo.svg';
 import LogoutBtn from './LogoutBtn';
 import { Button } from '@mui/material';
 
-const TopNavigationBar: React.FC = () => {
+type MenuStateProps = {
+    state: string;
+}
+
+const TopNavigationBar: React.FC<MenuStateProps> = ({ state }) => {
 
     return (
         <NavBg>
