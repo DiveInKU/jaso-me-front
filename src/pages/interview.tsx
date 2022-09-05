@@ -11,14 +11,13 @@ import { FormGroup,
     Button, 
     Select,
     InputLabel,
-    NativeSelect,
     Menu,
     MenuItem,
 } from '@mui/material';
 
 const Interview: React.FC = () => {
 
-    const questionNumbers = [2, 3, 4, 5, 6, 7, 8];
+    const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
     return (
         <GlobalStyles.ViewCol style={{ backgroundColor: themes.colors.background}}>
@@ -52,21 +51,19 @@ const Interview: React.FC = () => {
 
                 <Title>질문 개수</Title>
 
-                <FormControl fullWidth>
-                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                        Age
-                    </InputLabel>
-                    <NativeSelect
-                        defaultValue={30}
+                <FormControl style={{ width: 100, marginTop: 10, marginBottom: 20}}>
+                    <Select
+                        size="small"
+                        defaultValue={1}
                         inputProps={{
-                        name: 'age',
-                        id: 'uncontrolled-native',
+                        name: 'numbers'
                         }}
+                        id="demo-select-small"
                     >
-                        <option value={10}>Ten</option>
-                        <option value={20}>Twenty</option>
-                        <option value={30}>Thirty</option>
-                    </NativeSelect>
+                        {questionNumbers.map((number, idx) => 
+                            { return <MenuItem key={idx} value={number}>{number}</MenuItem> }
+                        )}
+                    </Select>
                 </FormControl>
                 
                 <Button 
