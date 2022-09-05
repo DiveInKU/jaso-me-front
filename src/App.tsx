@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css'; 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from 'pages/home';
 import Login from 'pages/login';
 import SignUp from 'pages/signUp';
-import { useNavigate } from 'react-router';
+import Interview from 'pages/interview';
 
 // FC : Function Component
 const App: React.FC = () => {
@@ -14,6 +14,7 @@ const App: React.FC = () => {
         <Route path='/Login' element={<Login />} />
         <Route path='/signUp' element={<SignUp />} />
         <Route path='/home' element={<Home />} />
+        <Route path="/interview" element={<Interview />} />
       </Routes>
   )
 }

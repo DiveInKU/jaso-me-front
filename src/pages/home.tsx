@@ -3,14 +3,15 @@ import TopNavigationBar from 'components/TopNavigationBar';
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
+import GlobalStyles from 'styles/GlobalStyles';
 import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
 import questionLogo from '../assets/svgs/questionLogo.svg';
-
-
+import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
+    let navigate = useNavigate();
 
     const menuText = {
         coverLetterText: {
@@ -30,8 +31,12 @@ const Home: React.FC = () => {
         },
     }
 
+    const goToInterviewPage = (e: React.MouseEvent<HTMLDivElement>) => {
+        navigate("/home/interview")
+    }
+
     return (
-      <Background>
+      <GlobalStyles.ViewCol>
         <TopNavigationBar />
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
@@ -54,7 +59,7 @@ const Home: React.FC = () => {
             </CoverLetterBg>
 
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20, width: '100%'}}>
-                <InterviewBg>
+                <InterviewBg onClick={goToInterviewPage}>
                     <MainMenuText 
                         onClick={() => { console.log('hi') }}
                         title={menuText.interviewText.title}
@@ -76,16 +81,9 @@ const Home: React.FC = () => {
         </MainMenuBg>
 
         </div>
-      </Background>
+      </GlobalStyles.ViewCol>
     )
 }
-
-const Background = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: ${themes.colors.background};
-`;
 
 const MainInfoBg = styled.div`
     display: flex;
@@ -144,6 +142,7 @@ const InterviewBg = styled.div`
     margin-right: 20px;
     padding: 24px;
     background-color: ${themes.colors.blue_1};
+    cursor: pointer;
 `;
 
 const QuestionBg = styled.div`
