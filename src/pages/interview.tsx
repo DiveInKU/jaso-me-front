@@ -10,14 +10,18 @@ import { FormGroup,
     Checkbox, 
     Button, 
     Select,
-    InputLabel,
-    Menu,
     MenuItem,
 } from '@mui/material';
+import { useNavigate } from 'react-router';
 
 const Interview: React.FC = () => {
+    let navigate = useNavigate();
 
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    const goToWebcamTestPage = (e: React.MouseEvent<HTMLButtonElement>) => {
+        navigate("/home/interview/webcamtest")
+    }
 
     return (
         <GlobalStyles.ViewCol style={{ backgroundColor: themes.colors.background}}>
@@ -73,7 +77,9 @@ const Interview: React.FC = () => {
                         color: themes.colors.white,
                         fontWeight: 700,
                         marginTop: 20,
-                    }}>
+                    }}
+                    onClick={goToWebcamTestPage}
+                    >
                         모의 면접 생성
                 </Button>
                 
