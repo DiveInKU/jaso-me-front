@@ -1,13 +1,17 @@
 import GlobalStyled from "styles/GlobalStyled";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopNavigationBar from "components/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
 import Webcam from "react-webcam";
 import { Button } from "@mui/material";
+import LeftBubble from "components/LeftBubble";
 
 
 const InterviewRoom: React.FC = () => {
+
+    const [stage, setStage] = useState<number>(0);
+
     const questions: Array<string> = [
         "대학교 때 겪은 가장 흥미로운 활동이 무엇인가요?",
         "대학교 때 겪은 가장 흥미로운 활동이 무엇인가요?",
@@ -46,8 +50,8 @@ const InterviewRoom: React.FC = () => {
                         <div>대화 기록</div>
                     </BlueBox>
 
-                    <GlobalStyled.ViewCol style={{ flex: 30, backgroundColor: 'white', height: 600 }}>
-                        
+                    <GlobalStyled.ViewCol style={{ flex: 30, backgroundColor: 'white' }}>
+                        <LeftBubble text={questions[0]} />
                     </GlobalStyled.ViewCol>
 
                 </GlobalStyled.ViewCol>

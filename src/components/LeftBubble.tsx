@@ -4,10 +4,14 @@ import { BubbleProps } from "types/interview-type";
 
 const LeftBubble: React.FC<BubbleProps> = ({ text }) => {
     return (
-        <GlobalStyled.ViewCol 
-            style={{ 
-                justifyContent: 'center',
-                alignItems: 'center',
+        <div
+            style={{
+                width: 'auto',
+                height: 'auto',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                padding: 20,
+                margin: 20,
                 backgroundColor: themes.colors.main_blue,
                 color: themes.colors.white,
                 borderTopRightRadius: 6,
@@ -15,7 +19,7 @@ const LeftBubble: React.FC<BubbleProps> = ({ text }) => {
                 borderBottomRightRadius: 6
             }}>
             {text}
-        </GlobalStyled.ViewCol>
+        </div>
     )
 }
 
