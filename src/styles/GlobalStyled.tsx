@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const GlobalStyles = {
+const GlobalStyled = {
     ViewCol: styled.div`
         flex: 1;
         display: flex;
@@ -13,4 +13,4 @@ const GlobalStyles = {
    `,
 }
 
-export default GlobalStyles;
+export default GlobalStyled;

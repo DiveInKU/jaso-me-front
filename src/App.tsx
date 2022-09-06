@@ -4,8 +4,9 @@ import { Routes, Route } from 'react-router-dom';
 import Home from 'pages/home';
 import Login from 'pages/login';
 import SignUp from 'pages/signUp';
-import Interview from 'pages/interview';
-import WebcamTest from 'pages/webcamTest';
+import Interview from 'pages/interview/interview';
+import WebcamTest from 'pages/interview/webcamTest';
+import InterviewRoom from 'pages/interview/interviewRoom';
 
 // FC : Function Component
 const App: React.FC = () => {
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path='/home' element={<Home />} />
         <Route path="/home/interview" element={<Interview />} />
         <Route path="/home/interview/webcamtest" element={<WebcamTest />} />
+        <Route path="/home/interview/webcamtest/interviewroom" element={<InterviewRoom />} />
       </Routes>
   )
 }

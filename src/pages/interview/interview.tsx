@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import themes from 'styles/themes';
-import GlobalStyles from 'styles/GlobalStyles';
+import GlobalStyled from 'styles/GlobalStyled';
 import TopNavigationBar from 'components/TopNavigationBar';
 import styled from 'styled-components';
 import { TextField } from "@material-ui/core";
@@ -24,9 +24,9 @@ const Interview: React.FC = () => {
     }
 
     return (
-        <GlobalStyles.ViewCol style={{ backgroundColor: themes.colors.background}}>
+        <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background}}>
             <TopNavigationBar state='모의 면접' />
-            <GlobalStyles.ViewCol style={{ paddingTop: 20, paddingLeft: 30}}>
+            <GlobalStyled.ViewCol style={{ paddingTop: 20, paddingLeft: 30}}>
                 <Title>모의 면접 제목</Title>
                 <TextField style={{ marginTop: 10, marginBottom: 30}}
                     type="text" 
@@ -83,8 +83,8 @@ const Interview: React.FC = () => {
                         모의 면접 생성
                 </Button>
                 
-            </GlobalStyles.ViewCol>
-        </GlobalStyles.ViewCol>
+            </GlobalStyled.ViewCol>
+        </GlobalStyled.ViewCol>
     )
 }
 

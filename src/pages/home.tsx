@@ -3,7 +3,7 @@ import TopNavigationBar from 'components/TopNavigationBar';
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
-import GlobalStyles from 'styles/GlobalStyles';
+import GlobalStyled from 'styles/GlobalStyled';
 import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
@@ -36,7 +36,7 @@ const Home: React.FC = () => {
     }
 
     return (
-      <GlobalStyles.ViewCol>
+      <GlobalStyled.ViewCol>
         <TopNavigationBar state={''} />
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
@@ -81,7 +81,7 @@ const Home: React.FC = () => {
         </MainMenuBg>
 
         </div>
-      </GlobalStyles.ViewCol>
+      </GlobalStyled.ViewCol>
     )
 }
 
@@ -132,6 +132,7 @@ const CoverLetterBg = styled.div`
     padding-left: 24px;
     padding-right: 24px;
     background-color: ${themes.colors.blue_2};
+    cursor: pointer;
 `
 
 const InterviewBg = styled.div`
@@ -154,6 +155,7 @@ const QuestionBg = styled.div`
     padding-left: 24px;
     padding-right: 24px;
     background-color: ${themes.colors.blue_3};
+    cursor: pointer;
 `;
 
 
