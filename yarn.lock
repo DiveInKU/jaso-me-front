@@ -1221,7 +1221,7 @@
   "resolved" "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.7.5.tgz"
   "version" "0.7.5"
 
-"@emotion/react@^11.9.3":
+"@emotion/react@^11.0.0-rc.0", "@emotion/react@^11.4.1", "@emotion/react@^11.5.0", "@emotion/react@^11.9.3":
   "integrity" "sha512-g9Q1GcTOlzOEjqwuLF/Zd9LC+4FljjPjDfxSM7KmEakm+hsHXk+bYZ2q+/hTJzr0OUNkujo72pXLQvXj6H+GJQ=="
   "resolved" "https://registry.npmjs.org/@emotion/react/-/react-11.9.3.tgz"
   "version" "11.9.3"
@@ -1250,7 +1250,7 @@
   "resolved" "https://registry.npmjs.org/@emotion/sheet/-/sheet-1.1.1.tgz"
   "version" "1.1.1"
 
-"@emotion/styled@^11.9.3":
+"@emotion/styled@^11.3.0", "@emotion/styled@^11.9.3":
   "integrity" "sha512-o3sBNwbtoVz9v7WB1/Y/AmXl69YHmei2mrVnK7JgyBJ//Rst5yqPZCecEJlMlJrFeWHp+ki/54uN265V2pEcXA=="
   "resolved" "https://registry.npmjs.org/@emotion/styled/-/styled-11.9.3.tgz"
   "version" "11.9.3"
@@ -1851,7 +1851,7 @@
   dependencies:
     "@babel/runtime" "^7.17.2"
 
-"@mui/material@^5.9.1":
+"@mui/material@^5.0.0", "@mui/material@^5.9.1":
   "integrity" "sha512-c09SbaMm7Rl7Df9JRkXwPWNbnfrutmHERTJC46OJ9OMAM9+HGQihIbGln1k2Xj65jb3E+G498FZFAoSrrBDvwQ=="
   "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.9.1.tgz"
   "version" "5.9.1"
@@ -4285,7 +4285,7 @@
     "ansi-styles" "^4.1.0"
     "supports-color" "^7.1.0"
 
-"chalk@^4.0.2":
+"chalk@^4.0.0":
   "integrity" "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="
   "resolved" "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
   "version" "4.1.2"
@@ -4293,7 +4293,7 @@
     "ansi-styles" "^4.1.0"
     "supports-color" "^7.1.0"
 
-"chalk@^4.1.0":
+"chalk@^4.0.2":
   "integrity" "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="
   "resolved" "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
   "version" "4.1.2"
