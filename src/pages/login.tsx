@@ -50,7 +50,7 @@ const Login: React.FC = () => {
                 <FormControl component="fieldset" variant="standard">
                   <Grid container spacing={1} marginBottom={2}>
                     <Grid item xs={12}>
-                      <TextField type="email" className='input-id' variant="outlined" size="small" placeholder='이메일을 입력하세요.'
+                      <TextField type="email" className='input-property' variant="outlined" size="small" placeholder='이메일을 입력하세요.'
                         onChange={idChange}
                         InputProps={{
                           startAdornment: (
@@ -63,7 +63,7 @@ const Login: React.FC = () => {
                     </Grid>
                     
                     <Grid item xs={12}>
-                      <TextField type="password" className='input-pw' variant="outlined" size="small" placeholder='비밀번호를 입력하세요.'
+                      <TextField type="password" className='input-property' variant="outlined" size="small" placeholder='비밀번호를 입력하세요.'
                         onChange={pwChange}
                         InputProps={{
                           startAdornment: (
