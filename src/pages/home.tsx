@@ -1,5 +1,6 @@
 import MainMenuText from 'components/MainMenuText';
 import TopNavigationBar from 'components/TopNavigationBar';
+import { useNavigate } from 'react-router'
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
@@ -11,6 +12,8 @@ import questionLogo from '../assets/svgs/questionLogo.svg';
 
 
 const Home: React.FC = () => {
+
+    let navigate = useNavigate();
 
     const menuText = {
         coverLetterText: {
@@ -46,7 +49,7 @@ const Home: React.FC = () => {
         <MainMenuBg>
             <CoverLetterBg>
                 <MainMenuText
-                    onClick={() => { console.log('hi') }}
+                    onClick={() => { navigate("/coverLetter")}}
                     title={menuText.coverLetterText.title}
                     desc={menuText.coverLetterText.desc}
                     sign={menuText.coverLetterText.sign} />
@@ -157,7 +160,4 @@ const QuestionBg = styled.div`
     background-color: ${themes.colors.blue_3};
 `;
 
-
-
-  
   export default Home;
