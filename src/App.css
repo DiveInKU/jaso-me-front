@@ -116,6 +116,14 @@
   font-size: 15px;
   margin-bottom: 7px;
 }
+.text-property1{
+  width: 390px;
+  font-family: 'Notosans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+
+}
 
 .signup-text{
   font-family: 'Notosans-bold';
