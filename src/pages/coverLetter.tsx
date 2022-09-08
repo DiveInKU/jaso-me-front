@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import TopNavigationBar from 'components/TopNavigationBar';
 import { TextField } from "@material-ui/core";
@@ -40,7 +40,7 @@ const CoverLetter: React.FC = () => {
     return(
         <div className="Main">
         <Background>
-            <TopNavigationBar />
+            <TopNavigationBar state='자기소개서 작성' />
             <div style={{position:"relative", marginBottom:"30px"}}>
                 <IconButton onClick={backToHome}>
                     <ArrowBackIosOutlinedIcon className="back-icon"></ArrowBackIosOutlinedIcon>
