@@ -40,7 +40,7 @@ const CoverLetter: React.FC = () => {
     return(
         <div className="Main">
         <Background>
-            <TopNavigationBar />
+            <TopNavigationBar state="자기소개서 작성"/>
             <div style={{position:"relative", marginBottom:"30px"}}>
                 <IconButton onClick={backToHome}>
                     <ArrowBackIosOutlinedIcon className="back-icon"></ArrowBackIosOutlinedIcon>

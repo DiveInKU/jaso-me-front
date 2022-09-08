@@ -1,5 +1,5 @@
 import GlobalStyled from "styles/GlobalStyled";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import TopNavigationBar from "components/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";

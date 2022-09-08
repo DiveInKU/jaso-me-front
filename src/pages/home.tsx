@@ -1,6 +1,5 @@
 import MainMenuText from 'components/MainMenuText';
 import TopNavigationBar from 'components/TopNavigationBar';
-import { useNavigate } from 'react-router'
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
@@ -12,7 +11,6 @@ import questionLogo from '../assets/svgs/questionLogo.svg';
 import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
-    let navigate = useNavigate();
 
     let navigate = useNavigate();
 
