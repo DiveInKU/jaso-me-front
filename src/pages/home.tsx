@@ -3,14 +3,16 @@ import TopNavigationBar from 'components/TopNavigationBar';
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
+import GlobalStyled from 'styles/GlobalStyled';
 import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
 import questionLogo from '../assets/svgs/questionLogo.svg';
-
-
+import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
+
+    let navigate = useNavigate();
 
     const menuText = {
         coverLetterText: {
@@ -30,9 +32,13 @@ const Home: React.FC = () => {
         },
     }
 
+    const goToInterviewPage = (e: React.MouseEvent<HTMLDivElement>) => {
+        navigate("/home/interview")
+    }
+
     return (
-      <Background>
-        <TopNavigationBar />
+      <GlobalStyled.ViewCol>
+        <TopNavigationBar state={''} />
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
         <MainInfoBg>
@@ -46,7 +52,7 @@ const Home: React.FC = () => {
         <MainMenuBg>
             <CoverLetterBg>
                 <MainMenuText
-                    onClick={() => { console.log('hi') }}
+                    onClick={() => { navigate("/coverLetter")}}
                     title={menuText.coverLetterText.title}
                     desc={menuText.coverLetterText.desc}
                     sign={menuText.coverLetterText.sign} />
@@ -54,7 +60,7 @@ const Home: React.FC = () => {
             </CoverLetterBg>
 
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20, width: '100%'}}>
-                <InterviewBg>
+                <InterviewBg onClick={goToInterviewPage}>
                     <MainMenuText 
                         onClick={() => { console.log('hi') }}
                         title={menuText.interviewText.title}
@@ -76,16 +82,9 @@ const Home: React.FC = () => {
         </MainMenuBg>
 
         </div>
-      </Background>
+      </GlobalStyled.ViewCol>
     )
 }
-
-const Background = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: ${themes.colors.background};
-`;
 
 const MainInfoBg = styled.div`
     display: flex;
@@ -134,6 +133,7 @@ const CoverLetterBg = styled.div`
     padding-left: 24px;
     padding-right: 24px;
     background-color: ${themes.colors.blue_2};
+    cursor: pointer;
 `
 
 const InterviewBg = styled.div`
@@ -144,6 +144,7 @@ const InterviewBg = styled.div`
     margin-right: 20px;
     padding: 24px;
     background-color: ${themes.colors.blue_1};
+    cursor: pointer;
 `;
 
 const QuestionBg = styled.div`
@@ -155,9 +156,7 @@ const QuestionBg = styled.div`
     padding-left: 24px;
     padding-right: 24px;
     background-color: ${themes.colors.blue_3};
+    cursor: pointer;
 `;
 
-
-
-  
   export default Home;

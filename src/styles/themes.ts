@@ -5,6 +5,7 @@ const themes = {
         blue_1: '#E4E7F2',
         blue_2: 'rgba(79, 98, 172, 0.35)',
         blue_3: 'rgba(79, 98, 172, 0.7)',
+        blue_4: '#CDCFE8',
         black: '#000000',
         white: '#ffffff',
         gray_100: '#F2F2F2',
