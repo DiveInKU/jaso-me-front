@@ -4,5 +4,5 @@ export interface BubbleProps {
 
 export interface History {
     text: string;
-    type: string;
+    type: number;
 }

@@ -1,13 +1,17 @@
 import GlobalStyled from "styles/GlobalStyled";
 import themes from "styles/themes";
-import { BubbleProps } from "types/interview-type";
+import { BubbleProps } from "types/interview/interview-type";
 
 const RightBubble: React.FC<BubbleProps> = ({ text }) => {
     return (
-        <GlobalStyled.ViewCol 
+        <div 
             style={{ 
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 'auto',
+                height: 'auto',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+                padding: 20,
+                margin: 20,
                 backgroundColor: themes.colors.blue_4,
                 color: themes.colors.main_blue,
                 borderTopLeftRadius: 6,
@@ -15,7 +19,7 @@ const RightBubble: React.FC<BubbleProps> = ({ text }) => {
                 borderBottomRightRadius: 6
             }}>
             {text}
-        </GlobalStyled.ViewCol>
+        </div>
     )
 }
 
