@@ -4,14 +4,56 @@ import jasoMeLogo from '../assets/svgs/jasoMeLogo.svg';
 import { TextField } from "@material-ui/core";
 import { Button,Divider,IconButton } from '@mui/material';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import ApiService from 'apis/apiService';
 import '../App.css'; 
 
 const SignUp: React.FC = () => {
+    const apiService = ApiService();
     let navigate = useNavigate();
     const [id,setId] = useState<string>("");
     const [pw,setPw] = useState<string>("");
     const [repw,setRepw] = useState<string>("");
     const [name,setName] = useState<string>("");
+    const [idcode,setIdcode] = useState<number>(0);
+    const [scode,setScode] = useState<number>(0);
+
+    const getMembers = async (id:string) => {
+        await apiService
+        .getMembers(id)
+        .then((res) => {
+            console.log(res.data);
+            setIdcode(res.data.code);
+            console.log(res.data.code);
+            console.log(res.data.message);
+
+            console.log('return code '+ idcode);
+        })
+        .catch((err) => {
+            console.log(err);
+            console.log(err.response.data.code);
+            console.log(err.response.data.message);
+
+            setIdcode(err.response.data.code);
+            console.log('return code '+ idcode);
+        });
+    }
+
+    const postMembersNew = async (id:string, name:string, pw:string) => {
+        await apiService
+        .postMembersNew(id,name,pw)
+        .then((res) => {
+            console.log(res.data);
+            setScode(res.data.code);
+            console.log(res.data.code);
+            console.log(res.data.message);
+            console.log(res.data.detail);
+            navigate("/");
+        })
+        .catch((err) => {
+            console.log(err);
+            console.log(err.response.data.code);
+        });
+    }
 
     const emailChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setId(e.target.value);
@@ -27,10 +69,10 @@ const SignUp: React.FC = () => {
     }
 
     const signIn=(e: React.MouseEvent<HTMLButtonElement>)=>{
+        postMembersNew(id,name,pw);
         console.log(id);
         console.log(name);
         console.log(pw);
-        navigate("/home");
     }
 
     const backToLoginPage = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -38,7 +80,8 @@ const SignUp: React.FC = () => {
     }
 
     const doubleCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log(id);
+        getMembers(id);
+
     }
 
     const emailValidation = ()=>{
@@ -88,13 +131,27 @@ const SignUp: React.FC = () => {
                             fontWeight: "500", fontSize:"12px", width:"100px", height:"30px"
                         }} >중복 확인</Button>
                 </div>
-                <TextField type="text" className='input-property' variant="outlined" size="small" placeholder='jasome@gmail.com'
-                    onChange={emailChange} error={(id==="")||emailValidation()?false:true} helperText={(id==="")||emailValidation()?"":"이메일 형식에 맞지 않습니다."}
+
+                <div style={{marginBottom:"30px",}}>
+                    <TextField type="text" className='input-property' variant="outlined" size="small" placeholder='jasome@gmail.com' 
+                    onChange={emailChange} error={(id==="") ||emailValidation()?false:true} helperText={(id==="")||emailValidation()?"":"이메일 형식에 맞지 않습니다."}
                     style={{
                         width:"400px",
-                        marginBottom:"30px",
                     }}
-                />
+
+                    />
+                    {(idcode===1000) &&
+                    <div className="recog-property" style={{
+                        marginTop:"3px",
+                        marginLeft:"5px",
+                    }}>{"* 사용가능한 이메일입니다."}</div>}
+                    
+                    {((idcode!==1000) && (idcode!==0)) &&
+                    <div className="duplie-property" style={{
+                        marginTop:"3px",
+                        marginLeft:"5px",
+                    }}>{"* 사용불가능한 이메일입니다."}</div>}
+                </div>
 
                 <div className='text-property'>{"이름"}</div>
                 <TextField type="text" className='input-property' variant="outlined" size="small" placeholder='이름을 입력하세요.'

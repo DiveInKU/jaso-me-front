@@ -123,6 +123,31 @@
   font-size: 15px;
 
 }
+.recog-property{
+  width: 390px;
+  font-family: 'Notosans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  color:#4F62AC;
+}
+
+.duplie-property{
+  width: 390px;
+  font-family: 'Notosans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  color:red;
+}
+.error-property{
+  width: 390px;
+  font-family: 'Notosans-semibold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  color:red;
+}
 
 .signup-text{
   font-family: 'Notosans-bold';

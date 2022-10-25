@@ -4,15 +4,39 @@ import { FormControl,Grid,Button,Divider } from '@mui/material';
 import { TextField, InputAdornment } from "@material-ui/core";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import iconGoogle from '../assets/svgs/iconGoogle.svg';
+//import iconGoogle from '../assets/svgs/iconGoogle.svg';
 import jasoMeLogo from '../assets/svgs/jasoMeLogo.svg';
 import mainIlst from '../assets/svgs/mainIlst.svg';
+import ApiService from 'apis/apiService';
 import '../App.css'; 
 
 const Login: React.FC = () => {
+    const apiService = ApiService();
     let navigate = useNavigate();
     const [id,setId] = useState<string>("");
     const [pw,setPw] = useState<string>("");
+    const [jwt,setJwt] = useState<string>("");
+
+    const postMembersLogin = async (id:string, pw:string) => {
+      await apiService
+      .postMembersLogin(id,pw)
+      .then((res) => {
+          console.log(res.data);
+          setJwt(res.data.code);
+          console.log(res.data.code);
+          console.log(res.data.message);
+          console.log(res.data.result);
+          window.localStorage.setItem("jwt",JSON.stringify(jwt));
+          console.log("고유주소 출력 " + jwt);
+          localStorage.getItem('jwt'); //저장 확인
+          navigate("/home");
+      })
+      .catch((err) => {
+          console.log(err);
+          console.log(err.response.data.code);
+      });
+    }
+
 
     const idChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setId(e.target.value);
@@ -23,8 +47,7 @@ const Login: React.FC = () => {
     }
     
     const signIn=(e: React.MouseEvent<HTMLButtonElement>)=>{
-        console.log(id);
-        console.log(pw);
+        postMembersLogin(id,pw);
         navigate("/home");
     }
 
@@ -87,8 +110,7 @@ const Login: React.FC = () => {
                       }} >자소미 계정으로 로그인하기</Button>
                     </Grid>
     
-                    <Grid item xs={12}>
-                      {/* <Link to="./Signup.js"> */}
+                    {/* <Grid item xs={12}>
                         <Button className="button-google" variant="contained"
                           style={{
                           backgroundColor: "#ffffff",
@@ -100,8 +122,7 @@ const Login: React.FC = () => {
                         }} >
                           <img src={iconGoogle} className="icon-google" alt="icongoogle" />
                           Google 계정으로 로그인하기</Button>
-                      {/* </Link> */}
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                   </FormControl>
     
@@ -129,7 +150,7 @@ const Login: React.FC = () => {
                       }}></Divider>
                     </Grid>
                     <Grid item xs={2} className="grid-divider">
-                      <Button className="findpw" variant="text"
+                      <Button className="findpw" variant="text" 
                         style={{
                         color:"#000000",
                         fontSize:"12px",
