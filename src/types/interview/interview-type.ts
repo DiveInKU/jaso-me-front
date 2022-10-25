@@ -4,5 +4,11 @@ export interface BubbleProps {
 
 export interface History {
     text: string;
-    type: number;
+    type: HISTORY_TYPE;
 }
+
+export const HISTORY_TYPE = {
+    QUESTION: 'Question',
+    ANSWER: 'Answer'
+} as const;
+type HISTORY_TYPE = typeof HISTORY_TYPE[keyof typeof HISTORY_TYPE]

@@ -7,7 +7,7 @@ import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/LeftBubble";
 import RightBubble from "components/RightBubble";
-import { History } from "types/interview/interview-type";
+import { History, HISTORY_TYPE } from "types/interview/interview-type";
 
 const InterviewRoom: React.FC = () => {
 
@@ -20,7 +20,7 @@ const InterviewRoom: React.FC = () => {
     ];
 
     const [stage, setStage] = useState<number>(0); // 현재 질문 단계
-    const [logs, setLogs] = useState<History[]>([{text: questions[0], type: 0}]); // 질문 + 답변 기록 배열
+    const [logs, setLogs] = useState<History[]>([{text: questions[0], type: HISTORY_TYPE.QUESTION}]); // 질문 + 답변 기록 배열
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (stage == questions.length - 1) {
@@ -29,8 +29,8 @@ const InterviewRoom: React.FC = () => {
         else {
             setStage(stage+1);
 
-            const nextQuestion: History = {text: questions[stage], type: 0}
-            const curAnswer: History = {text: "답변입니다.", type: 1}
+            const nextQuestion: History = {text: questions[stage], type: HISTORY_TYPE.QUESTION}
+            const curAnswer: History = {text: "답변입니다.", type: HISTORY_TYPE.ANSWER}
 
             setLogs([...logs, curAnswer, nextQuestion]);
         }
@@ -71,7 +71,7 @@ const InterviewRoom: React.FC = () => {
                         {
                             logs.map((log, idx) => {
                                 return (
-                                    log.type == 0 ?
+                                    log.type == HISTORY_TYPE.QUESTION ?
                                     <LeftBubble text={log.text} /> :
                                     <RightBubble text={log.text} />
                                 )
