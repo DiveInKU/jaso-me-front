@@ -9,6 +9,7 @@ import LeftBubble from "components/LeftBubble";
 import RightBubble from "components/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
+import { useReactMediaRecorder } from "react-media-recorder";
 
 const InterviewRoom: React.FC = () => {
 
@@ -20,7 +21,7 @@ const InterviewRoom: React.FC = () => {
         "협업을 하며 갈등 경험과 해결한 방법을 말해주세요.",
     ];
 
-    const [stage, setStage] = useState<number>(0); // 현재 질문 단계
+    const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
     const [logs, setLogs] = useState<History[]>([{text: questions[0], type: HISTORY_TYPE.QUESTION}]); // 질문 + 답변 기록 배열
     const [value, setValue] = useState<string>("");
 
@@ -34,12 +35,12 @@ const InterviewRoom: React.FC = () => {
 
 
     const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
-        listening ? stop() : listen()
+        listen();
     }
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (stage == questions.length - 1) {
-            alert("마지막 질문입니다.");
+            stopInterviewRecording();
         }
         else {
             setStage(stage + 1);
@@ -48,12 +49,30 @@ const InterviewRoom: React.FC = () => {
             const nextQuestion: History = {text: questions[stage + 1], type: HISTORY_TYPE.QUESTION}
 
             setLogs([...logs, curAnswer, nextQuestion]);
+            stop();
         }
     }
 
-    // speak({ text: questions[0] });
+    const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ audio: true, video: true });
+    
+    const startInterviewRecording = () => {
+        startRecording();
+    }
 
+    const stopInterviewRecording = () => {
+        stopRecording();
+    }
+
+    // 최초 렌더링 시 녹화 시작
     useEffect(() => {
+        startInterviewRecording();
+    }, []);
+
+    // stage가 변할 때 마다 질문 읽어준다.
+    useEffect(() => {
+        if (stage < 0)
+            setStage(0);
         speak({ text: questions[stage] });
     }, [stage]);
 
@@ -79,7 +98,7 @@ const InterviewRoom: React.FC = () => {
                                 color: themes.colors.main_blue, 
                                 fontWeight: 800}}
                         >
-                            {listening ? "답변 중지" : "답변 시작"}
+                            {listening ? "답변 중" : "답변 시작"}
                         </Button>
                         <Button
                             className="next-btn"
