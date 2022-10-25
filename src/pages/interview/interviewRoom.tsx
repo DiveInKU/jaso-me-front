@@ -1,5 +1,5 @@
 import GlobalStyled from "styles/GlobalStyled";
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import TopNavigationBar from "components/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { Button } from "@mui/material";
 import LeftBubble from "components/LeftBubble";
 import RightBubble from "components/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
+import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 
 const InterviewRoom: React.FC = () => {
 
@@ -21,20 +22,40 @@ const InterviewRoom: React.FC = () => {
 
     const [stage, setStage] = useState<number>(0); // 현재 질문 단계
     const [logs, setLogs] = useState<History[]>([{text: questions[0], type: HISTORY_TYPE.QUESTION}]); // 질문 + 답변 기록 배열
+    const [value, setValue] = useState<string>("");
+
+
+    const { speak } = useSpeechSynthesis();
+    const { listen, listening, stop } = useSpeechRecognition({
+        onResult: (result: string) => {
+          setValue(result);
+        },
+    });
+
+
+    const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
+        listening ? stop() : listen()
+    }
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (stage == questions.length - 1) {
             alert("마지막 질문입니다.");
         }
         else {
-            setStage(stage+1);
+            setStage(stage + 1);
 
-            const nextQuestion: History = {text: questions[stage], type: HISTORY_TYPE.QUESTION}
-            const curAnswer: History = {text: "답변입니다.", type: HISTORY_TYPE.ANSWER}
+            const curAnswer: History = {text: value, type: HISTORY_TYPE.ANSWER}
+            const nextQuestion: History = {text: questions[stage + 1], type: HISTORY_TYPE.QUESTION}
 
             setLogs([...logs, curAnswer, nextQuestion]);
         }
     }
+
+    // speak({ text: questions[0] });
+
+    useEffect(() => {
+        speak({ text: questions[stage] });
+    }, [stage]);
 
     return(
         <GlobalStyled.ViewCol style ={{ backgroundColor: themes.colors.background }}>
@@ -47,7 +68,19 @@ const InterviewRoom: React.FC = () => {
                     <Webcam mirrored={true} style={{ flex: 8 }} />
                     <BlueBox 
                         className="media-box"
-                        style={{ flex: 1, justifyContent: 'flex-end', paddingRight: 30, height: 80}}>
+                        style={{ flex: 1, justifyContent: 'space-between', paddingLeft: 30, paddingRight: 30, height: 80}}>
+                        <Button 
+                            className="speak-btn"
+                            disableElevation
+                            variant="contained"
+                            onClick={handleSpeaking}
+                            style={{
+                                backgroundColor: 'white',
+                                color: themes.colors.main_blue, 
+                                fontWeight: 800}}
+                        >
+                            {listening ? "답변 중지" : "답변 시작"}
+                        </Button>
                         <Button
                             className="next-btn"
                             disableElevation
@@ -56,7 +89,8 @@ const InterviewRoom: React.FC = () => {
                             style={{
                                 backgroundColor: 'white',
                                 color: themes.colors.main_blue, 
-                                fontWeight: 800}}>
+                                fontWeight: 800}}
+                            >
                                 {stage == questions.length-1 ? "면접 종료" : "다음으로"}
                         </Button>
                     </BlueBox>

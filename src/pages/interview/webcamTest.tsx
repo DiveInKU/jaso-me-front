@@ -27,11 +27,6 @@ const WebcamTest: React.FC = () => {
         },
     });
 
-    useEffect(() => {
-        // 말하는 도중이 아닌 말이 끝난 뒤(말 사이 텀이 생기면) 출력
-        listen({ interimResults: false });
-    }, [value]);
-
     return(
         <GlobalStyled.ViewCol 
             style={{ 
@@ -47,9 +42,20 @@ const WebcamTest: React.FC = () => {
                 <Webcam mirrored={true}/>
             </GlobalStyled.ViewCol>
 
-            <div style={{ width: '100%', height: 200}}>
+            <Button
+                variant="outlined"
+                onClick={listening ? stop : listen}
+                style={{
+                    marginTop: 20,
+                    backgroundColor: themes.colors.white,
+                    borderWidth: 1.5,
+             }}>
+                {listening ? "마이크 테스트 정지" : "마이크 테스트 시작"}
+            </Button>
+
+            <GlobalStyled.ViewCol style={{ height: 200 }}>
                 {value}
-            </div>
+            </GlobalStyled.ViewCol>
             
             {infoMessage.map((text, tidx) => {
                 return (
