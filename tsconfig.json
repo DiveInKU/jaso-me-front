@@ -12,6 +12,7 @@
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "strict": true,
+      "strictNullChecks": false,
       "forceConsistentCasingInFileNames": false,
       "noFallthroughCasesInSwitch": true,
       "module": "esnext",
@@ -27,4 +28,5 @@
       "src/styles/custom.d.ts",
       "src/styles/emotion.d.ts"
     ],
+    
 }

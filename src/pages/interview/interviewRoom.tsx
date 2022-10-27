@@ -1,5 +1,5 @@
 import GlobalStyled from "styles/GlobalStyled";
-import React, {  useEffect, useState } from "react";
+import React, {  useEffect, useState, useRef } from "react";
 import TopNavigationBar from "components/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
@@ -9,7 +9,7 @@ import LeftBubble from "components/LeftBubble";
 import RightBubble from "components/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
-import { useReactMediaRecorder } from "react-media-recorder";
+import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
 
 const InterviewRoom: React.FC = () => {
 
@@ -24,7 +24,13 @@ const InterviewRoom: React.FC = () => {
     const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
     const [logs, setLogs] = useState<History[]>([{text: questions[0], type: HISTORY_TYPE.QUESTION}]); // 질문 + 답변 기록 배열
     const [value, setValue] = useState<string>("");
+    const [isRecording, setIsRecording] = useState<boolean>(true);
 
+    // react webcam
+    const webcamRef = useRef<Webcam>(null);
+    const mediaRecorderRef = useRef<MediaRecorder>(null);
+    const [capturing, setCapturing] = useState<boolean>(false);
+    const [recordedChunks, setRecordedChunks] = useState([]);
 
     const { speak } = useSpeechSynthesis();
     const { listen, listening, stop } = useSpeechRecognition({
@@ -33,16 +39,22 @@ const InterviewRoom: React.FC = () => {
         },
     });
 
-
     const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
         listen();
     }
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (stage == questions.length - 1) {
+
+            // 마지막 답변 저장
+            const curAnswer: History = {text: value, type: HISTORY_TYPE.ANSWER}
+            setLogs([...logs, curAnswer]);
+
+            // 녹화 중지
             stopInterviewRecording();
+            stop();
         }
-        else {
+        else { // 다음 질문 출력
             setStage(stage + 1);
 
             const curAnswer: History = {text: value, type: HISTORY_TYPE.ANSWER}
@@ -53,6 +65,49 @@ const InterviewRoom: React.FC = () => {
         }
     }
 
+    // const handleStartCaptureClick = React.useCallback(() => {
+    //     setCapturing(true);
+    //     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+    //       mimeType: "video/webm"
+    //     });
+    //     mediaRecorderRef.current.addEventListener(
+    //       "dataavailable",
+    //       handleDataAvailable
+    //     );
+    //     mediaRecorderRef.current.start();
+    //   }, [webcamRef, setCapturing, mediaRecorderRef]);
+    
+    // const handleDataAvailable = React.useCallback(
+    //     ({ data }) => {
+    //       if (data.size > 0) {
+    //         setRecordedChunks((prev) => prev.concat(data));
+    //       }
+    //     },
+    //     [setRecordedChunks]
+    // );
+    
+    // const handleStopCaptureClick = React.useCallback(() => {
+    //     mediaRecorderRef.current.stop();
+    //     setCapturing(false);
+    // }, [mediaRecorderRef, webcamRef, setCapturing]);
+    
+    // const handleDownload = React.useCallback(() => {
+    //     if (recordedChunks.length) {
+    //       const blob = new Blob(recordedChunks, {
+    //         type: "video/webm"
+    //       });
+    //       const url = URL.createObjectURL(blob);
+    //       const a = document.createElement("a");
+    //       document.body.appendChild(a);
+    //       a.style = "display: none";
+    //       a.href = url;
+    //       a.download = "react-webcam-stream-capture.webm";
+    //       a.click();
+    //       window.URL.revokeObjectURL(url);
+    //       setRecordedChunks([]);
+    //     }
+    // }, [recordedChunks]);
+
     const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true, video: true });
     
@@ -62,6 +117,7 @@ const InterviewRoom: React.FC = () => {
 
     const stopInterviewRecording = () => {
         stopRecording();
+        setIsRecording(false);
     }
 
     // 최초 렌더링 시 녹화 시작
@@ -84,7 +140,14 @@ const InterviewRoom: React.FC = () => {
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
-                    <Webcam mirrored={true} style={{ flex: 8 }} />
+                    <Webcam src={mediaBlobUrl} audio={true} mirrored={true} style={{ flex: 8 }} />
+                    {/* {isRecording ? 
+                        <Webcam src={mediaBlobUrl} mirrored={true} style={{ flex: 8 }} />
+                        : 
+                        <div style={{ flex: 8 }}>
+                            <video src={mediaBlobUrl} controls autoPlay loop />
+                        </div>
+                    } */}
                     <BlueBox 
                         className="media-box"
                         style={{ flex: 1, justifyContent: 'space-between', paddingLeft: 30, paddingRight: 30, height: 80}}>
