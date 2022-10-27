@@ -1,5 +1,5 @@
-import MainMenuText from 'components/MainMenuText';
-import TopNavigationBar from 'components/TopNavigationBar';
+import MainMenuText from 'components/home/MainMenuText';
+import TopNavigationBar from 'components/common/TopNavigationBar';
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';

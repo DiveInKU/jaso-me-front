@@ -1,5 +1,5 @@
 import React from 'react';
-import rightArrow from '../assets/svgs/rightArrow.svg';
+import rightArrow from '../../assets/svgs/rightArrow.svg';
 
 type MenuTextProps = {
     title: string;

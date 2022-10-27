@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import TopNavigationBar from 'components/TopNavigationBar';
+import TopNavigationBar from 'components/common/TopNavigationBar';
 import { TextField } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
-import QuestionSet from 'components/QuestionSet';
+import QuestionSet from 'components/coverletter/QuestionSet';
 
 
 const CoverLetter: React.FC = () => {

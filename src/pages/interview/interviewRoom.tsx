@@ -1,12 +1,12 @@
 import GlobalStyled from "styles/GlobalStyled";
 import React, {  useEffect, useState, useRef } from "react";
-import TopNavigationBar from "components/TopNavigationBar";
+import TopNavigationBar from "components/common/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
 import Webcam from "react-webcam";
 import { Button } from "@mui/material";
-import LeftBubble from "components/LeftBubble";
-import RightBubble from "components/RightBubble";
+import LeftBubble from "components/interview/LeftBubble";
+import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
@@ -148,10 +148,10 @@ const InterviewRoom: React.FC = () => {
                             <video src={mediaBlobUrl} controls autoPlay loop />
                         </div>
                     } */}
-                    <BlueBox 
+                    <BlueBox
                         className="media-box"
                         style={{ flex: 1, justifyContent: 'space-between', paddingLeft: 30, paddingRight: 30, height: 80}}>
-                        <Button 
+                        <Button
                             className="speak-btn"
                             disableElevation
                             variant="contained"

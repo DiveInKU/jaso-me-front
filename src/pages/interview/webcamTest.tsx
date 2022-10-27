@@ -10,7 +10,7 @@ import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 const WebcamTest: React.FC = () => {
 
     let navigate = useNavigate();
-    const [value, setValue] = useState<string>("");
+    const [value, setValue] = useState<string>(""); // 마이크 테스트를 위한 texxt value
 
     const infoMessage: Array<string> = 
         ["모의 면접 시작 전 웹캠과 마이크 인식이 잘 작동하는지 확인하세요.",
@@ -53,7 +53,7 @@ const WebcamTest: React.FC = () => {
                 {listening ? "마이크 테스트 정지" : "마이크 테스트 시작"}
             </Button>
 
-            <GlobalStyled.ViewCol style={{ height: 200 }}>
+            <GlobalStyled.ViewCol style={{ height: 200, backgroundColor: themes.colors.gray_100, marginTop: 20, marginBottom: 20 }}>
                 {value}
             </GlobalStyled.ViewCol>
             

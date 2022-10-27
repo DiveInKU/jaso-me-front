@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
-import TopNavigationBar from 'components/TopNavigationBar';
+import TopNavigationBar from 'components/common/TopNavigationBar';
 import styled from 'styled-components';
 import { TextField } from "@material-ui/core";
 import { FormGroup, 
