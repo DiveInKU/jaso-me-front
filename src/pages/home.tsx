@@ -1,6 +1,6 @@
 import MainMenuText from 'components/home/MainMenuText';
 import TopNavigationBar from 'components/common/TopNavigationBar';
-import React from 'react';
+import React, { useState,useEffect } from 'react'
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
@@ -8,11 +8,13 @@ import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
 import questionLogo from '../assets/svgs/questionLogo.svg';
+import ApiService from 'apis/apiService';
 import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
-
     let navigate = useNavigate();
+    const [jwt,setJwt] = useState<string>("");
+    const apiService = ApiService();
 
     const menuText = {
         coverLetterText: {
@@ -33,7 +35,7 @@ const Home: React.FC = () => {
     }
 
     const goToInterviewPage = (e: React.MouseEvent<HTMLDivElement>) => {
-        navigate("/home/interview")
+        navigate("/home/interview");
     }
 
     return (
@@ -42,7 +44,7 @@ const Home: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
         <MainInfoBg>
-            <MainIlstImage src={mainIlst} />
+            <MainIlstImage src={mainIlst}/>
             <div style={{ display: 'flex', flexDirection: 'column'}}>
                 <MainTitle>취업 준비 서비스!</MainTitle>
                 <MainContent>{'자기소개서 작성, 모의 면접, \n모두 자소미에서!'}</MainContent>

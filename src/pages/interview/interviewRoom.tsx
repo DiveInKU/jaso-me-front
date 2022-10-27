@@ -183,7 +183,7 @@ const InterviewRoom: React.FC = () => {
                         <div>대화 기록</div>
                     </BlueBox>
 
-                    <GlobalStyled.ViewCol style={{ flex: 10, backgroundColor: 'white', overflow: 'auto' }}>
+                    <GlobalStyled.ViewCol style={{ flex: 30, backgroundColor: 'white', overflow: 'auto' }}>
                         {
                             logs.map((log, idx) => {
                                 return (
