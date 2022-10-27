@@ -1,6 +1,6 @@
+import MainMenuText from 'components/home/MainMenuText';
+import TopNavigationBar from 'components/common/TopNavigationBar';
 import React, { useState,useEffect } from 'react'
-import MainMenuText from 'components/MainMenuText';
-import TopNavigationBar from 'components/TopNavigationBar';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
@@ -15,25 +15,6 @@ const Home: React.FC = () => {
     let navigate = useNavigate();
     const [jwt,setJwt] = useState<string>("");
     const apiService = ApiService();
-
-    //setJwt = localStorage.getItem('jwt');
-
-    const getTestMembers = async () => {
-        await apiService
-        .getTestMembers()
-        .then((res) => {
-            console.log(res.data);
-            console.log(res.data.code);
-            console.log(res.data.message);
-            console.log(res.data.result);
-        })
-        .catch((err) => {
-            console.log(err);
-            console.log(err.response.data.code);
-            console.log(err.response.data.message);
-            console.log(err.response.data.result);
-        });
-    }
 
     const menuText = {
         coverLetterText: {
@@ -54,7 +35,6 @@ const Home: React.FC = () => {
     }
 
     const goToInterviewPage = (e: React.MouseEvent<HTMLDivElement>) => {
-        getTestMembers();
         navigate("/home/interview");
     }
 

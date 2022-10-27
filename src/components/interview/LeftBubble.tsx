@@ -1,6 +1,6 @@
 import GlobalStyled from "styles/GlobalStyled";
 import themes from "styles/themes";
-import { BubbleProps } from "types/interview-type";
+import { BubbleProps } from "types/interview/interview-type";
 
 const LeftBubble: React.FC<BubbleProps> = ({ text }) => {
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
-import jasoMeLogo from '../assets/svgs/jasoMeLogo.svg';
+import jasoMeLogo from '../../assets/svgs/jasoMeLogo.svg';
 import LogoutBtn from './LogoutBtn';
 import { Button } from '@mui/material';
 

@@ -12,6 +12,7 @@
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "strict": true,
+      "strictNullChecks": false,
       "forceConsistentCasingInFileNames": false,
       "noFallthroughCasesInSwitch": true,
       "module": "esnext",
@@ -19,11 +20,13 @@
       "resolveJsonModule": true,
       "isolatedModules": true,
       "noEmit": true,
-      "jsx": "react-jsx"
+      "jsx": "react-jsx",
+      "typeRoots": ["./@types", "./node_modules/@types"],
     },
     "include": [
       "src",
       "src/styles/custom.d.ts",
       "src/styles/emotion.d.ts"
     ],
+    
 }
