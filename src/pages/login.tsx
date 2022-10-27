@@ -9,7 +9,6 @@ import jasoMeLogo from '../assets/svgs/jasoMeLogo.svg';
 import mainIlst from '../assets/svgs/mainIlst.svg';
 import ApiService from 'apis/apiService';
 import '../App.css'; 
-import axios from 'axios';
 
 const Login: React.FC = () => {
     const apiService = ApiService();
