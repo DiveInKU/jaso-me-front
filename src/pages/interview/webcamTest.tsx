@@ -20,7 +20,6 @@ const WebcamTest: React.FC = () => {
         navigate("/home/interview/webcamtest/interviewroom");
     }
 
-
     const { listen, listening, stop } = useSpeechRecognition({
         onResult: (result: string) => {
           setValue(result);

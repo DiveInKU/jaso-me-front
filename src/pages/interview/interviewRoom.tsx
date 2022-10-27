@@ -109,7 +109,7 @@ const InterviewRoom: React.FC = () => {
     // }, [recordedChunks]);
 
     const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ audio: true, video: true });
+    useReactMediaRecorder({ audio: false, video: true });
     
     const startInterviewRecording = () => {
         startRecording();
@@ -140,7 +140,7 @@ const InterviewRoom: React.FC = () => {
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
-                    <Webcam src={mediaBlobUrl} audio={true} mirrored={true} style={{ flex: 8 }} />
+                    <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} />
                     {/* {isRecording ? 
                         <Webcam src={mediaBlobUrl} mirrored={true} style={{ flex: 8 }} />
                         : 
@@ -183,7 +183,7 @@ const InterviewRoom: React.FC = () => {
                         <div>대화 기록</div>
                     </BlueBox>
 
-                    <GlobalStyled.ViewCol style={{ flex: 30, backgroundColor: 'white' }}>
+                    <GlobalStyled.ViewCol style={{ flex: 10, backgroundColor: 'white', overflow: 'auto' }}>
                         {
                             logs.map((log, idx) => {
                                 return (
