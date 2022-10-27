@@ -1,11 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 
 const LogoutBtn: React.FC = () => {
+    let navigate = useNavigate();
+
+    const Logout=(e: React.MouseEvent<HTMLButtonElement>) => {
+        localStorage.removeItem('jwt');//로그아웃 저장 한거 삭제
+        navigate("/");
+    }
 
     return (
-        <BtnBg>로그아웃</BtnBg>
+        <BtnBg onClick={Logout}>로그아웃</BtnBg>
     )
 }
 

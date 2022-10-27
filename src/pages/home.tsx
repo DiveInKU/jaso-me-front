@@ -1,6 +1,6 @@
+import React, { useState,useEffect } from 'react'
 import MainMenuText from 'components/MainMenuText';
 import TopNavigationBar from 'components/TopNavigationBar';
-import React from 'react';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
@@ -8,11 +8,32 @@ import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
 import questionLogo from '../assets/svgs/questionLogo.svg';
+import ApiService from 'apis/apiService';
 import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
-
     let navigate = useNavigate();
+    const [jwt,setJwt] = useState<string>("");
+    const apiService = ApiService();
+
+    //setJwt = localStorage.getItem('jwt');
+
+    const getTestMembers = async () => {
+        await apiService
+        .getTestMembers()
+        .then((res) => {
+            console.log(res.data);
+            console.log(res.data.code);
+            console.log(res.data.message);
+            console.log(res.data.result);
+        })
+        .catch((err) => {
+            console.log(err);
+            console.log(err.response.data.code);
+            console.log(err.response.data.message);
+            console.log(err.response.data.result);
+        });
+    }
 
     const menuText = {
         coverLetterText: {
@@ -33,7 +54,8 @@ const Home: React.FC = () => {
     }
 
     const goToInterviewPage = (e: React.MouseEvent<HTMLDivElement>) => {
-        navigate("/home/interview")
+        getTestMembers();
+        navigate("/home/interview");
     }
 
     return (
@@ -42,7 +64,7 @@ const Home: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'row'}}>
 
         <MainInfoBg>
-            <MainIlstImage src={mainIlst} />
+            <MainIlstImage src={mainIlst}/>
             <div style={{ display: 'flex', flexDirection: 'column'}}>
                 <MainTitle>취업 준비 서비스!</MainTitle>
                 <MainContent>{'자기소개서 작성, 모의 면접, \n모두 자소미에서!'}</MainContent>
