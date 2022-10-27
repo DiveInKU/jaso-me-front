@@ -18,11 +18,9 @@ function ApiService() {
       });
     },
 
-    getTestMembers: async (jwt:string) => {
+    getTestMembers: async () => {
       return await API.get("/members",{
-        headers:{
-          Authorization:jwt
-        },
+          headers: {Authorization: `${localStorage.getItem('jwt')}`}
       });
     },
 

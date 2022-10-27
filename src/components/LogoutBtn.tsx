@@ -6,13 +6,13 @@ import themes from 'styles/themes';
 const LogoutBtn: React.FC = () => {
     let navigate = useNavigate();
 
-    const testMembers=(e: React.MouseEvent<HTMLButtonElement>) => {
+    const Logout=(e: React.MouseEvent<HTMLButtonElement>) => {
         localStorage.removeItem('jwt');//로그아웃 저장 한거 삭제
         navigate("/");
     }
 
     return (
-        <BtnBg onClick={testMembers}>로그아웃</BtnBg>
+        <BtnBg onClick={Logout}>로그아웃</BtnBg>
     )
 }
 

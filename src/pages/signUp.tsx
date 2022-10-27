@@ -47,7 +47,7 @@ const SignUp: React.FC = () => {
             console.log(res.data.code);
             console.log(res.data.message);
             console.log(res.data.detail);
-            navigate("/");
+            navigate("/Login");
         })
         .catch((err) => {
             console.log(err);
