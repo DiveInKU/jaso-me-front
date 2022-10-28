@@ -5,6 +5,7 @@ import Home from 'pages/home';
 import Login from 'pages/login';
 import SignUp from 'pages/signUp';
 import CoverLetter from 'pages/coverLetter';
+import MyPage from 'pages/mypage';
 // import { useNavigate } from 'react-router';
 import Interview from 'pages/interview/interview';
 import WebcamTest from 'pages/interview/webcamTest';
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route path='/home' element={<Home />} />
         <Route path='/coverLetter' element={<CoverLetter/>}/>
         <Route path="/home/interview" element={<Interview />} />
+        <Route path="/home/mypage" element={<MyPage />}/>
         <Route path="/home/interview/webcamtest" element={<WebcamTest />} />
         <Route path="/home/interview/webcamtest/interviewroom" element={<InterviewRoom />} />
       </Routes>

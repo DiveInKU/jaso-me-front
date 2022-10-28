@@ -166,6 +166,16 @@
   color: #333333;
 }
 
+.question-text{
+  font-family: 'Notosans-bold';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 45px;
+  color: #000000;
+  margin-left: 5px;
+}
+
 @font-face {
   font-family: "Notosans-extrabold";
   src: url("./styles/fonts/NotoSans-ExtraBold.ttf") format("truetype");

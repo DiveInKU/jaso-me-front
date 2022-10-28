@@ -8,13 +8,10 @@ import mainIlst from '../assets/svgs/mainIlst.svg';
 import coverLetterLogo from '../assets/svgs/coverLetterLogo.svg';
 import interviewLogo from '../assets/svgs/interviewLogo.svg';
 import questionLogo from '../assets/svgs/questionLogo.svg';
-import ApiService from 'apis/apiService';
 import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
     let navigate = useNavigate();
-    const [jwt,setJwt] = useState<string>("");
-    const apiService = ApiService();
 
     const menuText = {
         coverLetterText: {
@@ -73,8 +70,7 @@ const Home: React.FC = () => {
                 </InterviewBg>
 
                 <QuestionBg>
-                    <MainMenuText 
-                        onClick={() => { console.log('hi') }}
+                    <MainMenuText onClick={() => {navigate("/home/mypage")}}
                         title={menuText.questionText.title}
                         desc={menuText.questionText.desc}
                         sign={menuText.questionText.sign} />
