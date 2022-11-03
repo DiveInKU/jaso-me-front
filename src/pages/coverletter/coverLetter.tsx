@@ -11,21 +11,19 @@ import QuestionSet from 'components/coverletter/QuestionSet';
 
 const CoverLetter: React.FC = () => {
     type CoverLetterPair = {
-        title: string;
-        content: string;
+        question: string;
+        answer: string;
     };
 
     let navigate = useNavigate();
-    const [id,setId] = useState<string>("");
-    const [pairs,setPairs] = useState<CoverLetterPair[]>([{title: "", content: ""}]);
-
-    const emailChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
-        setId(e.target.value);
-    }
-
-    const signIn=(e: React.MouseEvent<HTMLButtonElement>)=>{
-        console.log(id);
-        navigate("/home");
+    const [pairs,setPairs] = useState<CoverLetterPair[]>([{question: "", answer: ""}]);
+    
+    const [title,setTitle] = useState<string>("");
+    const [question,setQuestion] = useState<string[]>([]);
+    const [answer,setAnswer] = useState<string[]>([]);
+      
+    const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+        setTitle(e.target.value);
     }
 
     const backToHome = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,9 +31,11 @@ const CoverLetter: React.FC = () => {
     }
 
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const newQuestion = { title: "", content: "" };
+        const newQuestion = { question: "", answer: "" };
         setPairs([...pairs, newQuestion])
     }
+
+
 
     return(
         <div className="Main">
@@ -45,7 +45,7 @@ const CoverLetter: React.FC = () => {
                 <IconButton onClick={backToHome}>
                     <ArrowBackIosOutlinedIcon className="back-icon"></ArrowBackIosOutlinedIcon>
                 </IconButton>
-                <Button className="button-login" variant="contained" onClick={signIn}
+                <Button className="button-login" variant="contained" onClick={() => {navigate("/home/coverLetterList")}}
                         style={{
                             position:"absolute", top: 10, right: 20, marginRight:"0px",
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
@@ -56,7 +56,7 @@ const CoverLetter: React.FC = () => {
             <LetterBody>
                 <TextProperty>{"자기소개서 제목"}</TextProperty>
                 <TextField type="text" className='input-property' variant="outlined" size="small" placeholder='자기소개서 제목을 입력해주세요.'
-                    onChange={emailChange} style={{
+                    onChange={titleChange} style={{
                         width:"700px",
                         marginBottom:"30px",
                         backgroundColor:"white"

@@ -51,7 +51,7 @@ const Home: React.FC = () => {
         <MainMenuBg>
             <CoverLetterBg>
                 <MainMenuText
-                    onClick={() => { navigate("/coverLetter")}}
+                    onClick={() => { navigate("/home/coverLetter")}}
                     title={menuText.coverLetterText.title}
                     desc={menuText.coverLetterText.desc}
                     sign={menuText.coverLetterText.sign} />
