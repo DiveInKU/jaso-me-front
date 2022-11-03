@@ -7,6 +7,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 const QuestionSet:React.FC = () => {
     const [question,setQuestion] = useState<string>("");
     const [answer,setAnswer] = useState<string>("");
+
     const [visible,setVisible] = useState<boolean>(false);
     const [visible1,setVisible1] = useState<boolean>(true);
     const [visible2,setVisible2] = useState<boolean>(true);
@@ -15,6 +16,7 @@ const QuestionSet:React.FC = () => {
     const qChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setQuestion(e.target.value);
     }
+
     const aChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setAnswer(e.target.value);
     }
