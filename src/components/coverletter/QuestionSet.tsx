@@ -3,8 +3,9 @@ import { TextField } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { QuestionSetProps } from 'types/coverletter/coverletter-type';
 
-const QuestionSet:React.FC = () => {
+const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs }) => {
     const [question,setQuestion] = useState<string>("");
     const [answer,setAnswer] = useState<string>("");
 
@@ -13,15 +14,17 @@ const QuestionSet:React.FC = () => {
     const [visible2,setVisible2] = useState<boolean>(true);
     const [visible3,setVisible3] = useState<boolean>(true);
 
-    const qChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+    const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
+        onSetPairs(question, answer, index);
     }
 
-    const aChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+    const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
+        onSetPairs(question, answer, index);
     }
     
-    const CopyClipBoard=async(text:string)=>{
+    const CopyClipBoard=async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
             alert('클립보드에 복사되었습니다.')
@@ -29,6 +32,7 @@ const QuestionSet:React.FC = () => {
             alert('복사 실패,,')
         }
     }
+
 
 
     return(
@@ -43,7 +47,15 @@ const QuestionSet:React.FC = () => {
             />
             <div style={{position:"relative", marginBottom:"10px"}}>
                 <TextProperty1>{"자기소개서 작성"}</TextProperty1>
-                <Button className="button-login" variant="contained" onClick={()=>{setVisible(true); setVisible1(true); setVisible2(true); setVisible3(true);}}
+                <Button 
+                    className="button-login"
+                    variant="contained" 
+                    onClick={ () => {
+                        setVisible(true);
+                        setVisible1(true);
+                        setVisible2(true);
+                        setVisible3(true);
+                    }}
                         style={{
                             position:"absolute", top: 0, left:"120px", marginRight:"0px", marginLeft:"5px",
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",

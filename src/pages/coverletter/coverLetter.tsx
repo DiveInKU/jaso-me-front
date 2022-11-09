@@ -7,20 +7,15 @@ import styled from 'styled-components';
 import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import QuestionSet from 'components/coverletter/QuestionSet';
-
+import { CoverLetterPair } from 'types/coverletter/coverletter-type';
 
 const CoverLetter: React.FC = () => {
-    type CoverLetterPair = {
-        question: string;
-        answer: string;
-    };
-
     let navigate = useNavigate();
     const [pairs,setPairs] = useState<CoverLetterPair[]>([{question: "", answer: ""}]);
     
     const [title,setTitle] = useState<string>("");
-    const [question,setQuestion] = useState<string[]>([]);
-    const [answer,setAnswer] = useState<string[]>([]);
+
+    const [content, setContent] = useState<string>("");
       
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value);
@@ -33,6 +28,19 @@ const CoverLetter: React.FC = () => {
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newQuestion = { question: "", answer: "" };
         setPairs([...pairs, newQuestion])
+    }
+
+    const onSetPairs = (question: string, answer: string, index: number) => {
+        const pair = { question: question, answer: answer }
+        let tempPairs = pairs
+        tempPairs.splice(index, 1, pair)
+        setPairs(tempPairs)
+        console.log(pairs);
+    }
+    
+    // 자기소개서 작성 후 검색을 누르면 실행되는 함수, 몇번째 자개소개서인지 index 값 필요
+    const onSearch = (index: number) => {
+        // API 호출
     }
 
 
@@ -64,7 +72,12 @@ const CoverLetter: React.FC = () => {
                 />
                 {pairs.map((pair, idx) => {
                     return (
-                        <QuestionSet key={idx}></QuestionSet>
+                        <QuestionSet 
+                            key={idx} 
+                            index={idx}
+                            onSearch={() => { onSearch(idx) }} 
+                            onSetPairs={onSetPairs}
+                        />
                     )
                 })}
 
