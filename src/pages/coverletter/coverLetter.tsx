@@ -7,13 +7,13 @@ import styled from 'styled-components';
 import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import QuestionSet from 'components/coverletter/QuestionSet';
-import { CoverLetterPair } from 'types/coverletter/coverletter-type';
+import { QnAPair } from 'types/coverletter/coverletter-type';
 import { createCoverLetter } from 'apis/coverLetterService';
 
 const CoverLetter: React.FC = () => {
     let navigate = useNavigate();
     
-    const [pairs, setPairs] = useState<CoverLetterPair[]>([{question: "", answer: ""}]);
+    const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
     const [title, setTitle] = useState<string>("");
 
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
@@ -26,14 +26,14 @@ const CoverLetter: React.FC = () => {
 
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newQuestion = { question: "", answer: "" };
-        setPairs([...pairs, newQuestion]);
+        setQnas([...qnas, newQuestion]);
     }
 
-    const onSetPairs = (question: string, answer: string, index: number) => {
+    const onSetQnas = (question: string, answer: string, index: number) => {
         const pair = { question: question, answer: answer }
-        let tempPairs = pairs
+        let tempPairs = qnas;
         tempPairs.splice(index, 1, pair)
-        setPairs(tempPairs)
+        setQnas(tempPairs)
     }
     
     // 자기소개서 작성 후 검색을 누르면 실행되는 함수, 몇번째 자개소개서인지 index 값 필요
@@ -42,7 +42,7 @@ const CoverLetter: React.FC = () => {
     }
 
     const saveCoverLetter = async () => {
-       createCoverLetter(pairs, title);
+       createCoverLetter(qnas, title);
     }
 
     return(
@@ -76,17 +76,18 @@ const CoverLetter: React.FC = () => {
                         backgroundColor:"white"
                         }}
                 />
-                {pairs.map((pair, idx) => {
+                {qnas.map((qna, idx) => {
                     return (
                         <QuestionSet 
                             key={idx} 
                             index={idx}
                             onSearch={() => { onSearch(idx) }} 
-                            onSetPairs={onSetPairs}
+                            onSetQnas={onSetQnas}
+                            defaultQuestion={""}
+                            defaultAnswer={""}
                         />
                     )
                 })}
-
                 <Button className="button-login" variant="contained" onClick={addQuestion}
                     style={{
                         backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",

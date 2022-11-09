@@ -1,4 +1,3 @@
-import { CoverLetterPair } from "types/coverletter/coverletter-type";
 import API from "./api";
 function ApiService() {
 

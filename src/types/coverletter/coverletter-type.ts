@@ -1,10 +1,22 @@
 export interface QuestionSetProps {
     index: number,
     onSearch: Function,
-    onSetPairs: Function
+    onSetQnas: Function,
+    defaultQuestion: string,
+    defaultAnswer: string,
 };
 
-export interface CoverLetterPair {
+export interface QnAPair {
     question: string;
     answer: string;
 };
+
+export interface CoverLetterMeta {
+    resumeId: number,
+    title: string,
+}
+
+export interface CoverLetter {
+    qnas: Array<QnAPair>
+    title: string,
+}

@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
 
-const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs }) => {
-    const [question,setQuestion] = useState<string>("");
-    const [answer,setAnswer] = useState<string>("");
+const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer }) => {
+    const [question, setQuestion] = useState<string>(defaultQuestion);
+    const [answer, setAnswer] = useState<string>(defaultAnswer);
 
     const [visible,setVisible] = useState<boolean>(false);
     const [visible1,setVisible1] = useState<boolean>(true);
@@ -16,12 +16,12 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs })
 
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
-        onSetPairs(question, answer, index);
+        onSetQnas(question, answer, index);
     }
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
-        onSetPairs(question, answer, index);
+        onSetQnas(question, answer, index);
     }
     
     const CopyClipBoard=async(text:string) => {
@@ -34,7 +34,6 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs })
     }
 
 
-
     return(
         <div style={{marginLeft:"10px"}}>
             <TextProperty>{"자기소개서 질문"}</TextProperty>
@@ -44,6 +43,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs })
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
+                defaultValue={defaultQuestion}
             />
             <div style={{position:"relative", marginBottom:"10px"}}>
                 <TextProperty1>{"자기소개서 작성"}</TextProperty1>
@@ -68,6 +68,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetPairs })
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
+                defaultValue={defaultAnswer}
             />
 
             {visible && <div>
