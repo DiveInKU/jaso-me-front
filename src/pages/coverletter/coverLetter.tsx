@@ -8,15 +8,14 @@ import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import QuestionSet from 'components/coverletter/QuestionSet';
 import { CoverLetterPair } from 'types/coverletter/coverletter-type';
+import { createCoverLetter } from 'apis/coverLetterService';
 
 const CoverLetter: React.FC = () => {
     let navigate = useNavigate();
-    const [pairs,setPairs] = useState<CoverLetterPair[]>([{question: "", answer: ""}]);
     
-    const [title,setTitle] = useState<string>("");
+    const [pairs, setPairs] = useState<CoverLetterPair[]>([{question: "", answer: ""}]);
+    const [title, setTitle] = useState<string>("");
 
-    const [content, setContent] = useState<string>("");
-      
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value);
     }
@@ -27,7 +26,7 @@ const CoverLetter: React.FC = () => {
 
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newQuestion = { question: "", answer: "" };
-        setPairs([...pairs, newQuestion])
+        setPairs([...pairs, newQuestion]);
     }
 
     const onSetPairs = (question: string, answer: string, index: number) => {
@@ -35,7 +34,6 @@ const CoverLetter: React.FC = () => {
         let tempPairs = pairs
         tempPairs.splice(index, 1, pair)
         setPairs(tempPairs)
-        console.log(pairs);
     }
     
     // 자기소개서 작성 후 검색을 누르면 실행되는 함수, 몇번째 자개소개서인지 index 값 필요
@@ -43,7 +41,9 @@ const CoverLetter: React.FC = () => {
         // API 호출
     }
 
-
+    const saveCoverLetter = async () => {
+       createCoverLetter(pairs, title);
+    }
 
     return(
         <div className="Main">
@@ -53,7 +53,13 @@ const CoverLetter: React.FC = () => {
                 <IconButton onClick={backToHome}>
                     <ArrowBackIosOutlinedIcon className="back-icon"></ArrowBackIosOutlinedIcon>
                 </IconButton>
-                <Button className="button-login" variant="contained" onClick={() => {navigate("/home/coverLetterList")}}
+                <Button 
+                    className="button-login" 
+                    variant="contained" 
+                    onClick={() => {
+                    saveCoverLetter();
+                    navigate("/home/coverLetterList");
+                }}
                         style={{
                             position:"absolute", top: 10, right: 20, marginRight:"0px",
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
