@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect, useRef } from 'react'
 import { TextField } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
+import userEvent from '@testing-library/user-event';
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer }) => {
+
     const [question, setQuestion] = useState<string>(defaultQuestion);
     const [answer, setAnswer] = useState<string>(defaultAnswer);
 
@@ -14,9 +16,16 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const [visible2,setVisible2] = useState<boolean>(true);
     const [visible3,setVisible3] = useState<boolean>(true);
 
+
+    useEffect(() => {
+        setQuestion(defaultQuestion);
+        setAnswer(defaultAnswer)
+      },[])
+
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
         onSetQnas(question, answer, index);
+        console.log('default',defaultQuestion);
     }
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +41,6 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
             alert('복사 실패,,')
         }
     }
-
 
     return(
         <div style={{marginLeft:"10px"}}>

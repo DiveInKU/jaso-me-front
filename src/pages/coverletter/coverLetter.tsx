@@ -42,7 +42,8 @@ const CoverLetter: React.FC = () => {
     }
 
     const saveCoverLetter = async () => {
-       createCoverLetter(qnas, title);
+       createCoverLetter(qnas, title)
+        .then((res) => navigate("/home/coverLetterList"))
     }
 
     return(
@@ -58,7 +59,6 @@ const CoverLetter: React.FC = () => {
                     variant="contained" 
                     onClick={() => {
                     saveCoverLetter();
-                    navigate("/home/coverLetterList");
                 }}
                         style={{
                             position:"absolute", top: 10, right: 20, marginRight:"0px",

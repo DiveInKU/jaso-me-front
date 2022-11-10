@@ -24,15 +24,23 @@ const CoverLetterList: React.FC = () => {
             setCoverLetterList(res.result);
         })
    }, []);
+   
+   useEffect(() => {
+    console.log('보내는 data',curCoverLetter);
+  },[curCoverLetter]);
+
 
    // 자기소개서 선택하기
    const onSelectCoverLetter = (resumeId: number) => {
         setSelectedCoverLetter(coverLetterList.filter(coverLetterMeta => coverLetterMeta.resumeId == resumeId)[0]);
-
+        
         // 자기소개서 상세 정보 가져오기
         getCoverLetter(resumeId)
             .then((res) => { 
-                setCurCoverLetter(res.result);
+                const data: CoverLetter = res.result
+                const newCoverLetter = { title: data.title, qnas: data.qnas }
+                setCurCoverLetter(newCoverLetter);
+                //console.log('data',newCoverLetter)
             });
    }
 
