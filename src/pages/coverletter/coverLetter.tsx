@@ -7,25 +7,17 @@ import styled from 'styled-components';
 import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import QuestionSet from 'components/coverletter/QuestionSet';
-
+import { QnAPair } from 'types/coverletter/coverletter-type';
+import { createCoverLetter } from 'apis/coverLetterService';
 
 const CoverLetter: React.FC = () => {
-    type CoverLetterPair = {
-        title: string;
-        content: string;
-    };
-
     let navigate = useNavigate();
-    const [id,setId] = useState<string>("");
-    const [pairs,setPairs] = useState<CoverLetterPair[]>([{title: "", content: ""}]);
+    
+    const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
+    const [title, setTitle] = useState<string>("");
 
-    const emailChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
-        setId(e.target.value);
-    }
-
-    const signIn=(e: React.MouseEvent<HTMLButtonElement>)=>{
-        console.log(id);
-        navigate("/home");
+    const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+        setTitle(e.target.value);
     }
 
     const backToHome = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,8 +25,25 @@ const CoverLetter: React.FC = () => {
     }
 
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const newQuestion = { title: "", content: "" };
-        setPairs([...pairs, newQuestion])
+        const newQuestion = { question: "", answer: "" };
+        setQnas([...qnas, newQuestion]);
+    }
+
+    const onSetQnas = (question: string, answer: string, index: number) => {
+        const pair = { question: question, answer: answer }
+        let tempPairs = qnas;
+        tempPairs.splice(index, 1, pair)
+        setQnas(tempPairs)
+    }
+    
+    // 자기소개서 작성 후 검색을 누르면 실행되는 함수, 몇번째 자개소개서인지 index 값 필요
+    const onSearch = (index: number) => {
+        // API 호출
+    }
+
+    const saveCoverLetter = async () => {
+       createCoverLetter(qnas, title)
+        .then((res) => navigate("/home/coverLetterList"))
     }
 
     return(
@@ -45,7 +54,12 @@ const CoverLetter: React.FC = () => {
                 <IconButton onClick={backToHome}>
                     <ArrowBackIosOutlinedIcon className="back-icon"></ArrowBackIosOutlinedIcon>
                 </IconButton>
-                <Button className="button-login" variant="contained" onClick={signIn}
+                <Button 
+                    className="button-login" 
+                    variant="contained" 
+                    onClick={() => {
+                    saveCoverLetter();
+                }}
                         style={{
                             position:"absolute", top: 10, right: 20, marginRight:"0px",
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
@@ -56,18 +70,24 @@ const CoverLetter: React.FC = () => {
             <LetterBody>
                 <TextProperty>{"자기소개서 제목"}</TextProperty>
                 <TextField type="text" className='input-property' variant="outlined" size="small" placeholder='자기소개서 제목을 입력해주세요.'
-                    onChange={emailChange} style={{
+                    onChange={titleChange} style={{
                         width:"700px",
                         marginBottom:"30px",
                         backgroundColor:"white"
                         }}
                 />
-                {pairs.map((pair, idx) => {
+                {qnas.map((qna, idx) => {
                     return (
-                        <QuestionSet key={idx}></QuestionSet>
+                        <QuestionSet 
+                            key={idx} 
+                            index={idx}
+                            onSearch={() => { onSearch(idx) }} 
+                            onSetQnas={onSetQnas}
+                            defaultQuestion={""}
+                            defaultAnswer={""}
+                        />
                     )
                 })}
-
                 <Button className="button-login" variant="contained" onClick={addQuestion}
                     style={{
                         backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",

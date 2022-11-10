@@ -30,9 +30,9 @@ const Interview: React.FC = () => {
                 <Title>모의 면접 제목</Title>
                 <TextField style={{ marginTop: 10, marginBottom: 30}}
                     type="text" 
-                    className='input-id' 
-                    variant="outlined" 
-                    size="small" 
+                    className='input-id'
+                    variant="outlined"
+                    size="small"
                     placeholder='제목을 입력하세요.'/>
 
                 <Title>질문 선택</Title>
