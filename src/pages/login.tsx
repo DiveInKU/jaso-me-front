@@ -30,7 +30,6 @@ const Login: React.FC = () => {
       .postMembersLogin(id,pw)
       .then((res) => {
           console.log(res.data);
-
           console.log(res.data.code);
           console.log(res.data.message);
           console.log(res.data.result);
