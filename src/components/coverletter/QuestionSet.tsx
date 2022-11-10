@@ -1,27 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect, useRef } from 'react'
 import { TextField } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { QuestionSetProps } from 'types/coverletter/coverletter-type';
+import userEvent from '@testing-library/user-event';
 
-const QuestionSet:React.FC = () => {
-    const [question,setQuestion] = useState<string>("");
-    const [answer,setAnswer] = useState<string>("");
+const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer }) => {
+
+    const [question, setQuestion] = useState<string>(defaultQuestion);
+    const [answer, setAnswer] = useState<string>(defaultAnswer);
 
     const [visible,setVisible] = useState<boolean>(false);
     const [visible1,setVisible1] = useState<boolean>(true);
     const [visible2,setVisible2] = useState<boolean>(true);
     const [visible3,setVisible3] = useState<boolean>(true);
 
-    const qChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+
+    useEffect(() => {
+        setQuestion(defaultQuestion);
+        setAnswer(defaultAnswer)
+      },[])
+
+    const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
+        onSetQnas(question, answer, index);
+        console.log('default',defaultQuestion);
     }
 
-    const aChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
+    const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
+        onSetQnas(question, answer, index);
     }
     
-    const CopyClipBoard=async(text:string)=>{
+    const CopyClipBoard=async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
             alert('클립보드에 복사되었습니다.')
@@ -29,7 +41,6 @@ const QuestionSet:React.FC = () => {
             alert('복사 실패,,')
         }
     }
-
 
     return(
         <div style={{marginLeft:"10px"}}>
@@ -40,10 +51,19 @@ const QuestionSet:React.FC = () => {
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
+                defaultValue={defaultQuestion}
             />
             <div style={{position:"relative", marginBottom:"10px"}}>
                 <TextProperty1>{"자기소개서 작성"}</TextProperty1>
-                <Button className="button-login" variant="contained" onClick={()=>{setVisible(true); setVisible1(true); setVisible2(true); setVisible3(true);}}
+                <Button 
+                    className="button-login"
+                    variant="contained" 
+                    onClick={ () => {
+                        setVisible(true);
+                        setVisible1(true);
+                        setVisible2(true);
+                        setVisible3(true);
+                    }}
                         style={{
                             position:"absolute", top: 0, left:"120px", marginRight:"0px", marginLeft:"5px",
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
@@ -56,6 +76,7 @@ const QuestionSet:React.FC = () => {
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
+                defaultValue={defaultAnswer}
             />
 
             {visible && <div>
