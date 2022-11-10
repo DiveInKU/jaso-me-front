@@ -38,6 +38,7 @@ const CoverLetterList: React.FC = () => {
         getCoverLetter(resumeId)
             .then((res) => { 
                 const data: CoverLetter = res.result
+                console.log('length', data.qnas.length)
                 const newCoverLetter = { title: data.title, qnas: data.qnas }
                 setCurCoverLetter(newCoverLetter);
                 //console.log('data',newCoverLetter)
@@ -85,10 +86,12 @@ const CoverLetterList: React.FC = () => {
                     </GlobalStyled.ViewCol>
 
                     <GlobalStyled.ViewCol style={{flex: 7}}>
-                            {curCoverLetter ? curCoverLetter.qnas.map((qna, idx) => {
+                            {curCoverLetter ? 
+                                curCoverLetter.qnas.map((qna, idx) => {
+                                console.log('바뀜', qna.question, idx)
                                 return (
                                     <QuestionSet 
-                                        key={idx} 
+                                        key={qna.question} 
                                         onSearch={onSearch} 
                                         onSetQnas={onSetQnas} 
                                         index={idx}

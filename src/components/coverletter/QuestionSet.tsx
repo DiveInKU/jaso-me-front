@@ -19,7 +19,8 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
 
     useEffect(() => {
         setQuestion(defaultQuestion);
-        setAnswer(defaultAnswer)
+        setAnswer(defaultAnswer);
+        console.log('받는 data',defaultQuestion)
       },[])
 
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
