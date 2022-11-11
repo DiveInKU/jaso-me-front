@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router';
 
 const Home: React.FC = () => {
     let navigate = useNavigate();
-
+    
     const menuText = {
         coverLetterText: {
             title: '자기소개서',

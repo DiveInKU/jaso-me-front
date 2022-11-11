@@ -4,12 +4,11 @@ import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
-import userEvent from '@testing-library/user-event';
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer }) => {
 
-    const [question, setQuestion] = useState<string>(defaultQuestion);
-    const [answer, setAnswer] = useState<string>(defaultAnswer);
+    const [question, setQuestion] = useState<string>("");
+    const [answer, setAnswer] = useState<string>("");
 
     const [visible,setVisible] = useState<boolean>(false);
     const [visible1,setVisible1] = useState<boolean>(true);
@@ -20,13 +19,11 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     useEffect(() => {
         setQuestion(defaultQuestion);
         setAnswer(defaultAnswer);
-        console.log('받는 data',defaultQuestion)
       },[])
 
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
         onSetQnas(question, answer, index);
-        console.log('default',defaultQuestion);
     }
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +31,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
         onSetQnas(question, answer, index);
     }
     
-    const CopyClipBoard=async(text:string) => {
+    const CopyClipBoard = async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
             alert('클립보드에 복사되었습니다.')

@@ -12,7 +12,7 @@ import { createCoverLetter } from 'apis/coverLetterService';
 
 const CoverLetter: React.FC = () => {
     let navigate = useNavigate();
-    
+
     const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
     const [title, setTitle] = useState<string>("");
 
@@ -30,7 +30,7 @@ const CoverLetter: React.FC = () => {
     }
 
     const onSetQnas = (question: string, answer: string, index: number) => {
-        const pair = { question: question, answer: answer }
+        const pair: QnAPair = { question: question, answer: answer }
         let tempPairs = qnas;
         tempPairs.splice(index, 1, pair)
         setQnas(tempPairs)
@@ -42,8 +42,8 @@ const CoverLetter: React.FC = () => {
     }
 
     const saveCoverLetter = async () => {
-       createCoverLetter(qnas, title)
-        .then((res) => navigate("/home/coverLetterList"))
+        createCoverLetter(qnas, title)
+            .then((res) => navigate("/home/coverLetterList"))
     }
 
     return(

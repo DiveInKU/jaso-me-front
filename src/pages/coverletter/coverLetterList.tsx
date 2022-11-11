@@ -6,11 +6,8 @@ import { getCoverLetterList, getCoverLetter } from 'apis/coverLetterService';
 import { CoverLetter, CoverLetterMeta } from 'types/coverletter/coverletter-type';
 import GlobalStyled from 'styles/GlobalStyled';
 import QuestionSet from 'components/coverletter/QuestionSet';
-import { TextField } from "@material-ui/core";
 
 const CoverLetterList: React.FC = () => {
-
-
     // 불러온 자기소개서 목록
     const [coverLetterList, setCoverLetterList] = useState<CoverLetterMeta[]>();
 
@@ -28,12 +25,6 @@ const CoverLetterList: React.FC = () => {
             })
     }, []);
    
-    useEffect(() => {
-        console.log('보내는 data',curCoverLetter);
-    },[curCoverLetter]);
-
-
-
    // 자기소개서 선택하기
    const onSelectCoverLetter = (resumeId: number) => {
         setSelectedCoverLetter(coverLetterList.filter(coverLetterMeta => coverLetterMeta.resumeId == resumeId)[0]);
@@ -42,10 +33,8 @@ const CoverLetterList: React.FC = () => {
         getCoverLetter(resumeId)
             .then((res) => { 
                 const data: CoverLetter = res.result
-                console.log('length', data.qnas.length)
                 const newCoverLetter = { title: data.title, qnas: data.qnas }
                 setCurCoverLetter(newCoverLetter);
-                //console.log('data',newCoverLetter)
             });
    }
 
@@ -54,25 +43,25 @@ const CoverLetterList: React.FC = () => {
    };
 
    const onSetQnas = (question: string, answer: string, index: number) => {
-        // const qna = { question: question, answer: answer }
-        // let qnas = curCoverLetter.qnas
-        // qnas.splice(index, 1, qna)
+        const qna = { question: question, answer: answer }
+        let qnas = curCoverLetter.qnas
+        qnas.splice(index, 1, qna)
 
-        // const newCoverLetter = {title: curCoverLetter.title, qnas: qnas}
-        // setCurCoverLetter(newCoverLetter);
+        const newCoverLetter = {title: curCoverLetter.title, qnas: qnas}
+        setCurCoverLetter(newCoverLetter);
     }
 
     return(
         <div className="Main">
             <Background>
-                <TopNavigationBar state="자기소개서 목록"/>
+                <TopNavigationBar state="자기소개서"/>
                 <GlobalStyled.ViewRow style={{marginTop: '20px' }}>
                     <GlobalStyled.ViewCol style={{ flex: 3, marginLeft: 20 }}>
 
                         <div style={{fontSize: 22, marginBottom: 10}}>자기소개서 목록</div>
                         {coverLetterList ? coverLetterList.map((coverLetterMeta, idx) => {
                             return (
-                                <div key={idx}
+                                <div key={coverLetterMeta.resumeId}
                                     onClick={() => onSelectCoverLetter(coverLetterMeta.resumeId) }
                                     style={{ 
                                         color: coverLetterMeta.resumeId == selectedCoverLetter.resumeId ? themes.colors.main_blue : "black",
@@ -92,7 +81,6 @@ const CoverLetterList: React.FC = () => {
                     <GlobalStyled.ViewCol style={{flex: 7}}>
                             {curCoverLetter ? 
                                 curCoverLetter.qnas.map((qna, idx) => {
-                                console.log('바뀜', qna.question, idx)
                                 return (
                                     <QuestionSet 
                                         key={qna.question} 
