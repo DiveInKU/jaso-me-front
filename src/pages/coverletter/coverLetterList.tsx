@@ -6,8 +6,11 @@ import { getCoverLetterList, getCoverLetter } from 'apis/coverLetterService';
 import { CoverLetter, CoverLetterMeta } from 'types/coverletter/coverletter-type';
 import GlobalStyled from 'styles/GlobalStyled';
 import QuestionSet from 'components/coverletter/QuestionSet';
+import { TextField } from "@material-ui/core";
 
 const CoverLetterList: React.FC = () => {
+
+
     // 불러온 자기소개서 목록
     const [coverLetterList, setCoverLetterList] = useState<CoverLetterMeta[]>();
 
@@ -18,16 +21,17 @@ const CoverLetterList: React.FC = () => {
     const [curCoverLetter, setCurCoverLetter] = useState<CoverLetter>();
 
    // 최초 렌더링 시 자기소개서 리스트 조회
-   useEffect(() => {
-    getCoverLetterList()
-        .then((res) => {
-            setCoverLetterList(res.result);
-        })
-   }, []);
+    useEffect(() => {
+        getCoverLetterList()
+            .then((res) => {
+                setCoverLetterList(res.result);
+            })
+    }, []);
    
-   useEffect(() => {
-    console.log('보내는 data',curCoverLetter);
-  },[curCoverLetter]);
+    useEffect(() => {
+        console.log('보내는 data',curCoverLetter);
+    },[curCoverLetter]);
+
 
 
    // 자기소개서 선택하기
@@ -38,6 +42,7 @@ const CoverLetterList: React.FC = () => {
         getCoverLetter(resumeId)
             .then((res) => { 
                 const data: CoverLetter = res.result
+                console.log('length', data.qnas.length)
                 const newCoverLetter = { title: data.title, qnas: data.qnas }
                 setCurCoverLetter(newCoverLetter);
                 //console.log('data',newCoverLetter)
@@ -85,10 +90,12 @@ const CoverLetterList: React.FC = () => {
                     </GlobalStyled.ViewCol>
 
                     <GlobalStyled.ViewCol style={{flex: 7}}>
-                            {curCoverLetter ? curCoverLetter.qnas.map((qna, idx) => {
+                            {curCoverLetter ? 
+                                curCoverLetter.qnas.map((qna, idx) => {
+                                console.log('바뀜', qna.question, idx)
                                 return (
                                     <QuestionSet 
-                                        key={idx} 
+                                        key={qna.question} 
                                         onSearch={onSearch} 
                                         onSetQnas={onSetQnas} 
                                         index={idx}
@@ -106,6 +113,16 @@ const CoverLetterList: React.FC = () => {
 const Background = styled.div`
     flex: 1;
     background-color: ${themes.colors.background};
+`;
+const TextProperty = styled.div`
+    width: 690px;
+    font-family: 'Notosans-semibold';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 7px;
+    margin-left: 10px;
+    padding-left: 5px;
 `;
 
 export default CoverLetterList;
