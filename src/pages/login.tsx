@@ -29,27 +29,27 @@ const Login: React.FC = () => {
       await apiService
       .postMembersLogin(id,pw)
       .then((res) => {
-          console.log(res.data);
-          console.log(res.data.code);
-          console.log(res.data.message);
-          console.log(res.data.result);
+          // console.log(res.data);
+          // console.log(res.data.code);
+          // console.log(res.data.message);
+          // console.log(res.data.result);
           window.localStorage.setItem('jwt',res.data.result);
           
           //console.log("고유주소 출력 " + localStorage.getItem('jwt')); //저장 확인
 
           apiService.getTestMembers()
           .then((res) => {
-            console.log(res.data);
-            console.log(res.data.code);
-            console.log(res.data.message);
+            // console.log(res.data);
+            // console.log(res.data.code);
+            // console.log(res.data.message);
             console.log(res.data.result);
-            //console.log("jwt값 확인"+localStorage.getItem('jwt'));
+            console.log("jwt값 확인"+localStorage.getItem('jwt'));
           })
           .catch((err) => {
-            console.log(err);
-            console.log(err.response.data.code);
-            console.log(err.response.data.message);
-            console.log(err.response.data.result);
+            // console.log(err);
+            // console.log(err.response.data.code);
+            // console.log(err.response.data.message);
+            // console.log(err.response.data.result);
             console.log("jwt값 확인"+localStorage.getItem('jwt'));
         });
 

@@ -27,9 +27,9 @@ const TopNavigationBar: React.FC<MenuStateProps> = ({ state }) => {
             {!isInterview && (<Button  onMouseEnter={() => setIsInterview(true)} onMouseLeave={() => setIsInterview(false)}
             style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>모의면접</Button>)}
             {isInterview && (<div onMouseLeave={() => setIsInterview(false)} style={{marginTop:10}}><Button onClick={() => {navigate("/home/interview")}} style={{marginRight:15}}>● 모의면접 녹화</Button>
-                        <Button onClick={() => {navigate("/home/mypage")}}>● 모의면접 목록</Button></div>)}
+                        <Button onClick={() => {navigate("/home/intervewList")}}>● 모의면접 목록</Button></div>)}
             <NavDecoration />
-            <Button onClick={() => { navigate("/coverLetter")}} style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>면접질문</Button>
+            <Button onClick={() => { navigate("/home/mypage")}} style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>면접질문</Button>
             <div style={{ flex: 1 }}/>
             <LogoutBtn />
             

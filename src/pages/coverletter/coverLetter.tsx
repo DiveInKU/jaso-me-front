@@ -1,20 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import TopNavigationBar from 'components/common/TopNavigationBar';
-import { TextField } from "@material-ui/core";
-import { Button,IconButton } from '@mui/material';
+import {  FormControlLabel, FormLabel, TextField } from "@material-ui/core";
+import { Button,IconButton,FormGroup, FormControl, RadioGroup,  } from '@mui/material';
+import Radio from '@mui/material/Radio';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import QuestionSet from 'components/coverletter/QuestionSet';
 import { QnAPair } from 'types/coverletter/coverletter-type';
 import { createCoverLetter } from 'apis/coverLetterService';
+import GlobalStyled from "styles/GlobalStyled";
 
 const CoverLetter: React.FC = () => {
     let navigate = useNavigate();
     
     const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
     const [title, setTitle] = useState<string>("");
+    const [cg, setCg] = useState<string>("");
+
+    useEffect(() => {
+        console.log(cg);
+    });
 
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value);
@@ -27,6 +34,15 @@ const CoverLetter: React.FC = () => {
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newQuestion = { question: "", answer: "" };
         setQnas([...qnas, newQuestion]);
+    }
+
+    const removeQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setQnas(qnas.splice(qnas.length-1));
+    }
+    
+    const categoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCg(e.target.value);
+        console.log(cg);
     }
 
     const onSetQnas = (question: string, answer: string, index: number) => {
@@ -76,6 +92,16 @@ const CoverLetter: React.FC = () => {
                         backgroundColor:"white"
                         }}
                 />
+                <TextProperty>{"분야 선택"}</TextProperty>
+                    <FormControl style={{width:"690px", marginBottom:"30px",}}>
+                        <FormLabel id="radio-group-label"></FormLabel>
+                        <RadioGroup row aria-labelledby='radio-group-label' name='radio-button-group' defaultValue="marketing" onChange={categoryChange}>
+                            <FormControlLabel value="marketing" control={<Radio size="small"/>}  label="마케팅"/>
+                            <FormControlLabel value="business" control={<Radio size="small"/>}  label="경영"/>
+                            <FormControlLabel value="it" control={<Radio size="small"/>}  label="IT"/>
+                            <FormControlLabel value="total" control={<Radio size="small"/>} label="전체"/>
+                        </RadioGroup>
+                    </FormControl>
                 {qnas.map((qna, idx) => {
                     return (
                         <QuestionSet 
@@ -88,12 +114,18 @@ const CoverLetter: React.FC = () => {
                         />
                     )
                 })}
-                <Button className="button-login" variant="contained" onClick={addQuestion}
-                    style={{
-                        backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
-                        fontWeight: "500", fontSize:"14px", width:"100px", height:"35px",marginBottom: "10px",
-                    }}> 질문 추가</Button>
-
+                <GlobalStyled.ViewRow>
+                    <Button className="button-login" variant="contained" onClick={addQuestion}
+                        style={{ flex:1,
+                            backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
+                            fontWeight: "500", fontSize:"14px", width:"100px", height:"35px",marginBottom: "10px", marginRight: "15px",
+                        }}> 질문 추가</Button>
+                    <Button className="button-login" variant="contained" onClick={removeQuestion}
+                        style={{ flex:1,
+                            backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
+                            fontWeight: "500", fontSize:"14px", width:"100px", height:"35px",marginBottom: "10px", 
+                        }}> 질문 제거</Button>
+                </GlobalStyled.ViewRow>
             </LetterBody>
         </Background>
         </div>
