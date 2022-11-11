@@ -136,7 +136,7 @@ const InterviewRoom: React.FC = () => {
         <GlobalStyled.ViewCol style ={{ backgroundColor: themes.colors.background }}>
             <TopNavigationBar state="모의 면접"/>
             <GlobalStyled.ViewRow>
-                <GlobalStyled.ViewCol className="webcam-div" style={{flex: 5}}>
+                <GlobalStyled.ViewCol className="webcam-div" style={{flex: 4}}>
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
