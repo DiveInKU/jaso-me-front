@@ -9,6 +9,13 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing }) => {
     // const [showOrNot, setShowOrNot] = useState(false);
   let ws = useRef(null);
 
+  const [endInterview, setEndInterview] = useState(false);
+
+  const endSocket = () => {
+    setEndInterview(true);
+    ws.current.close();
+  }
+
   const getNewSocket = () => {
     const socket = new WebSocket(webSocketUrl);
     socket.onopen = () => {
@@ -67,7 +74,7 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing }) => {
 
   // 소켓이 연결되었을 시에 send 메소드
   useEffect(() => {
-    if (!socketConnected) {
+    if (!socketConnected && !endInterview) {
         console.log('socket retry...')
        ws.current = getNewSocket();
     }

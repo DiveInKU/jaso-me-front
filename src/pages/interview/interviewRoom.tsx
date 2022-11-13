@@ -144,6 +144,7 @@ const InterviewRoom: React.FC = () => {
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
+                    {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
                     <SocketVideo webSocketUrl = {'ws://localhost:8000/emotion-cam'} showing = {showingEmotion}></SocketVideo>
                     {/* <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} /> */}
                     {/* {isRecording ? 
