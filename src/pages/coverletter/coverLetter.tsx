@@ -12,13 +12,14 @@ import { QnAPair } from 'types/coverletter/coverletter-type';
 import { createCoverLetter } from 'apis/coverLetterService';
 import GlobalStyled from "styles/GlobalStyled";
 
+
 const CoverLetter: React.FC = () => {
     let navigate = useNavigate();
 
     const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
     const [title, setTitle] = useState<string>("");
     const [category, setCategory] = useState<string>("marketing");
-
+    
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value);
     }
@@ -114,6 +115,8 @@ const CoverLetter: React.FC = () => {
                         />
                     )
                 })}
+
+                
                 <GlobalStyled.ViewRow>
                     <Button className="button-login" variant="contained" onClick={addQuestion}
                         style={{ flex:1,
