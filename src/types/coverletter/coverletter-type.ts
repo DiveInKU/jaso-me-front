@@ -19,7 +19,8 @@ export interface CoverLetterMeta {
 
 export interface CoverLetter {
     qnas: Array<QnAPair>
-    title: string,
     category: string,
+    title: string,
+    
 }
 

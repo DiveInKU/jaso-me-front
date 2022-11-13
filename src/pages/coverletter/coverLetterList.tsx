@@ -37,8 +37,8 @@ const CoverLetterList: React.FC = () => {
     }, []);
    
     useEffect(() => {
-        console.log('보내는 data',curCoverLetter);
-        setCategory(curCoverLetter.category);
+        console.log('curcoverletter',curCoverLetter);
+        //setCategory(curCoverLetter.category);
 
     },[curCoverLetter]);
 
@@ -51,9 +51,12 @@ const CoverLetterList: React.FC = () => {
         // 자기소개서 상세 정보 가져오기
         getCoverLetter(resumeId)
             .then((res) => { 
+                console.log("결과 값 확인",res.result);
                 const data: CoverLetter = res.result
                 console.log('length', data.qnas.length)
                 const newCoverLetter = { title: data.title, qnas: data.qnas, category: data.category,}
+                
+                //console.log("카테고리 확인",data.category);
                 setCategory(data.category);
                 setQnas(data.qnas);
                 setTitle(data.title);
@@ -71,10 +74,11 @@ const CoverLetterList: React.FC = () => {
    }
 
    const onSelectChangeButton = async () => {
-        changeCoverLetter(qnas, title, id)
+        console.log("category 값 바뀌는거 확인", category);
+        changeCoverLetter(qnas, category, title, id)
             .then((res) => {
-                console.log('수정 test',qnas);
-                window.location.replace("/home/coverLetterList");
+                console.log('수정 test',category);
+                //window.location.replace("/home/coverLetterList");
             })
     }
 
@@ -82,9 +86,9 @@ const CoverLetterList: React.FC = () => {
         // 검색 API
    };
    
-   const categoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const changeCategory = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCategory(e.target.value);
-        console.log(category);
+        console.log("카테고리 확인",e.target.value);
     }  
 
    const onSetQnas = (question: string, answer: string, index: number) => {
@@ -95,7 +99,6 @@ const CoverLetterList: React.FC = () => {
         const newCoverLetter = {title: curCoverLetter.title, qnas: qnas, category: curCoverLetter.category}
         setCurCoverLetter(newCoverLetter);
     }
-
 
     return(
         <div className="Main">
@@ -148,12 +151,12 @@ const CoverLetterList: React.FC = () => {
                         <TextProperty>{"분야 선택"}</TextProperty>
                             <FormControl style={{width:"690px", marginBottom:"30px", marginLeft:"15px"}}>
                                 <FormLabel id="radio-group-label"></FormLabel>
-                                <RadioGroup row aria-labelledby='radio-group-label' name='radio-button-group' defaultValue={category} onChange={categoryChange}>
-                                    <FormControlLabel value="marketing" control={<Radio size="small"/>}  label="마케팅"/>
-                                    <FormControlLabel value="business" control={<Radio size="small"/>}  label="경영"/>
-                                    <FormControlLabel value="it" control={<Radio size="small"/>}  label="IT"/>
-                                    <FormControlLabel value="total" control={<Radio size="small"/>} label="전체"/>
-                                </RadioGroup>
+                                    <RadioGroup row aria-labelledby='radio-group-label' name='radio-button-group' defaultValue={category} onChange={changeCategory}>
+                                        <FormControlLabel checked={category == "marketing"} value="marketing" control={<Radio size="small"/>}  label="마케팅"/>
+                                        <FormControlLabel checked={category == "business"} value="business" control={<Radio size="small"/>}  label="경영"/>
+                                        <FormControlLabel checked={category == "it"} value="it" control={<Radio size="small"/>}  label="IT"/>
+                                        <FormControlLabel  checked={category == "total"} value="total" control={<Radio size="small"/>} label="전체"/>
+                                    </RadioGroup>
                             </FormControl></div>}
 
                             {curCoverLetter ? 

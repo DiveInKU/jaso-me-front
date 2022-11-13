@@ -1,9 +1,10 @@
 import { QnAPair } from "types/coverletter/coverletter-type";
 import API from "./api";
 
-const createCoverLetter = async (qnas: Array<QnAPair>, title: string) => {
+const createCoverLetter = async (qnas: Array<QnAPair>, category: string, title: string) => {
     return await API.post("/resumes", {
       qnas: qnas,
+      category: category,
       title: title
     })
         .then((res) => { console.log(res.data) })
@@ -28,9 +29,10 @@ const deleteCoverLetter = async (resumeId: number) => {
         .catch((e) => console.log(e));
 }
 
-const changeCoverLetter = async (qnas: Array<QnAPair>, title: string, resumeId: number) => {
+const changeCoverLetter = async (qnas: Array<QnAPair>, categroy: string, title: string, resumeId: number) => {
     return await API.put(`/resumes/${resumeId}`, {
       qnas: qnas,
+      categroy: categroy,
       title: title
     })
         .then((res) => { console.log(res.data) })

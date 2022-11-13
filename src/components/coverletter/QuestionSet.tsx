@@ -1,6 +1,6 @@
 import React, { useState,useEffect, useRef } from 'react'
 import { TextField } from "@material-ui/core";
-import { Button,IconButton, StepContent } from '@mui/material';
+import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';

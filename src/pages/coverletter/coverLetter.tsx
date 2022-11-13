@@ -54,7 +54,8 @@ const CoverLetter: React.FC = () => {
     }
 
     const saveCoverLetter = async () => {
-       createCoverLetter(qnas, title)
+        //console.log("category 확인",category);
+       createCoverLetter(qnas, category, title)
         .then((res) => navigate("/home/coverLetterList"))
     }
 
