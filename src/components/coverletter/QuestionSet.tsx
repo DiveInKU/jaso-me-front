@@ -1,5 +1,5 @@
-import React, { useState,useEffect, useRef } from 'react'
-import { TextField } from "@material-ui/core";
+import React, { useState,useEffect, useCallback } from 'react'
+import { TextField, useEventCallback } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -43,6 +43,13 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
         onSetQnas(question, answer, index);
     }
     
+    const closeButton = (idx:number) => {
+        console.log("index 확인",idx);
+        content.splice(idx, 1)
+        setContent(content);
+        console.log(content);
+    }
+
     const CopyClipBoard = async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
@@ -109,7 +116,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                     <div key={idx}>
                     <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3, fontSize:14}} onClick={()=> CopyClipBoard(content)}>
                         <IconButton style={{float:"right"}}>
-                            <CancelOutlinedIcon style={{position:"absolute"}}></CancelOutlinedIcon>
+                            <CancelOutlinedIcon style={{position:"absolute"}} onClick={() => closeButton(idx)}></CancelOutlinedIcon>
                         </IconButton>
                             {"추천 " + Number(idx+1)} <br/><br/> {content}
                     </AnswerBox>
