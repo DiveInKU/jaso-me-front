@@ -1,10 +1,11 @@
-import React, { useState,useEffect, useRef } from 'react'
-import { TextField } from "@material-ui/core";
+import React, { useState,useEffect, useCallback } from 'react'
+import { TextField, useEventCallback } from "@material-ui/core";
 import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
 import { generateCoverLetter } from 'apis/aiService';
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer, defaultCategory}) => {
 
@@ -15,6 +16,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const [content, setContent] = useState<string[]>([]);
 
     const [visible,setVisible] = useState<boolean>(false);
+    const [loading,setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         setQuestion(question);
@@ -41,6 +43,11 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
         onSetQnas(question, answer, index);
     }
     
+    const closeButton = (idx:number) => {
+        content.splice(idx, 1)
+        setContent(content);
+    }
+
     const CopyClipBoard = async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
@@ -51,11 +58,13 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     }
 
     const onSelectSearchButton = () => {
+        setLoading(true);
         setVisible(false);
         setContent(content.splice(0));
 
         generateCoverLetter(defaultCategory,answer,3)
             .then((res) => { 
+                setLoading(false);
                 console.log(res.generated);            
                 setContent([...content, ...res.generated]);
                 setVisible(true);
@@ -105,7 +114,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                     <div key={idx}>
                     <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3, fontSize:14}} onClick={()=> CopyClipBoard(content)}>
                         <IconButton style={{float:"right"}}>
-                            <CancelOutlinedIcon style={{position:"absolute"}}></CancelOutlinedIcon>
+                            <CancelOutlinedIcon style={{position:"absolute"}} onClick={() => closeButton(idx)}></CancelOutlinedIcon>
                         </IconButton>
                             {"추천 " + Number(idx+1)} <br/><br/> {content}
                     </AnswerBox>
@@ -113,6 +122,10 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                 )
             }):null}</div>}
 
+            {loading && <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                <div style={{marginBottom:10,}}>잠시만 기다려 주세요</div>
+                <ScaleLoader style={{ marginBottom:100 }} color="#4F62AC" height={30} width={5} radius={2} margin={2}/>
+            </div>}
         </div>
         
     )

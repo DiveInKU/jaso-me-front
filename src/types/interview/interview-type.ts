@@ -18,6 +18,10 @@ export interface Interview {
     gazeUrl: string,
     smileUrl: string,
 }
+export interface SocketCamProps {
+    webSocketUrl: string;
+    showing: boolean;
+};
 
 export const HISTORY_TYPE = {
     QUESTION: 'Question',
