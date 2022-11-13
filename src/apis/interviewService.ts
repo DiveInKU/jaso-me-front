@@ -5,7 +5,13 @@ const showEmotionPrediction = async (show: string) => {
         .catch((e) => console.log(e));
 };
 
+const getEmotionAnalysisResult = async () => {
+    return await getCustomAPI('http://localhost', '8000').get(`/result`)
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+};
 
 export {
     showEmotionPrediction,
+    getEmotionAnalysisResult
 }

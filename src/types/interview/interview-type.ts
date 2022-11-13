@@ -21,6 +21,7 @@ export interface Interview {
 export interface SocketCamProps {
     webSocketUrl: string;
     showing: boolean;
+    recordedChunks: string[];
 };
 
 export const HISTORY_TYPE = {

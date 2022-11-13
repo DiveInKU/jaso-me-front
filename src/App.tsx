@@ -11,7 +11,8 @@ import Interview from 'pages/interview/interview';
 import WebcamTest from 'pages/interview/webcamTest';
 import InterviewRoom from 'pages/interview/interviewRoom';
 import CoverLetterList from 'pages/coverletter/coverLetterList';
-import InterviewList from 'pages/interview/interviewList';
+import InterviewList from "pages/interview/interviewList";
+import InterviewResult from "pages/interview/interviewResult";
 
 // FC : Function Component
 const App: React.FC = () => {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path='/home/coverLetterList' element={<CoverLetterList/>}/>
         <Route path="/home/interview" element={<Interview />} />
         <Route path="/home/interviewList" element={<InterviewList />} />
+        <Route path="/home/interviewResult" element={<InterviewResult />} />
         <Route path="/home/mypage" element={<MyPage />}/>
         <Route path="/home/interview/webcamtest" element={<WebcamTest />} />
         <Route path="/home/interview/webcamtest/interviewroom" element={<InterviewRoom />} />
