@@ -4,6 +4,7 @@ export interface QuestionSetProps {
     onSetQnas: Function,
     defaultQuestion: string,
     defaultAnswer: string,
+    defaultCategory: string,
 };
 
 export interface QnAPair {
@@ -19,5 +20,6 @@ export interface CoverLetterMeta {
 export interface CoverLetter {
     qnas: Array<QnAPair>
     title: string,
+    category: string,
 }
 

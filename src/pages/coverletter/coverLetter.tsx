@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import TopNavigationBar from 'components/common/TopNavigationBar';
 import {  FormControlLabel, FormLabel, TextField } from "@material-ui/core";
-import { Button,IconButton,FormGroup, FormControl, RadioGroup,  } from '@mui/material';
+import { Button,IconButton, FormControl, RadioGroup,  } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import styled from 'styled-components';
 import themes from 'styles/themes';
@@ -17,11 +17,7 @@ const CoverLetter: React.FC = () => {
     
     const [qnas, setQnas] = useState<QnAPair[]>([{question: "", answer: ""}]);
     const [title, setTitle] = useState<string>("");
-    const [cg, setCg] = useState<string>("");
-
-    useEffect(() => {
-        console.log(cg);
-    });
+    const [category, setCategory] = useState<string>("marketing");
 
     const titleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value);
@@ -37,12 +33,12 @@ const CoverLetter: React.FC = () => {
     }
 
     const removeQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setQnas(qnas.splice(qnas.length-1));
+        setQnas(qnas.splice(0,qnas.length-1));
     }
     
     const categoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCg(e.target.value);
-        console.log(cg);
+        setCategory(e.target.value);
+        console.log(category);
     }
 
     const onSetQnas = (question: string, answer: string, index: number) => {
@@ -61,6 +57,8 @@ const CoverLetter: React.FC = () => {
        createCoverLetter(qnas, title)
         .then((res) => navigate("/home/coverLetterList"))
     }
+
+
 
     return(
         <div className="Main">
@@ -111,6 +109,7 @@ const CoverLetter: React.FC = () => {
                             onSetQnas={onSetQnas}
                             defaultQuestion={""}
                             defaultAnswer={""}
+                            defaultCategory={category}
                         />
                     )
                 })}
