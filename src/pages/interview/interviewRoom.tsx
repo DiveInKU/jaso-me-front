@@ -10,11 +10,12 @@ import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
+import { useNavigate } from 'react-router';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
 
 const InterviewRoom: React.FC = () => {
-
+    let navigate = useNavigate();
     const questions: Array<string> = [
         "대학교 때 겪은 가장 흥미로운 활동이 무엇인가요?",
         "가장 인상깊은 과목이 있다면 한가지를 말해주세요.",
@@ -33,7 +34,20 @@ const InterviewRoom: React.FC = () => {
     const webcamRef = useRef<Webcam>(null);
     const mediaRecorderRef = useRef<MediaRecorder>(null);
     const [capturing, setCapturing] = useState<boolean>(false);
-    const [recordedChunks, setRecordedChunks] = useState([]);
+    const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
+
+    // media recorder
+    const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ audio: true, video: true });
+    
+    const startInterviewRecording = () => {
+        startRecording();
+    }
+ 
+    const stopInterviewRecording = () => {
+        stopRecording();
+        setIsRecording(false);
+    }
 
     const { speak } = useSpeechSynthesis();
     const { listen, listening, stop } = useSpeechRecognition({
@@ -53,13 +67,14 @@ const InterviewRoom: React.FC = () => {
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (stage == questions.length - 1) {
-
+            listen();
             // 마지막 답변 저장
             const curAnswer: History = {text: value, type: HISTORY_TYPE.ANSWER}
             setLogs([...logs, curAnswer]);
 
             // 녹화 중지
-            stopInterviewRecording();
+            // stopInterviewRecording();
+            // handleStopCapture();
             stop();
         }
         else { // 다음 질문 출력
@@ -73,10 +88,14 @@ const InterviewRoom: React.FC = () => {
         }
     }
 
-    // const handleStartCaptureClick = React.useCallback(() => {
+    const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
+        navigate("/home/interviewList");
+    }
+
+    // const handleStartCapture = React.useCallback(() => {
     //     setCapturing(true);
     //     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-    //       mimeType: "video/webm"
+    //       mimeType: "video/mp4"
     //     });
     //     mediaRecorderRef.current.addEventListener(
     //       "dataavailable",
@@ -94,43 +113,15 @@ const InterviewRoom: React.FC = () => {
     //     [setRecordedChunks]
     // );
     
-    // const handleStopCaptureClick = React.useCallback(() => {
+    // const handleStopCapture = React.useCallback(() => {
     //     mediaRecorderRef.current.stop();
     //     setCapturing(false);
     // }, [mediaRecorderRef, webcamRef, setCapturing]);
-    
-    // const handleDownload = React.useCallback(() => {
-    //     if (recordedChunks.length) {
-    //       const blob = new Blob(recordedChunks, {
-    //         type: "video/webm"
-    //       });
-    //       const url = URL.createObjectURL(blob);
-    //       const a = document.createElement("a");
-    //       document.body.appendChild(a);
-    //       a.style = "display: none";
-    //       a.href = url;
-    //       a.download = "react-webcam-stream-capture.webm";
-    //       a.click();
-    //       window.URL.revokeObjectURL(url);
-    //       setRecordedChunks([]);
-    //     }
-    // }, [recordedChunks]);
-
-    const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ audio: false, video: true });
-    
-    const startInterviewRecording = () => {
-        startRecording();
-    }
-
-    const stopInterviewRecording = () => {
-        stopRecording();
-        setIsRecording(false);
-    }
 
     // 최초 렌더링 시 녹화 시작
     useEffect(() => {
-        startInterviewRecording();
+        // startInterviewRecording();
+        // handleStartCapture();
     }, []);
 
     useEffect(() => {
@@ -198,7 +189,7 @@ const InterviewRoom: React.FC = () => {
                             className="next-btn"
                             disableElevation
                             variant="contained"
-                            onClick={moveToNext}
+                            onClick={stage < questions.length-1 ? moveToNext : finishInterview}
                             style={{
                                 backgroundColor: 'white',
                                 color: themes.colors.main_blue, 
