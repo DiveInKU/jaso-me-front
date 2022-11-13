@@ -87,11 +87,11 @@ const InterviewList: React.FC = () => {
         <div className="Main">
             <Background>
                 <TopNavigationBar state="모의면접"/>
-                <GlobalStyled.ViewRow style={{marginTop: '20px'}}>
+                <GlobalStyled.ViewRow style = {{display:'block'}}>
                     {isReplyaing ?  
-                    <GlobalStyled.ViewRow style={{ flex: 1}}>
-                    <GlobalStyled.ViewCol className="webcam-div" style={{flex: 4}}>
-                    <BlueBox style={{paddingTop: 20, paddingBottom: 20, justifyContent: 'flex-start', alignItems: 'center'}}>
+                    <GlobalStyled.ViewRow style = {{display:'block'}}>
+                    <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float:'left', width:'48%' }}>
+                    <BlueBox style={{flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'flex-start', alignItems: 'center'}}>
                         <img onClick={onExit} src={exitIcon} style={{width: 30, height: 30, cursor: 'pointer', marginLeft: 10}} />
                         <div style={{marginLeft: 140 }} className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
@@ -105,7 +105,7 @@ const InterviewList: React.FC = () => {
                                 loop={true}/>
                 </GlobalStyled.ViewCol>
 
-                <GlobalStyled.ViewCol className="history-div" style={{flex: 6}}>
+                <GlobalStyled.ViewCol className="history-div" style={{flex: 4, height: '90vh'}}>
                     <BlueBox style={{ paddingTop: 20, paddingBottom: 20, justifyContent: 'center', alignItems: 'center'}}>
                         <GlobalStyled.ViewRow style={{height: 30}}>
                             <WhiteBox 
@@ -195,7 +195,7 @@ const BlueBox = styled(GlobalStyled.ViewRow)`
     padding-top: 10px;
     padding-bottom: 10px;
     width: 'auto';
-    height: '200px';
+    height: '10%';
 `;
 
 const WhiteBox = styled(GlobalStyled.ViewRow)`

@@ -4,26 +4,36 @@ import { Button,IconButton } from '@mui/material';
 import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
+import { generateCoverLetter } from 'apis/aiService';
 
-const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer }) => {
+const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer, defaultCategory}) => {
 
-    const [question, setQuestion] = useState<string>("");
-    const [answer, setAnswer] = useState<string>("");
+    //let content: string[] = [];
+
+    const [question, setQuestion] = useState<string>(defaultQuestion);
+    const [answer, setAnswer] = useState<string>(defaultAnswer);
+    const [content, setContent] = useState<string[]>([]);
 
     const [visible,setVisible] = useState<boolean>(false);
-    const [visible1,setVisible1] = useState<boolean>(true);
-    const [visible2,setVisible2] = useState<boolean>(true);
-    const [visible3,setVisible3] = useState<boolean>(true);
-
 
     useEffect(() => {
-        setQuestion(defaultQuestion);
-        setAnswer(defaultAnswer);
+        setQuestion(question);
+        setAnswer(answer);
+        //console.log('받는 data',defaultQuestion)
       },[])
+
+    useEffect(() => {
+        onSetQnas(question, answer, index);
+    },[question]);
+
+    useEffect(() => {
+        onSetQnas(question, answer, index);
+    },[answer]);
 
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
         onSetQnas(question, answer, index);
+        //console.log('질문',question);
     }
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +44,25 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const CopyClipBoard = async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
-            alert('클립보드에 복사되었습니다.')
+            //alert('클립보드에 복사되었습니다.')
         }catch(error){
-            alert('복사 실패,,')
+            //alert('복사 실패,,')
         }
+    }
+
+    const onSelectSearchButton = () => {
+        setVisible(false);
+        setContent(content.splice(0));
+
+        generateCoverLetter(defaultCategory,answer,3)
+            .then((res) => { 
+                console.log(res.generated);            
+                setContent([...content, ...res.generated]);
+                setVisible(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     return(
@@ -49,7 +74,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
-                defaultValue={defaultQuestion}
+                defaultValue={question}
             />
             <div style={{position:"relative", marginBottom:"10px"}}>
                 <TextProperty1>{"자기소개서 작성"}</TextProperty1>
@@ -57,10 +82,8 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                     className="button-login"
                     variant="contained" 
                     onClick={ () => {
-                        setVisible(true);
-                        setVisible1(true);
-                        setVisible2(true);
-                        setVisible3(true);
+                        onSelectSearchButton();
+                       
                     }}
                         style={{
                             position:"absolute", top: 0, left:"120px", marginRight:"0px", marginLeft:"5px",
@@ -74,30 +97,22 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
-                defaultValue={defaultAnswer}
+                defaultValue={answer}
             />
 
-            {visible && <div>
-                {visible1 && <div>
-                    <IconButton style={{float:"right"}} onClick={()=>{setVisible1(false);}}>
-                        <CancelOutlinedIcon style={{paddingRight:"10px"}}></CancelOutlinedIcon>
-                    </IconButton>
-                    <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3}} onClick={()=> CopyClipBoard('추천1')}>추천 1<br/>제가 가장 중요하다고 생각하는 것은 '팀워크'입니다. 저는 먼저 팀원을 이끄는 책임감과 리더십을 갖추고자 합니다. 대학교에서 다양한 경험을 했고 여러 가지 아르바이트를 했습니다. 특히나 전공 수업과 학과 홍보 업무를 병행했기에 대외활동과 기획활동을 통해 더 많은 사람과 교류하는 것이 가능해졌었습니다 대학에 입학한 후에도 대학생활 동안 동아리 활동을 하면서 학내 구성원들과 함께 크고 작은 마찰이 있었음에도 화합하며 일을 해결해 나갔으며 좋은 기억으로 남을 수 있습니다. 귀사에 입사 후</AnswerBox></div>}
-                
-                {visible2 && <div>
-                    <IconButton style={{float:"right"}} onClick={()=>{setVisible2(false);}}>
-                        <CancelOutlinedIcon style={{paddingRight:"10px"}}></CancelOutlinedIcon>
-                    </IconButton>
-                    <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3}} onClick={()=> CopyClipBoard('추천2')}>추천 2<br/>제가 가장 중요하다고 생각하는 것은 '직접 경험하고 느낄 수 있는 역량'입니다. 귀사에 입사하여 관련 직무에 대한 경험을 쌓고 싶습니다. 그 과정에서, 더 넓은 세상을 보며 다양한 이해관계자들과 소통한 경험과 전문성을 키우기 위해 다음과 같은 계획을 세우고 실천해 나갈 것입니다. 먼저 물류의 시작부터 끝까지 책임지는 인재로 거듭나겠습니다 지금까지 쌓아온 꼼꼼함을 바탕으로 업무에 잘 적응할 뿐만 아니라 고객의 니즈를 만족시키는 일에 관심을 두게 됩니다. 또한, 글로벌 역량을 강화하기 위한 도전</AnswerBox></div>}
+            {visible && <div>{content ? content.map((content, idx) => {
+                return (
+                    <div key={idx}>
+                    <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3, fontSize:14}} onClick={()=> CopyClipBoard(content)}>
+                        <IconButton style={{float:"right"}}>
+                            <CancelOutlinedIcon style={{position:"absolute"}}></CancelOutlinedIcon>
+                        </IconButton>
+                            {"추천 " + Number(idx+1)} <br/><br/> {content}
+                    </AnswerBox>
+                    </div>
+                )
+            }):null}</div>}
 
-                {visible3 && <div>
-                    <IconButton style={{float:"right"}} onClick={()=>{setVisible3(false);}}>
-                        <CancelOutlinedIcon style={{paddingRight:"10px"}}></CancelOutlinedIcon>
-                    </IconButton>
-                    <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3}} onClick={()=> CopyClipBoard('추천3')}>추천 3<br/>제가 가장 중요하다고 생각하는 것은 '열정'입니다. 대학 시절 동아리 활동, 연합 토론회, 국제포럼 등 활발한 대외활동을 통해 팀워크를 이뤄왔습니다. 이러한 역량을 바탕으로 귀사에 입사하여 열정적으로 노력하겠습니다 저는 어릴 때부터 열정이 많아 남들에게 인정을 많이 받았기 때문에 주위 사람들 앞에서 먼저 발 벗고 나서서 적극적으로 말할 수 있다고 생각합니다. 그래서 평소에는 적극적인 성격을 가지고 있기 때문에, 항상 밝고 긍정적인 성격으로 사람들에게 신뢰를 받아 주변 사람들도 자신을 인정해주면서 함께 일하는 것을 좋아하기 때문입니</AnswerBox></div>}
-            </div>}
-
-            
         </div>
         
     )
@@ -125,7 +140,7 @@ const TextProperty1 = styled.div`
 
 const AnswerBox= styled.div`
     width: 683px;
-    height: 140px;
+    height: 200px;
     font-family: 'Notosans-semibold';
     font-style: normal;
     font-weight: 500;
@@ -133,7 +148,7 @@ const AnswerBox= styled.div`
     background-color:white;
     border: 2px solid #4F62AC;
     border-radius: 5px;
-    padding: 7px;
+    padding: 10px;
     margin-bottom: 15px;
 `;
 
