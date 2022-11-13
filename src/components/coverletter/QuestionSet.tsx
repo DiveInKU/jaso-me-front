@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
 import { generateCoverLetter } from 'apis/aiService';
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer, defaultCategory}) => {
 
@@ -15,6 +16,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const [content, setContent] = useState<string[]>([]);
 
     const [visible,setVisible] = useState<boolean>(false);
+    const [loading,setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         setQuestion(question);
@@ -51,11 +53,13 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     }
 
     const onSelectSearchButton = () => {
+        setLoading(true);
         setVisible(false);
         setContent(content.splice(0));
 
         generateCoverLetter(defaultCategory,answer,3)
             .then((res) => { 
+                setLoading(false);
                 console.log(res.generated);            
                 setContent([...content, ...res.generated]);
                 setVisible(true);
@@ -113,6 +117,10 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                 )
             }):null}</div>}
 
+            {loading && <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                <div style={{marginBottom:10,}}>잠시만 기다려 주세요</div>
+                <ScaleLoader style={{ marginBottom:100 }} color="#4F62AC" height={30} width={5} radius={2} margin={2}/>
+            </div>}
         </div>
         
     )
