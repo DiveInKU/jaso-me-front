@@ -3,6 +3,8 @@ import React, {  useEffect, useState, useRef } from "react";
 import TopNavigationBar from "components/common/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
+import iconMike from "../../assets/svgs/iconMike.svg";
+import iconNoMike from "../../assets/svgs/iconNoMike.svg";
 import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
@@ -53,8 +55,9 @@ const InterviewRoom: React.FC = () => {
         },
     });
 
-    const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
-        listen();
+    const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!listening)
+            listen();
     }
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -134,25 +137,18 @@ const InterviewRoom: React.FC = () => {
                     <Webcam ref={webcamRef} audio={true} mirrored={true} style={{ flex: 8 }} />
                     <BlueBox
                         className="media-box"
-                        style={{ flex: 1, justifyContent: 'space-between', paddingLeft: 30, paddingRight: 30, height: 80}}>
-                        <Button
-                            className="speak-btn"
-                            disableElevation
-                            variant="contained"
-                            onClick={handleSpeaking}
-                            style={{
-                                backgroundColor: 'white',
-                                color: themes.colors.main_blue, 
-                                fontWeight: 800}}
-                        >
-                            {listening ? "답변 중" : "답변 시작"}
-                        </Button>
+                        style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80}}>
+                        <div onClick={handleSpeaking} style={{ cursor: "pointer", float:'left'}}>
+                            <img src={listening ? iconMike : iconNoMike} />
+                        </div>
+                        {listening && <div style={{float:'left', alignSelf: 'center', marginTop: 7, marginLeft: 10}}>답변중...</div>}
                         <Button
                             className="next-btn"
                             disableElevation
                             variant="contained"
                             onClick={stage < questions.length-1 ? moveToNext : finishInterview}
                             style={{
+                                float: 'right',
                                 backgroundColor: 'white',
                                 color: themes.colors.main_blue, 
                                 fontWeight: 800}}

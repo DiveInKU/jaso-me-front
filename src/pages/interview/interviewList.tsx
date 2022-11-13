@@ -6,6 +6,8 @@ import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
 import ReactPlayer from 'react-player'
 import ReplayIcon from 'components/interview/ReplayIcon';
+import smileResult from '../../assets/svgs/smileResult.svg';
+import gazeResult from '../../assets/svgs/gazeResult.svg';
 import { History, HISTORY_TYPE, Interview, InterviewMeta } from 'types/interview/interview-type';
 import exitIcon from '../../assets/svgs/exitIcon.svg';
 import { Button } from "@mui/material";
@@ -24,10 +26,7 @@ const InterviewList: React.FC = () => {
 
     useEffect(() => {
         const tempList: InterviewMeta[] 
-            = [{interviewId: 0, title: "2022 네이버 하반기 공채 모의면접"}, 
-            {interviewId: 1, title: "2022 신한은행 ICT 수시채용 모의면접"},
-            {interviewId: 2, title: "2022 건국대학교 석/박사 대학원 모의면접"},
-            {interviewId: 3, title: "2022 동아제약 모의면접"}];
+            = [{interviewId: 0, title: "2022 네이버 하반기 공채 모의면접"}];
 
         setInterviewList(tempList);
     }, []);
@@ -133,7 +132,14 @@ const InterviewList: React.FC = () => {
                                     <LeftBubble text={log.text} /> :
                                     <RightBubble text={log.text} />
                                 )
-                            }) : null
+                            })
+                            :
+                            <div style={{display:'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{ alignSelf: 'flex-start', margin: 20, fontWeight: 'bold', fontSize: 20}}>미소분석</div>
+                                <img style={{width: 350}} src={smileResult}/>
+                                <div style={{ alignSelf: 'flex-start', margin: 20, fontWeight: 'bold', fontSize: 20}}>시선추적</div>
+                                <img style={{width: 500}} src={gazeResult}/>
+                            </div>
                         }
                     </GlobalStyled.ViewCol>
 
