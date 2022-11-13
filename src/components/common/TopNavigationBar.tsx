@@ -18,18 +18,18 @@ const TopNavigationBar: React.FC<MenuStateProps> = ({ state }) => {
 
     return (
         <NavBg>
-            <LogoImage src={jasoMeLogo} onClick={() => {navigate("/home")}} />
+            <LogoImage src={jasoMeLogo} onClick={() => {navigate("/home")}} style={{cursor:'pointer'}} />
             {!isCoverLetter && (<Button  onMouseEnter={() => setIsCoverLetter(true)} onMouseLeave={() => setIsCoverLetter(false)}
             style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>자기소개서</Button>)}
             {isCoverLetter && (<div onMouseLeave={() => setIsCoverLetter(false)} style={{marginTop:10}}><Button onClick={() => {navigate("/home/coverLetter")}} style={{marginRight:15}}>● 자기소개서 작성</Button>
-                        <Button onClick={() => {navigate("/home/coverLetterList")}}>● 자기소개서 목록</Button></div>)}
+                        <Button onClick={() => {navigate("/home/coverLetterList"); window.location.reload();}}>● 자기소개서 목록</Button></div>)}
             <NavDecoration />
             {!isInterview && (<Button  onMouseEnter={() => setIsInterview(true)} onMouseLeave={() => setIsInterview(false)}
             style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>모의면접</Button>)}
             {isInterview && (<div onMouseLeave={() => setIsInterview(false)} style={{marginTop:10}}><Button onClick={() => {navigate("/home/interview")}} style={{marginRight:15}}>● 모의면접 녹화</Button>
-                        <Button onClick={() => {navigate("/home/mypage")}}>● 모의면접 목록</Button></div>)}
+                        <Button onClick={() => {navigate("/home/interviewList")}}>● 모의면접 목록</Button></div>)}
             <NavDecoration />
-            <Button onClick={() => { navigate("/coverLetter")}} style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>면접질문</Button>
+            <Button onClick={() => { navigate("/home/mypage")}} style={{border: "none", backgroundColor: "transparent",fontSize: 20,fontWeight: 500, marginTop:5,color:"black"}}>면접질문</Button>
             <div style={{ flex: 1 }}/>
             <LogoutBtn />
             

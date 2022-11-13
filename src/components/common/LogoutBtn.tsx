@@ -12,7 +12,7 @@ const LogoutBtn: React.FC = () => {
     }
 
     return (
-        <BtnBg onClick={Logout}>로그아웃</BtnBg>
+        <BtnBg onClick={Logout} style={{cursor:'pointer'}} >로그아웃</BtnBg>
     )
 }
 
