@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import SocketVideo from 'components/socket-video';
+import { startEmotionAnalysis } from "apis/interviewService";
 
 const WebcamTest: React.FC = () => {
 
@@ -20,6 +21,7 @@ const WebcamTest: React.FC = () => {
 
     const goToInterviewRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
         stop();
+        startEmotionAnalysis();
         navigate("/home/interview/webcamtest/interviewroom");
     }
 
