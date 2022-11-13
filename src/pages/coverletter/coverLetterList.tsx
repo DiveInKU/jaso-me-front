@@ -82,7 +82,7 @@ const CoverLetterList: React.FC = () => {
                             {curCoverLetter ? 
                                 curCoverLetter.qnas.map((qna, idx) => {
                                 return (
-                                    <QuestionSet 
+                                    <QuestionSet
                                         key={qna.question} 
                                         onSearch={onSearch} 
                                         onSetQnas={onSetQnas} 
