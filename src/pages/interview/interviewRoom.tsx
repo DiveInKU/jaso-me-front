@@ -148,8 +148,8 @@ const InterviewRoom: React.FC = () => {
     return(
         <GlobalStyled.ViewCol style ={{ backgroundColor: themes.colors.background }}>
             <TopNavigationBar state="모의 면접"/>
-            <GlobalStyled.ViewRow>
-                <GlobalStyled.ViewCol className="webcam-div" style={{flex: 4}}>
+            <GlobalStyled.ViewRow style = {{display:'block'}}>
+                <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float:'left', width:'48%' }}>
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
@@ -209,7 +209,7 @@ const InterviewRoom: React.FC = () => {
                     </BlueBox>
                 </GlobalStyled.ViewCol>
 
-                <GlobalStyled.ViewCol className="history-div" style={{flex: 4}}>
+                <GlobalStyled.ViewCol className="history-div" style={{flex: 4, height: '90vh'}}>
                     <BlueBox style={{ flex:1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div>대화 기록</div>
                     </BlueBox>
