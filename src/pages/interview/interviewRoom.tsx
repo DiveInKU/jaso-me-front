@@ -3,6 +3,8 @@ import React, {  useEffect, useState, useRef } from "react";
 import TopNavigationBar from "components/common/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
+import iconMike from "../../assets/svgs/iconMike.svg";
+import iconNoMike from "../../assets/svgs/iconNoMike.svg";
 import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
@@ -30,6 +32,9 @@ const InterviewRoom: React.FC = () => {
     const [isRecording, setIsRecording] = useState<boolean>(true);
     const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
 
+    // socket 관리
+    const socketVideoRef = useRef<any>();
+
     // react webcam
     const webcamRef = useRef<Webcam>(null);
     const mediaRecorderRef = useRef<MediaRecorder>(null);
@@ -56,8 +61,9 @@ const InterviewRoom: React.FC = () => {
         },
     });
 
-    const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
-        listen();
+    const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!listening)
+            listen();
     }
 
     const changeShowingEmotion =  (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -88,35 +94,17 @@ const InterviewRoom: React.FC = () => {
         }
     }
 
-    const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
-        navigate("/home/interviewList");
+    // SocketVideo 컴포넌트에서 함수를 받아오기 위함
+    let finishInterview = () => {}
+    const finishConnector = (endSocket: ()=>void) => {
+        finishInterview = endSocket;
     }
 
-    // const handleStartCapture = React.useCallback(() => {
-    //     setCapturing(true);
-    //     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-    //       mimeType: "video/mp4"
-    //     });
-    //     mediaRecorderRef.current.addEventListener(
-    //       "dataavailable",
-    //       handleDataAvailable
-    //     );
-    //     mediaRecorderRef.current.start();
-    //   }, [webcamRef, setCapturing, mediaRecorderRef]);
-    
-    // const handleDataAvailable = React.useCallback(
-    //     ({ data }) => {
-    //       if (data.size > 0) {
-    //         setRecordedChunks((prev) => prev.concat(data));
-    //       }
-    //     },
-    //     [setRecordedChunks]
-    // );
-    
-    // const handleStopCapture = React.useCallback(() => {
-    //     mediaRecorderRef.current.stop();
-    //     setCapturing(false);
-    // }, [mediaRecorderRef, webcamRef, setCapturing]);
+    // 실제 면접 종료시 호출되는 함수
+    const onFinish = () => {
+        finishInterview();
+        navigate("/home/interviewList");
+    }
 
     // 최초 렌더링 시 녹화 시작
     useEffect(() => {
@@ -145,53 +133,22 @@ const InterviewRoom: React.FC = () => {
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
                     {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
-                    <SocketVideo webSocketUrl = {'ws://localhost:8000/emotion-cam'} showing = {showingEmotion}></SocketVideo>
-                    {/* <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} /> */}
-                    {/* {isRecording ? 
-                        <Webcam src={mediaBlobUrl} mirrored={true} style={{ flex: 8 }} />
-                        : 
-                        <div style={{ flex: 8 }}>
-                            <video src={mediaBlobUrl} controls autoPlay loop />
-                        </div>
-                    } */}
+                    <SocketVideo finishConnector={finishConnector} webSocketUrl = {'ws://localhost:8000/emotion-cam'} showing = {showingEmotion}></SocketVideo>
+        
                     <BlueBox
                         className="media-box"
-                        style={{ flex: 1, justifyContent: 'space-between', paddingLeft: 30, paddingRight: 30, height: 80}}>
-                        <Button
-                            className="speak-btn"
-                            disableElevation
-                            variant="contained"
-                            onClick={handleSpeaking}
-                            style={{
-                                backgroundColor: 'white',
-                                color: themes.colors.main_blue, 
-                                fontWeight: 800}}
-                        >
-                            {listening ? "답변 중" : "답변 시작"}
-                        </Button>
-
-                        <Button
-                            className="emotion-show-btn"
-                            disableElevation
-                            variant="contained"
-                            onClick={changeShowingEmotion}
-                            style={{
-                                // backgroundColor: 'white',
-                                // color: themes.colors.main_blue,
-                                backgroundColor: 'transparent', 
-                                padding: 0,
-                                fontSize: '1.8rem',
-                            }}
-                        >
-                            {showingEmotion ?  "🙄" : "😃"}
-                        </Button>
-
+                        style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80}}>
+                        <div onClick={handleSpeaking} style={{ cursor: "pointer", float:'left'}}>
+                            <img src={listening ? iconMike : iconNoMike} />
+                        </div>
+                        {listening && <div style={{float:'left', alignSelf: 'center', marginTop: 7, marginLeft: 10}}>답변중...</div>}
                         <Button
                             className="next-btn"
                             disableElevation
                             variant="contained"
-                            onClick={stage < questions.length-1 ? moveToNext : finishInterview}
+                            onClick={stage < questions.length-1 ? moveToNext : onFinish}
                             style={{
+                                float: 'right',
                                 backgroundColor: 'white',
                                 color: themes.colors.main_blue, 
                                 fontWeight: 800}}
