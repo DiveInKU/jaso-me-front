@@ -10,13 +10,14 @@ import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 const WebcamTest: React.FC = () => {
 
     let navigate = useNavigate();
-    const [value, setValue] = useState<string>(""); // 마이크 테스트를 위한 texxt value
+    const [value, setValue] = useState<string>(""); // 마이크 테스트를 위한 text value
 
     const infoMessage: Array<string> = 
         ["모의 면접 시작 전 웹캠과 마이크 인식이 잘 작동하는지 확인하세요.",
         "준비가 되었으면 면접 시작 버튼을 눌러주세요."];
 
     const goToInterviewRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
+        stop();
         navigate("/home/interview/webcamtest/interviewroom");
     }
 
