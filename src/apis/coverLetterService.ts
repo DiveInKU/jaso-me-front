@@ -29,10 +29,10 @@ const deleteCoverLetter = async (resumeId: number) => {
         .catch((e) => console.log(e));
 }
 
-const changeCoverLetter = async (qnas: Array<QnAPair>, categroy: string, title: string, resumeId: number) => {
+const changeCoverLetter = async (qnas: Array<QnAPair>, category: string, title: string, resumeId: number) => {
     return await API.put(`/resumes/${resumeId}`, {
       qnas: qnas,
-      categroy: categroy,
+      category: category,
       title: title
     })
         .then((res) => { console.log(res.data) })

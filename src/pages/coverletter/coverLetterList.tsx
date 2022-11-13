@@ -78,7 +78,7 @@ const CoverLetterList: React.FC = () => {
         changeCoverLetter(qnas, category, title, id)
             .then((res) => {
                 console.log('수정 test',category);
-                //window.location.replace("/home/coverLetterList");
+                window.location.replace("/home/coverLetterList");
             })
     }
 
