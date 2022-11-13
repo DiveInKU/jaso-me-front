@@ -45,8 +45,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     
     const closeButton = (idx:number) => {
         console.log("index 확인",idx);
-        content.splice(idx, 1)
-        setContent(content);
+        setContent([...content.slice(0,idx),...content.slice(idx+1)])
         console.log(content);
     }
 
@@ -110,8 +109,8 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                 }}
                 defaultValue={answer}
             />
-
-            {visible && <div>{content ? content.map((content, idx) => {
+            {visible && <div>
+                {content ? content.map((content, idx) => {
                 return (
                     <div key={idx}>
                     <AnswerBox style={{fontFamily: 'Notosans-medium',letterSpacing: 0.5,lineHeight: 1.3, fontSize:14}} onClick={()=> CopyClipBoard(content)}>
