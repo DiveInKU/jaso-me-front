@@ -6,6 +6,7 @@ import Webcam from "react-webcam";
 import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
+import SocketVideo from 'components/socket-video';
 
 const WebcamTest: React.FC = () => {
 
@@ -38,7 +39,8 @@ const WebcamTest: React.FC = () => {
                 웹캠 및 마이크 테스트
             </Header>
             <GlobalStyled.ViewCol style={{ width: 500, height: 400}}>
-                <Webcam mirrored={true}/>
+                {/* <Webcam mirrored={true}/> */}
+                <SocketVideo webSocketUrl = {'ws://localhost:8000/test-cam'} showing = {false} ></SocketVideo>
             </GlobalStyled.ViewCol>
 
             <Button

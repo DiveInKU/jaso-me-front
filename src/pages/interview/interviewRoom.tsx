@@ -10,6 +10,8 @@ import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
+import { showEmotionPrediction } from "apis/interviewService";
+import SocketVideo from "components/socket-video"
 
 const InterviewRoom: React.FC = () => {
 
@@ -25,6 +27,7 @@ const InterviewRoom: React.FC = () => {
     const [logs, setLogs] = useState<History[]>([{text: questions[0], type: HISTORY_TYPE.QUESTION}]); // 질문 + 답변 기록 배열
     const [value, setValue] = useState<string>("");
     const [isRecording, setIsRecording] = useState<boolean>(true);
+    const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
 
     // react webcam
     const webcamRef = useRef<Webcam>(null);
@@ -41,6 +44,11 @@ const InterviewRoom: React.FC = () => {
 
     const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
         listen();
+    }
+
+    const changeShowingEmotion =  (e: React.MouseEvent<HTMLButtonElement>) => {
+        // api 요청 보내야함
+        setShowingEmotion(!showingEmotion)
     }
 
     const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -125,6 +133,11 @@ const InterviewRoom: React.FC = () => {
         startInterviewRecording();
     }, []);
 
+    useEffect(() => {
+        showEmotionPrediction( showingEmotion ? 'true' : 'false')
+    }, [showingEmotion]);
+
+
     // stage가 변할 때 마다 질문 읽어준다.
     useEffect(() => {
         if (stage < 0)
@@ -140,7 +153,8 @@ const InterviewRoom: React.FC = () => {
                     <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center'}}>
                         <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
                     </BlueBox>
-                    <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} />
+                    <SocketVideo webSocketUrl = {'ws://localhost:8000/emotion-cam'} showing = {showingEmotion}></SocketVideo>
+                    {/* <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} /> */}
                     {/* {isRecording ? 
                         <Webcam src={mediaBlobUrl} mirrored={true} style={{ flex: 8 }} />
                         : 
@@ -163,6 +177,23 @@ const InterviewRoom: React.FC = () => {
                         >
                             {listening ? "답변 중" : "답변 시작"}
                         </Button>
+
+                        <Button
+                            className="emotion-show-btn"
+                            disableElevation
+                            variant="contained"
+                            onClick={changeShowingEmotion}
+                            style={{
+                                // backgroundColor: 'white',
+                                // color: themes.colors.main_blue,
+                                backgroundColor: 'transparent', 
+                                padding: 0,
+                                fontSize: '1.8rem',
+                            }}
+                        >
+                            {showingEmotion ?  "🙄" : "😃"}
+                        </Button>
+
                         <Button
                             className="next-btn"
                             disableElevation

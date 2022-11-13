@@ -1,5 +1,5 @@
 import { QnAPair } from "types/coverletter/coverletter-type";
-import API from "./api";
+import { API } from "./api";
 
 const createCoverLetter = async (qnas: Array<QnAPair>, title: string) => {
     return await API.post("/resumes", {

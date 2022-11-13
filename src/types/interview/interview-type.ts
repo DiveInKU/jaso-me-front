@@ -7,6 +7,11 @@ export interface History {
     type: HISTORY_TYPE;
 }
 
+export interface SocketCamProps {
+    webSocketUrl: string;
+    showing: boolean;
+};
+
 export const HISTORY_TYPE = {
     QUESTION: 'Question',
     ANSWER: 'Answer'
