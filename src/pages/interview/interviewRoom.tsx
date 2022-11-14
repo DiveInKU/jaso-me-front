@@ -12,13 +12,17 @@ import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
 import { getEmotionAnalysisResult } from "apis/interviewService";
+import { InterviewTitle } from "types/interview/interview-type";
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as InterviewTitle;
+  const [title, setTitle] = useState<string>(state.title);
   const questions: Array<string> = [
     "대학교 때 겪은 가장 흥미로운 활동이 무엇인가요?",
     "가장 인상깊은 과목이 있다면 한가지를 말해주세요.",
@@ -154,7 +158,7 @@ const InterviewRoom: React.FC = () => {
       <GlobalStyled.ViewRow style={{ display: 'block' }}>
         <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float: 'left', width: '48%' }}>
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
-            <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
+            <div className="interview-title">{title}</div>
           </BlueBox>
           {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
           <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks}></SocketVideo>
@@ -162,12 +166,6 @@ const InterviewRoom: React.FC = () => {
           <BlueBox
             className="media-box"
             style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80 }}>
-
-            <div onClick={handleSpeaking} style={{ cursor: "pointer", float: 'left' }}>
-              <img src={listening ? iconMike : iconNoMike} />
-            </div>
-
-            {listening && <div style={{ float: 'left', alignSelf: 'center', marginTop: 7, marginLeft: 10 }}>답변중...</div>}
 
             <Button
               className="emotion-show-btn"
@@ -194,11 +192,18 @@ const InterviewRoom: React.FC = () => {
                 float: 'right',
                 backgroundColor: 'white',
                 color: themes.colors.main_blue,
-                fontWeight: 800
+                fontWeight: 800,
+                marginTop: 5 
               }}
             >
               {stage == questions.length - 1 ? "면접 종료" : "다음으로"}
             </Button>
+
+            <div onClick={handleSpeaking} style={{ cursor: "pointer", float: 'right', marginRight: 20, marginTop: 5 }}>
+              <img src={listening ? iconMike : iconNoMike} />
+            </div>
+
+            {listening && <div style={{ float: 'right', alignSelf: 'center', marginTop: 10, marginRight: 10 }}>답변중...</div>}
           </BlueBox>
         </GlobalStyled.ViewCol>
 

@@ -154,7 +154,7 @@ const CoverLetterList: React.FC = () => {
                                         <FormControlLabel checked={category == "marketing"} value="marketing" control={<Radio size="small"/>}  label="마케팅"/>
                                         <FormControlLabel checked={category == "business"} value="business" control={<Radio size="small"/>}  label="경영"/>
                                         <FormControlLabel checked={category == "it"} value="it" control={<Radio size="small"/>}  label="IT"/>
-                                        <FormControlLabel  checked={category == "total"} value="total" control={<Radio size="small"/>} label="전체"/>
+                                        {/* <FormControlLabel  checked={category == "total"} value="total" control={<Radio size="small"/>} label="전체"/> */}
                                     </RadioGroup>
                             </FormControl></div>}
 

@@ -126,10 +126,6 @@ const InterviewResult: React.FC = () => {
             setIsHistory(false);
     }
 
-
-
-
-
     return (
       <div className="Main">
         <Background>

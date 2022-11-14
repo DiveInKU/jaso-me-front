@@ -96,10 +96,10 @@ const CoverLetter: React.FC = () => {
                     <FormControl style={{width:"690px", marginBottom:"30px",}}>
                         <FormLabel id="radio-group-label"></FormLabel>
                         <RadioGroup row aria-labelledby='radio-group-label' name='radio-button-group' defaultValue="marketing" onChange={categoryChange}>
-                            <FormControlLabel value="marketing" control={<Radio size="small"/>}  label="마케팅"/>
+                            <FormControlLabel value="marketing" control={<Radio size="small"/>}  label="마케팅 👍"/>
                             <FormControlLabel value="business" control={<Radio size="small"/>}  label="경영"/>
                             <FormControlLabel value="it" control={<Radio size="small"/>}  label="IT"/>
-                            <FormControlLabel value="total" control={<Radio size="small"/>} label="전체"/>
+                            {/* <FormControlLabel value="total" control={<Radio size="small"/>} label="전체"/> */}
                         </RadioGroup>
                     </FormControl>
                 {qnas.map((qna, idx) => {
