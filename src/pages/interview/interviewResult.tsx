@@ -15,6 +15,7 @@ import RightBubble from "components/interview/RightBubble";
 import { useLocation } from "react-router-dom";
 import { getEmotionAnalysisResult } from "apis/interviewService";
 import { getCustomAPI } from "../../apis/api";
+import InterviewChart from 'components/InterviewChart';
 
 interface stateType {
     // src: string;
@@ -46,21 +47,29 @@ const InterviewResult: React.FC = () => {
     const [isReplyaing, setIsReplaying] = useState<boolean>(true);
     const [isHistory, setIsHistory] = useState<boolean>(true);
 
-    const getHappyMessage = (happyPer: string) => {
-        happyPer = parseFloat(happyPer).toFixed(2)
-        var happy = parseFloat(happyPer) * 100
-        happy = parseFloat(happy.toFixed(2))
+    const getHappyPercentByNumber = (happyPer: string) => {
+      happyPer = parseFloat(happyPer).toFixed(2)
+      var happy = parseFloat(happyPer) * 100
+      happy = parseFloat(happy.toFixed(2))
+      return happy
+    }
 
+    const getHappyMessage = (happyPer: string) => {
+        // happyPer = parseFloat(happyPer).toFixed(2)
+        // var happy = parseFloat(happyPer) * 100
+        // happy = parseFloat(happy.toFixed(2))
+
+        var happy = getHappyPercentByNumber(happyPer)
+        
         if (happy > 60) {
             return happy + "% 미소 지었어요! \n 절반 이상 웃었군요. 좋아요! 👏";
         } else {
             return happy + "% 미소 지었군요.. 조금 더 웃어볼까요? 😃";
         }
-
     }
   
 
-    const getHappyResult = async () => {
+    const retrieveHappyResult = async () => {
       await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
           .then((res) => { 
               console.log('getHappyResult', res.data)
@@ -88,7 +97,7 @@ const InterviewResult: React.FC = () => {
  
     // });
 
-    getHappyResult();
+    retrieveHappyResult();
 
     if (state && state.recordeds) {
         const recordedBlob = new Blob(state.recordeds, { type: "video/webm" });
@@ -223,6 +232,8 @@ const InterviewResult: React.FC = () => {
                       marginLeft: 10,
                     }}
                   /> */}
+                  <InterviewChart happy={getHappyPercentByNumber(happyPer)}></InterviewChart>
+
                   <div
                     style={{
                       fontSize: 22,

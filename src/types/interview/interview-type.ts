@@ -34,3 +34,7 @@ export const HISTORY_TYPE = {
     ANSWER: 'Answer'
 } as const;
 type HISTORY_TYPE = typeof HISTORY_TYPE[keyof typeof HISTORY_TYPE]
+
+export interface ChartProps {
+    happy: number;
+}
