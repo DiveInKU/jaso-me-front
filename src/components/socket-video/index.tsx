@@ -2,11 +2,12 @@ import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 import { SocketCamProps } from "types/interview/interview-type";
 
 
-const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishConnector }) => {
+const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishConnector, recordedChunks  }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [items, setItems] = useState([]);
-    const [socketImg, setSocketImg] = useState('');
+  const [socketImg, setSocketImg] = useState('');
     // const [showOrNot, setShowOrNot] = useState(false);
+  // const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
   let ws = useRef(null);
 
   const [endInterview, setEndInterview] = useState(false);
@@ -72,7 +73,6 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
       console.log("clean up");
       ws.current.close();
     };
-
   }, []);
 
   // 소켓이 연결되었을 시에 send 메소드
@@ -82,6 +82,12 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
        ws.current = getNewSocket();
     }
   }, [socketConnected]);
+
+  useEffect(() => {
+      if (socketImg) {
+          recordedChunks.push(socketImg);
+      }
+  }, [socketImg])
 
 //   useEffect(() => {
 //     if (sendMsg) {

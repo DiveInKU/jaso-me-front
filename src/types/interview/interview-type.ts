@@ -28,6 +28,7 @@ export interface Interview {
 export interface SocketCamProps {
     webSocketUrl: string;
     showing: boolean;
+    recordedChunks: string[];
     finishConnector: Function;
     // ref: React.MutableRefObject<React.FC >;
 };
