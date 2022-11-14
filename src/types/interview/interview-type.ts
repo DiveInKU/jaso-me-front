@@ -5,6 +5,10 @@ export interface BubbleProps {
     text: string;
 };
 
+export interface InterviewTitle {
+    title: string;
+}
+
 export interface History {
     text: string;
     type: HISTORY_TYPE;

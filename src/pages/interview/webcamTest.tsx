@@ -5,19 +5,24 @@ import themes from 'styles/themes';
 import Webcam from "react-webcam";
 import styled from 'styled-components';
 import { Button } from '@mui/material';
+import { useLocation } from "react-router-dom";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import SocketVideo from 'components/socket-video';
+import { InterviewTitle } from 'types/interview/interview-type';
 
 const WebcamTest: React.FC = () => {
 
     let navigate = useNavigate();
+    const location = useLocation();
+    const temp: InterviewTitle = location.state;
+    const [title, setTitle] = useState<InterviewTitle>({title: ""});
     const [value, setValue] = useState<string>(""); // 마이크 테스트를 위한 text value
 
     const infoMessage: Array<string> = 
         ["모의 면접 시작 전 웹캠과 마이크 인식이 잘 작동하는지 확인하세요.",
         "준비가 되었으면 면접 시작 버튼을 눌러주세요."];
 
-    const goToInterviewRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const goToInterviewRoom = () => {
         stop();
         navigate("/home/interview/webcamtest/interviewroom");
     }
@@ -27,6 +32,11 @@ const WebcamTest: React.FC = () => {
           setValue(result);
         },
     });
+
+    useEffect(() => {
+        setTitle(location.state);
+        console.log(title.title);
+    }, []);
 
     return(
         <GlobalStyled.ViewCol 
@@ -59,7 +69,7 @@ const WebcamTest: React.FC = () => {
                 {value}
             </GlobalStyled.ViewCol>
             
-            {infoMessage.map((text, tidx) => {
+            {infoMessage.map((text) => {
                 return (
                     <InfoText>{text}</InfoText>
                 )
