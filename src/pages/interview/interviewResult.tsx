@@ -48,12 +48,13 @@ const InterviewResult: React.FC = () => {
 
     const getHappyMessage = (happyPer: string) => {
         happyPer = parseFloat(happyPer).toFixed(2)
-        const happy = parseFloat(happyPer)
-        
-        if (happy > 70) {
-            return happy + " 이상 미소 지었어요! 좋아요! 👏";
+        var happy = parseFloat(happyPer) * 100
+        happy = parseFloat(happy.toFixed(2))
+
+        if (happy > 60) {
+            return happy + "% 미소 지었어요! \n 절반 이상 웃었군요. 좋아요! 👏";
         } else {
-            return happy + " 이상 미소 지었군요.. 조금 더 웃어볼까요? 😃";
+            return happy + "% 미소 지었군요.. 조금 더 웃어볼까요? 😃";
         }
 
     }
@@ -62,25 +63,30 @@ const InterviewResult: React.FC = () => {
     const getHappyResult = async () => {
       await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
           .then((res) => { 
-              console.log('getHappyResult', res)
-              const _url = URL.createObjectURL(new Blob([new ArrayBuffer(res.data)], { type: "image/png" }));
+              console.log('getHappyResult', res.data)
+              // const _url = URL.createObjectURL(new Blob([new ArrayBuffer(res.data)], { type: "image/png" }));
               // const _url = URL.createObjectURL(new Blob([res.data]));
               // const _url = window.URL.createObjectURL(res.data.blob());
-              const _happyPer = res.headers["happy"];
-              console.log(res);
-              setResultSrc(_url);
-              setHappyPer(_happyPer);
-              console.log("url : " + resultSrc);
-              console.log("happyPer: " + happyPer)
+              // const _happyPer = res.headers["happy"];
+              // console.log(res);
+              // setResultSrc(_url);
+              setHappyPer(res.data);
+              // console.log("url : " + resultSrc);
+              console.log("happyPer: " + res.data)
           })
           .catch((e) => console.log(e));
     };
 
+    useEffect(() => {
+      if(happyPer)
+        setHappyMessage(getHappyMessage(happyPer)) 
+    }, [happyPer]    );
+
   useEffect(() => {
   
-    getEmotionAnalysisResult().then((res) => {
+    // getEmotionAnalysisResult().then((res) => {
  
-    });
+    // });
 
     getHappyResult();
 
@@ -111,12 +117,9 @@ const InterviewResult: React.FC = () => {
             setIsHistory(false);
     }
 
-    useEffect(() => {
-      if(happyPer)
-        setHappyMessage(getHappyMessage(happyPer)) 
-    }, [happyPer]
 
-    );
+
+
 
     return (
       <div className="Main">
@@ -211,7 +214,7 @@ const InterviewResult: React.FC = () => {
                     overflow: "auto",
                   }}
                 >
-                  <img
+                  {/* <img
                     src={resultSrc}
                     alt=""
                     style={{
@@ -219,13 +222,14 @@ const InterviewResult: React.FC = () => {
                       height: 30,
                       marginLeft: 10,
                     }}
-                  />
+                  /> */}
                   <div
                     style={{
                       fontSize: 22,
                       fontWeight: "bold",
                       marginBottom: 15,
-                      padding: 20
+                      padding: '20px',
+                      paddingTop: '50px',
                     }}
                   >
                     {happyMessage}

@@ -13,6 +13,7 @@ import { FormGroup,
     MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { startEmotionAnalysis } from "apis/interviewService";
 
 const Interview: React.FC = () => {
     let navigate = useNavigate();
@@ -20,6 +21,7 @@ const Interview: React.FC = () => {
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
     const goToWebcamTestPage = (e: React.MouseEvent<HTMLButtonElement>) => {
+        startEmotionAnalysis();
         navigate("/home/interview/webcamtest")
     }
 
