@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 import { SocketCamProps } from "types/interview/interview-type";
 
 
-const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, recordedChunks }) => {
+const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishConnector, recordedChunks  }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [items, setItems] = useState([]);
   const [socketImg, setSocketImg] = useState('');
@@ -12,10 +12,20 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, recorded
 
   const [endInterview, setEndInterview] = useState(false);
 
+  // useImperativeHandle(ref, () => ({
+  //   endSocket,
+  // }))
+
+  // finishInterview((endSocketParam: VoidFunction) => {
+  //   endSocketParam = endSocket;
+  // })
+
   const endSocket = () => {
     setEndInterview(true);
     ws.current.close();
+    console.log("자식")
   }
+  finishConnector(endSocket)
 
   const getNewSocket = () => {
     const socket = new WebSocket(webSocketUrl);
@@ -66,6 +76,7 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, recorded
     //     setSocketImg(blobUrl);
     //   };
     }
+
     return () => {
       console.log("clean up");
       ws.current.close();

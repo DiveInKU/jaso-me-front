@@ -1,8 +1,10 @@
 import GlobalStyled from "styles/GlobalStyled";
-import React, {  useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TopNavigationBar from "components/common/TopNavigationBar";
 import themes from "styles/themes";
 import styled from "styled-components";
+import iconMike from "../../assets/svgs/iconMike.svg";
+import iconNoMike from "../../assets/svgs/iconNoMike.svg";
 import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
@@ -31,15 +33,17 @@ const InterviewRoom: React.FC = () => {
   ]); // 질문 + 답변 기록 배열
   const [value, setValue] = useState<string>("");
   const [isRecording, setIsRecording] = useState<boolean>(true);
-    const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
+  const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
   const recordedChunks: string[] = [];
-//   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
+  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
 
   // react webcam
   const webcamRef = useRef<Webcam>(null);
   const mediaRecorderRef = useRef<MediaRecorder>(null);
   const [capturing, setCapturing] = useState<boolean>(false);
-//   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
+  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
+  // socket 관리
+  const socketVideoRef = useRef<any>();
 
   // media recorder
   const { status, startRecording, stopRecording, mediaBlobUrl } =
@@ -61,9 +65,6 @@ const InterviewRoom: React.FC = () => {
     },
   });
 
-  const handleSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
-    listen();
-  };
 
   const changeShowingEmotion = (e: React.MouseEvent<HTMLButtonElement>) => {
     // api 요청 보내야함
@@ -96,48 +97,22 @@ const InterviewRoom: React.FC = () => {
     }
   };
 
-  const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // 면접 결과 받아온다
-    // getEmotionAnalysisResult().then((res) => {
-    //   const blobUrl = URL.createObjectURL(res.data);
-    //   const happyPer = res.headers["happy_per"];
-    //   navigate("/home/interviewResult", {
-    //     state: {
-    //       src: blobUrl,
-    //         happy: happyPer,
-    //       recordeds: recordedChunks
-    //     },
-    //   });
-    // });
-    // navigate("/home/interviewList");
-    navigate("/home/interviewResult", {state : {recordeds: recordedChunks}});
-  };
-
-  // const handleStartCapture = React.useCallback(() => {
-  //     setCapturing(true);
-  //     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-  //       mimeType: "video/mp4"
-  //     });
-  //     mediaRecorderRef.current.addEventListener(
-  //       "dataavailable",
-  //       handleDataAvailable
-  //     );
-  //     mediaRecorderRef.current.start();
-  //   }, [webcamRef, setCapturing, mediaRecorderRef]);
-
-  // const handleDataAvailable = React.useCallback(
-  //     ({ data }) => {
-  //       if (data.size > 0) {
-  //         setRecordedChunks((prev) => prev.concat(data));
-  //       }
-  //     },
-  //     [setRecordedChunks]
-  // );
-
-  // const handleStopCapture = React.useCallback(() => {
-  //     mediaRecorderRef.current.stop();
-  //     setCapturing(false);
-  // }, [mediaRecorderRef, webcamRef, setCapturing]);
+  // const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   // 면접 결과 받아온다
+  //   // getEmotionAnalysisResult().then((res) => {
+  //   //   const blobUrl = URL.createObjectURL(res.data);
+  //   //   const happyPer = res.headers["happy_per"];
+  //   //   navigate("/home/interviewResult", {
+  //   //     state: {
+  //   //       src: blobUrl,
+  //   //         happy: happyPer,
+  //   //       recordeds: recordedChunks
+  //   //     },
+  //   //   });
+  //   // });
+  //   // navigate("/home/interviewList");
+  //   navigate("/home/interviewResult", {state : {recordeds: recordedChunks}});
+  // };
 
   // 최초 렌더링 시 녹화 시작
   useEffect(() => {
@@ -148,70 +123,51 @@ const InterviewRoom: React.FC = () => {
   useEffect(() => {
     showEmotionPrediction(showingEmotion ? "true" : "false");
   }, [showingEmotion]);
-    
+
   // stage가 변할 때 마다 질문 읽어준다.
   useEffect(() => {
     if (stage < 0) setStage(0);
     speak({ text: questions[stage] });
   }, [stage]);
 
+  const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!listening)
+      listen();
+  }
+
+  // SocketVideo 컴포넌트에서 함수를 받아오기 위함
+  let finishInterview = () => { }
+  const finishConnector = (endSocket: () => void) => {
+    finishInterview = endSocket;
+  }
+
+  // 실제 면접 종료시 호출되는 함수
+  const onFinish = () => {
+    finishInterview();
+    // navigate("/home/interviewList");
+    navigate("/home/interviewResult", { state: { recordeds: recordedChunks } });
+  }
+
   return (
     <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background }}>
       <TopNavigationBar state="모의 면접" />
-      <GlobalStyled.ViewRow style={{ display: "block" }}>
-        <GlobalStyled.ViewCol
-          className="webcam-div"
-          style={{ flex: 4, float: "left", width: "48%" }}
-        >
-          <BlueBox
-            style={{
-              flex: 1,
-              paddingTop: 20,
-              paddingBottom: 20,
-              justifyContent: "center",
-            }}
-          >
-            <div className="interview-title">
-              2022 상반기 네이버 공채 모의 면접
-            </div>
+      <GlobalStyled.ViewRow style={{ display: 'block' }}>
+        <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float: 'left', width: '48%' }}>
+          <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
+            <div className="interview-title">2022 상반기 네이버 공채 모의 면접</div>
           </BlueBox>
           {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
-          <SocketVideo
-            webSocketUrl={"ws://localhost:8000/emotion-cam"}
-            showing={showingEmotion}
-            recordedChunks={recordedChunks}
-          ></SocketVideo>
-          {/* <Webcam src={mediaBlobUrl} audio={false} mirrored={true} style={{ flex: 8 }} /> */}
-          {/* {isRecording ? 
-                        <Webcam src={mediaBlobUrl} mirrored={true} style={{ flex: 8 }} />
-                        : 
-                        <div style={{ flex: 8 }}>
-                            <video src={mediaBlobUrl} controls autoPlay loop />
-                        </div>
-                    } */}
+          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks}></SocketVideo>
+
           <BlueBox
             className="media-box"
-            style={{
-              flex: 1,
-              justifyContent: "space-between",
-              paddingLeft: 30,
-              paddingRight: 30,
-              height: 80,
-            }}
-          >
-            <Button
-              className="speak-btn"
-              disableElevation
-              variant="contained"
-              onClick={handleSpeaking}
-              style={{
-                backgroundColor: "white",
-                color: themes.colors.main_blue,
-                fontWeight: 800,
-              }}
-            >
-              {listening ? "답변 중" : "답변 시작"}
-            </Button>
+            style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80 }}>
+
+            <div onClick={handleSpeaking} style={{ cursor: "pointer", float: 'left' }}>
+              <img src={listening ? iconMike : iconNoMike} />
+            </div>
+
+            {listening && <div style={{ float: 'left', alignSelf: 'center', marginTop: 7, marginLeft: 10 }}>답변중...</div>}
 
             <Button
               className="emotion-show-btn"
@@ -233,13 +189,12 @@ const InterviewRoom: React.FC = () => {
               className="next-btn"
               disableElevation
               variant="contained"
-              onClick={
-                stage < questions.length - 1 ? moveToNext : finishInterview
-              }
+              onClick={stage < questions.length - 1 ? moveToNext : onFinish}
               style={{
-                backgroundColor: "white",
+                float: 'right',
+                backgroundColor: 'white',
                 color: themes.colors.main_blue,
-                fontWeight: 800,
+                fontWeight: 800
               }}
             >
               {stage == questions.length - 1 ? "면접 종료" : "다음으로"}
@@ -247,35 +202,25 @@ const InterviewRoom: React.FC = () => {
           </BlueBox>
         </GlobalStyled.ViewCol>
 
-        <GlobalStyled.ViewCol
-          className="history-div"
-          style={{ flex: 4, height: "90vh" }}
-        >
-          <BlueBox
-            style={{
-              flex: 1,
-              paddingTop: 20,
-              paddingBottom: 20,
-              justifyContent: "center",
-            }}
-          >
+        <GlobalStyled.ViewCol className="history-div" style={{ flex: 4, height: '90vh' }}>
+          <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div>대화 기록</div>
           </BlueBox>
 
-          <GlobalStyled.ViewCol
-            style={{ flex: 30, backgroundColor: "white", overflow: "auto" }}
-          >
-            {logs.map((log, idx) => {
-              return log.type == HISTORY_TYPE.QUESTION ? (
-                <LeftBubble text={log.text} />
-              ) : (
-                <RightBubble text={log.text} />
-              );
-            })}
+          <GlobalStyled.ViewCol style={{ flex: 30, backgroundColor: 'white', overflow: 'auto' }}>
+            {
+              logs.map((log, idx) => {
+                return (
+                  log.type == HISTORY_TYPE.QUESTION ?
+                    <LeftBubble text={log.text} /> :
+                    <RightBubble text={log.text} />
+                )
+              })
+            }
           </GlobalStyled.ViewCol>
         </GlobalStyled.ViewCol>
       </GlobalStyled.ViewRow>
-    </GlobalStyled.ViewCol>
+    </GlobalStyled.ViewCol >
   );
 }
 

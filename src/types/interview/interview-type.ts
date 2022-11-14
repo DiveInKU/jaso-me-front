@@ -1,3 +1,6 @@
+import SocketVideo from "components/socket-video";
+import React from "react";
+
 export interface BubbleProps {
     text: string;
 };
@@ -22,6 +25,8 @@ export interface SocketCamProps {
     webSocketUrl: string;
     showing: boolean;
     recordedChunks: string[];
+    finishConnector: Function;
+    // ref: React.MutableRefObject<React.FC >;
 };
 
 export const HISTORY_TYPE = {
