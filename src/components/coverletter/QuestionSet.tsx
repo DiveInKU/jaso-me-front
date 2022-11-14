@@ -45,7 +45,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     
     const closeButton = (idx:number) => {
         console.log("index 확인",idx);
-        setContent([...content.slice(0,idx),...content.slice(idx+1)])
+        setContent([...content.slice(0,idx),...content.slice(idx+1)]);
         console.log(content);
     }
 
