@@ -13,17 +13,29 @@ import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
 import { useLocation } from "react-router-dom";
+import { getEmotionAnalysisResult } from "apis/interviewService";
+import { getCustomAPI } from "../../apis/api";
 
 interface stateType {
-    src: string;
-    happyPer: string;
+    // src: string;
+    // happyPer: string;
     recordeds: string[];
 }
+
+interface result {
+  url: string;
+  happyPer: string;
+}
+
 
 const InterviewResult: React.FC = () => {
     const location = useLocation();
     const state = location.state as stateType;
-   const recordedBlob = '';
+    const [interviewSrc, setInterviewSrc] = useState<string>('');
+
+    const [resultSrc, setResultSrc] = useState('');
+    const [happyPer, setHappyPer] = useState('');
+    const [happyMessage, setHappyMessage] = useState<string>('');
 
     const [interviewList, setInterviewList] = useState<InterviewMeta[]>();
     const [selectedInterview, setSelectedInterview] = useState<InterviewMeta>({interviewId: -1, title: ""});
@@ -45,11 +57,36 @@ const InterviewResult: React.FC = () => {
         }
 
     }
+  
+
+    const getHappyResult = async () => {
+      await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
+          .then((res) => { 
+              console.log('getHappyResult', res)
+              const _url = URL.createObjectURL(new Blob([new ArrayBuffer(res.data)], { type: "image/png" }));
+              // const _url = URL.createObjectURL(new Blob([res.data]));
+              // const _url = window.URL.createObjectURL(res.data.blob());
+              const _happyPer = res.headers["happy"];
+              console.log(res);
+              setResultSrc(_url);
+              setHappyPer(_happyPer);
+              console.log("url : " + resultSrc);
+              console.log("happyPer: " + happyPer)
+          })
+          .catch((e) => console.log(e));
+    };
 
   useEffect(() => {
-      if (state && state.recordeds) {
+  
+    getEmotionAnalysisResult().then((res) => {
+ 
+    });
+
+    getHappyResult();
+
+    if (state && state.recordeds) {
         const recordedBlob = new Blob(state.recordeds, { type: "video/webm" });
-        // recordingPlayer.src = URL.createObjectURL(recordedBlob);
+        setInterviewSrc(URL.createObjectURL(recordedBlob));
       }
     }, []);
 
@@ -59,6 +96,9 @@ const InterviewResult: React.FC = () => {
 
     const onExit = () => {
         setIsReplaying(false);
+        // Revoke Blob URL after DOM updates..
+        if(resultSrc)
+          window.URL.revokeObjectURL(resultSrc);
     }
 
     const onClickHistory = () => {
@@ -70,6 +110,13 @@ const InterviewResult: React.FC = () => {
         if (isHistory)
             setIsHistory(false);
     }
+
+    useEffect(() => {
+      if(happyPer)
+        setHappyMessage(getHappyMessage(happyPer)) 
+    }, [happyPer]
+
+    );
 
     return (
       <div className="Main">
@@ -112,7 +159,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <video
-                    src={recordedBlob}
+                    src={interviewSrc}
                     controls
                     autoPlay
                     loop
@@ -165,7 +212,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <img
-                    src={state ? state.src : ""}
+                    src={resultSrc}
                     alt=""
                     style={{
                       width: 30,
@@ -178,13 +225,10 @@ const InterviewResult: React.FC = () => {
                       fontSize: 22,
                       fontWeight: "bold",
                       marginBottom: 15,
+                      padding: 20
                     }}
                   >
-                    {state
-                      ? state.happyPer
-                        ? getHappyMessage(state.happyPer)
-                        : ""
-                      : ""}
+                    {happyMessage}
                   </div>
                 </GlobalStyled.ViewCol>
               </GlobalStyled.ViewCol>

@@ -98,18 +98,19 @@ const InterviewRoom: React.FC = () => {
 
   const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
     // 면접 결과 받아온다
-    getEmotionAnalysisResult().then((res) => {
-      const blobUrl = URL.createObjectURL(res.data);
-      const happyPer = res.headers["happy_per"];
-      navigate("/home/interviewResult", {
-        state: {
-          src: blobUrl,
-            happy: happyPer,
-          recordeds: recordedChunks
-        },
-      });
-    });
-    navigate("/home/interviewList");
+    // getEmotionAnalysisResult().then((res) => {
+    //   const blobUrl = URL.createObjectURL(res.data);
+    //   const happyPer = res.headers["happy_per"];
+    //   navigate("/home/interviewResult", {
+    //     state: {
+    //       src: blobUrl,
+    //         happy: happyPer,
+    //       recordeds: recordedChunks
+    //     },
+    //   });
+    // });
+    // navigate("/home/interviewList");
+    navigate("/home/interviewResult", {state : {recordeds: recordedChunks}});
   };
 
   // const handleStartCapture = React.useCallback(() => {
