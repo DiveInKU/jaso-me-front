@@ -12,14 +12,6 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
 
   const [endInterview, setEndInterview] = useState(false);
 
-  // useImperativeHandle(ref, () => ({
-  //   endSocket,
-  // }))
-
-  // finishInterview((endSocketParam: VoidFunction) => {
-  //   endSocketParam = endSocket;
-  // })
-
   const endSocket = () => {
     setEndInterview(true);
     ws.current.close();
