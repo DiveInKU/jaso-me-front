@@ -13,14 +13,23 @@ import { FormGroup,
     MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { startEmotionAnalysis } from "apis/interviewService";
+import { InterviewTitle } from 'types/interview/interview-type';
 
 const Interview: React.FC = () => {
     let navigate = useNavigate();
 
+    const [title, setTitle] = useState<string>("");
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
     const goToWebcamTestPage = (e: React.MouseEvent<HTMLButtonElement>) => {
-        navigate("/home/interview/webcamtest")
+        let interviewTitle: InterviewTitle = { title: title }
+        startEmotionAnalysis();
+        navigate("/home/interview/webcamtest", {state : interviewTitle})
+    }
+
+    const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
     }
 
     return (
@@ -28,7 +37,9 @@ const Interview: React.FC = () => {
             <TopNavigationBar state='모의 면접' />
             <GlobalStyled.ViewCol style={{ paddingTop: 20, paddingLeft: 30}}>
                 <Title>모의 면접 제목</Title>
-                <TextField style={{ marginTop: 10, marginBottom: 30}}
+                <TextField
+                    onChange={onTitleChange} 
+                    style={{ marginTop: 10, marginBottom: 30}}
                     type="text" 
                     className='input-id'
                     variant="outlined"

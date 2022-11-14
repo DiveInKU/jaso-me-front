@@ -154,7 +154,7 @@ const TextProperty1 = styled.div`
 
 const AnswerBox= styled.div`
     width: 683px;
-    height: 200px;
+    height: 150px;
     font-family: 'Notosans-semibold';
     font-style: normal;
     font-weight: 500;
