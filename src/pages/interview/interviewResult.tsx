@@ -38,6 +38,9 @@ const InterviewResult: React.FC = () => {
     const [happyPer, setHappyPer] = useState('');
     const [happyMessage, setHappyMessage] = useState<string>('');
 
+    const [emotions, setEmotions] = useState<string[]>();
+    const [values, setValues] = useState<number[]>();
+
     const [interviewList, setInterviewList] = useState<InterviewMeta[]>();
     const [selectedInterview, setSelectedInterview] = useState<InterviewMeta>({interviewId: -1, title: ""});
     
@@ -47,19 +50,19 @@ const InterviewResult: React.FC = () => {
     const [isReplyaing, setIsReplaying] = useState<boolean>(true);
     const [isHistory, setIsHistory] = useState<boolean>(true);
 
-    const getHappyPercentByNumber = (happyPer: string) => {
-      happyPer = parseFloat(happyPer).toFixed(2)
-      var happy = parseFloat(happyPer) * 100
-      happy = parseFloat(happy.toFixed(2))
-      return happy
-    }
-
-    const getHappyMessage = (happyPer: string) => {
+    const getHappyMessage = () => {
         // happyPer = parseFloat(happyPer).toFixed(2)
         // var happy = parseFloat(happyPer) * 100
         // happy = parseFloat(happy.toFixed(2))
-
-        var happy = getHappyPercentByNumber(happyPer)
+        var emotion_all = 0
+        var happy = 0
+        for (var i = 0; i < emotions.length; i++) {
+          emotion_all += values[i]
+          if(emotions[i]=="happy")
+            happy = values[i]
+        }
+        happy = (happy / emotion_all) * 100
+        happy = Math.round(happy)
         
         if (happy > 60) {
             return happy + "% 미소 지었어요! \n 절반 이상 웃었군요. 좋아요! 👏";
@@ -79,17 +82,15 @@ const InterviewResult: React.FC = () => {
               // const _happyPer = res.headers["happy"];
               // console.log(res);
               // setResultSrc(_url);
-              setHappyPer(res.data);
+              // setHappyPer(res.data);
               // console.log("url : " + resultSrc);
-              console.log("happyPer: " + res.data)
+              // console.log("happyPer: " + res.data)
+              setEmotions(res.data.emotions)
+              setValues(res.data.values)
+              return res.data
           })
           .catch((e) => console.log(e));
     };
-
-    useEffect(() => {
-      if(happyPer)
-        setHappyMessage(getHappyMessage(happyPer)) 
-    }, [happyPer]    );
 
   useEffect(() => {
   
@@ -104,6 +105,12 @@ const InterviewResult: React.FC = () => {
         setInterviewSrc(URL.createObjectURL(recordedBlob));
       }
     }, []);
+
+  useEffect(() => {
+    if(emotions && values){
+      setHappyMessage(getHappyMessage())
+    }
+  }, [emotions, values]);
 
     const onReplay = () => {
         setIsReplaying(true);
@@ -217,6 +224,7 @@ const InterviewResult: React.FC = () => {
                     flex: 30,
                     backgroundColor: "white",
                     overflow: "auto",
+                    width:'100%',
                   }}
                 >
                   {/* <img
@@ -228,7 +236,7 @@ const InterviewResult: React.FC = () => {
                       marginLeft: 10,
                     }}
                   /> */}
-                  <InterviewChart happy={getHappyPercentByNumber(happyPer)}></InterviewChart>
+                  <InterviewChart emotions={emotions} values={values}></InterviewChart>
 
                   <div
                     style={{
@@ -237,6 +245,7 @@ const InterviewResult: React.FC = () => {
                       marginBottom: 15,
                       padding: '20px',
                       paddingTop: '50px',
+                      textAlign: 'center',
                     }}
                   >
                     {happyMessage}

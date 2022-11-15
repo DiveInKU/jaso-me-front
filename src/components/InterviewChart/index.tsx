@@ -1,24 +1,38 @@
 import React from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
+  import { Radar } from 'react-chartjs-2';
+  
 import { ChartProps } from "types/interview/interview-type"
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend
+  );
 
-const InterviewChart: React.FC<ChartProps> = ({happy}) => {
+const InterviewChart: React.FC<ChartProps> = ({emotions, values}) => {
     const data = {
-        labels : ['happy', 'not happy'],
+        labels : emotions,
         datasets: [
             {
-                label: 'happy',
-                data: [happy, 100-happy],
+                label: '# of Emotions',
+                data: values,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
                   ],
                 borderWidth: 1,
             }
@@ -26,7 +40,7 @@ const InterviewChart: React.FC<ChartProps> = ({happy}) => {
     };
 
     return (
-            <Pie data={data} style={{ width:'80%', margin:'5% auto 0 auto'}}/>
+            <Radar data={data} style={{  margin:'5% auto 0 auto', width:'75%',}}/>
     )
 };
 

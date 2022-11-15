@@ -40,5 +40,6 @@ export const HISTORY_TYPE = {
 type HISTORY_TYPE = typeof HISTORY_TYPE[keyof typeof HISTORY_TYPE]
 
 export interface ChartProps {
-    happy: number;
+    emotions: string[];
+    values: number[];
 }
