@@ -20,7 +20,17 @@ API.defaults.headers.common['Authorization'] = jwt
   ? jwt
   : '';
 
+const NAVER_API = axios.create({
+  baseURL: "https://m.search.naver.com/p/csearch/ocontent/spellchecker.nhn",
+  headers: { 
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+    'referer': 'https://search.naver.com/' 
+  },
+  withCredentials: false,
+});
+
 export {
   API,
+  NAVER_API,
   getCustomAPI
 }
