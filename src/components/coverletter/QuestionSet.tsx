@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { QuestionSetProps } from 'types/coverletter/coverletter-type';
 import { generateCoverLetter } from 'apis/aiService';
+import { checkSpell } from 'apis/coverLetterService';
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer, defaultCategory}) => {
@@ -18,10 +19,11 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const [visible,setVisible] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
 
+    const [wordCount, setWordCount] = useState<number>(0);
+
     useEffect(() => {
         setQuestion(question);
         setAnswer(answer);
-        //console.log('받는 data',defaultQuestion)
       },[])
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
+        setWordCount(e.target.value.length);
         onSetQnas(question, answer, index);
     }
     
@@ -75,6 +78,34 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
             });
     }
 
+    const onCheckSpell = () => {
+        // TODO : 보낼 때 500자까지만 보내고 받아온거 + 앞 부분이랑 합쳐서 set
+        checkSpell(answer)
+            .then((res) => {
+                let data = res;
+                data = data.replace('window.__jindo2_callback._spellingCheck_0(', '');
+                data = data.replace(');', '');
+                console.log(data);
+
+                let obj = JSON.parse(data);
+                let temp = obj.message.result.notag_html
+                let result = temp.replaceAll('<br>', '\n');
+
+                // if (wordCount > 500) {
+                //     setAnswer(frontText + result);
+                //     setWordCount((frontText + result).length)
+                // }
+                // else {
+                //     setAnswer(result);
+                //     setWordCount(result.length)
+                // }
+   
+                setAnswer(result);
+                setWordCount(result.length);
+            })
+            .catch((err) => console.log(err))
+    }
+
     return(
         <div style={{marginLeft:"10px"}}>
             <TextProperty>{"자기소개서 질문"}</TextProperty>
@@ -100,14 +131,30 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                             backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
                             fontWeight: "500", fontSize:"13px", width:"40px", height:"30px"
                         }} >검색</Button>
+
+                <Button 
+                    className="button-login"
+                    variant="contained" 
+                    onClick={onCheckSpell}
+                        style={{
+                            position:"absolute", top: 0, left:"200px", marginRight:"0px", marginLeft:"5px",
+                            backgroundColor: "#4F62AC", fontFamily: 'Notosans-medium', fontStyle:"normal",
+                            fontWeight: "500", fontSize:"13px", width:"110px", height:"30px"
+                        }} >맞춤법 검사</Button>
+
+                <div style={{position:"absolute", top: 0, left:"650px"}}>{wordCount}/1000</div>
             </div>
             <TextField type="text" multiline rows={7} className='input-property' variant="outlined" size="small" placeholder='질문에 대한 자기소개서를 입력하고 검색을 눌러보세요.'
-                onChange={aChange} style={{
+                onChange={aChange}
+                error={wordCount > 1000}
+                inputProps ={{ maxLength: 1000}}
+                style={{
                     width:"700px",
                     marginBottom:"30px",
                     backgroundColor:"white"
                 }}
                 defaultValue={answer}
+                value={answer}
             />
             {visible && <div>
                 {content ? content.map((content, idx) => {
