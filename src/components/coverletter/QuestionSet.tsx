@@ -79,16 +79,29 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     }
 
     const onCheckSpell = () => {
+        // TODO : 보낼 때 500자까지만 보내고 받아온거 + 앞 부분이랑 합쳐서 set
         checkSpell(answer)
             .then((res) => {
                 let data = res;
                 data = data.replace('window.__jindo2_callback._spellingCheck_0(', '');
-                data = data.replace(');', '')
+                data = data.replace(');', '');
                 console.log(data);
 
                 let obj = JSON.parse(data);
-                setAnswer(obj.message.result.notag_html);
-                setWordCount(obj.message.result.notag_html.length);
+                let temp = obj.message.result.notag_html
+                let result = temp.replaceAll('<br>', '\n');
+
+                // if (wordCount > 500) {
+                //     setAnswer(frontText + result);
+                //     setWordCount((frontText + result).length)
+                // }
+                // else {
+                //     setAnswer(result);
+                //     setWordCount(result.length)
+                // }
+   
+                setAnswer(result);
+                setWordCount(result.length);
             })
             .catch((err) => console.log(err))
     }
