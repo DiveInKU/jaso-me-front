@@ -54,7 +54,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
             await navigator.clipboard.writeText(text);
             //alert('클립보드에 복사되었습니다.')
         }catch(error){
-            //alert('복사 실패,,')
+            alert('복사 실패,,')
         }
     }
 
