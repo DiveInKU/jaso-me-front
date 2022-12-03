@@ -39,9 +39,11 @@ function ApiService() {
         email: email,
         password:password
       });
-    }
+    },
+
   };
   return apiService;
 }
+
 
 export default ApiService;
