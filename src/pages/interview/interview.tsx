@@ -34,7 +34,7 @@ const Interview: React.FC = () => {
     }, [isRandom,isMember,count]);
 
     const goToWebcamTestPage = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("질문셋",question)
+        //console.log("질문셋",question)
         let InterviewInfo: InterviewInfo = { title: title, question: question}
     
         console.log("test",InterviewInfo)
