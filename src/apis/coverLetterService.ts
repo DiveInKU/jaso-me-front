@@ -1,5 +1,5 @@
 import { QnAPair } from "types/coverletter/coverletter-type";
-import { API } from "./api";
+import { API, NAVER_API } from "./api";
 
 const createCoverLetter = async (qnas: Array<QnAPair>, category: string, title: string) => {
     return await API.post("/resumes", {
@@ -39,10 +39,22 @@ const changeCoverLetter = async (qnas: Array<QnAPair>, category: string, title: 
         .catch((e) => { console.log(e) });
 };
 
+const checkSpell = async (text: String) => {
+    return await NAVER_API.get('', {
+        params: {
+            _callback: 'window.__jindo2_callback._spellingCheck_0',
+            q: text,
+        }
+    })
+        .then((res) => res.data )
+        .catch((e) => console.log(e))
+};
+
 export {
     createCoverLetter,
     getCoverLetterList,
     getCoverLetter,
     deleteCoverLetter,
     changeCoverLetter,
+    checkSpell
 }

@@ -50,7 +50,7 @@ const WebcamTest: React.FC = () => {
             </Header>
             <GlobalStyled.ViewCol style={{ width: 500, height: 400}}>
                 {/* <Webcam mirrored={true}/> */}
-                <SocketVideo finishConnector={() => { } } webSocketUrl={'ws://localhost:8000/test-cam'} showing={false} recordedChunks={[]} ></SocketVideo>
+                <SocketVideo finishConnector={() => { } } webSocketUrl={'ws://localhost:8000/test-cam'} showing={false} recordedChunks={[]} onSetSocketImg={() => {}} ></SocketVideo>
             </GlobalStyled.ViewCol>
 
       <Button

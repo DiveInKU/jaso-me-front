@@ -9,7 +9,7 @@ import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
-import { History, HISTORY_TYPE } from "types/interview/interview-type";
+import { History, HISTORY_TYPE, WordCount } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -19,12 +19,21 @@ import { getEmotionAnalysisResult } from "apis/interviewService";
 import { InterviewInfo } from "types/interview/interview-type";
 import { QuestionSet } from 'types/mypage/mypage-type';
 
+
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const state = location.state as InterviewInfo;
   const [title, setTitle] = useState<string>(state.title);
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
+
+  const answers: Array<string> = [
+    "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
+    "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
+    "가장 몰입한 경험이라고 생각해보면 이제 할 수 있을것 같습니다.",
+    "목표를 달성하는 방법을 생각해봤을 이제 때 음 협업이란 입니다.",
+    "갈등 경험과 해결한 방법을 말해달라면 이제 입니다."
+  ]
 
   const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
   const [logs, setLogs] = useState<History[]>([
@@ -33,18 +42,10 @@ const InterviewRoom: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [isRecording, setIsRecording] = useState<boolean>(true);
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
+
+  // 화면+오디오 녹화
   const recordedChunks: string[] = [];
-  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
-
-  // react webcam
-  const webcamRef = useRef<Webcam>(null);
-  const mediaRecorderRef = useRef<MediaRecorder>(null);
-  const [capturing, setCapturing] = useState<boolean>(false);
-  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
-  // socket 관리
-  const socketVideoRef = useRef<any>();
-
-  // media recorder
+  const [socketImg, setSocketImg] = useState('');
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true, video: true });
 
@@ -57,6 +58,7 @@ const InterviewRoom: React.FC = () => {
     setIsRecording(false);
   };
 
+  // 음성 인식
   const { speak } = useSpeechSynthesis();
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result: string) => {
@@ -96,23 +98,6 @@ const InterviewRoom: React.FC = () => {
     }
   };
 
-  // const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   // 면접 결과 받아온다
-  //   // getEmotionAnalysisResult().then((res) => {
-  //   //   const blobUrl = URL.createObjectURL(res.data);
-  //   //   const happyPer = res.headers["happy_per"];
-  //   //   navigate("/home/interviewResult", {
-  //   //     state: {
-  //   //       src: blobUrl,
-  //   //         happy: happyPer,
-  //   //       recordeds: recordedChunks
-  //   //     },
-  //   //   });
-  //   // });
-  //   // navigate("/home/interviewList");
-  //   navigate("/home/interviewResult", {state : {recordeds: recordedChunks}});
-  // };
-
   // 최초 렌더링 시 녹화 시작
   useEffect(() => {
     // startInterviewRecording();
@@ -143,8 +128,41 @@ const InterviewRoom: React.FC = () => {
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
     finishInterview();
-    // navigate("/home/interviewList");
-    navigate("/home/interviewResult", { state: { recordeds: recordedChunks } });
+    calcInterviewFrequency();
+  }
+
+  const calcInterviewFrequency = () => {
+    let text = "";
+    answers.map((answer, idx) => {
+      text += (answer+" ");
+    })
+
+    let tempMap: Map<string, number> = new Map<string, number>();
+
+    calcFrequency(text)
+      .then((res) => {
+        console.log(res);
+        res.return_object.sentence.map((sen: any, idx: number) => {
+          let words = sen.word;
+          words.map((word: any, widx: number) => {
+            let w = word.text; // hi
+            
+            if (tempMap.get(w) == null) {
+              tempMap.set(w, 1);
+            }
+            else {
+              tempMap.set(w, tempMap.get(w) + 1);
+            }
+          })
+        })
+        
+        let tempWordCounts: WordCount[] = []
+        tempMap.forEach((count, word) => {
+          tempWordCounts.push({word: word, count: count});
+        })
+        tempWordCounts.sort((a, b) => b.count - a.count);
+        navigate("/home/interviewResult", { state: { recordeds: recordedChunks, wordCounts: tempWordCounts.slice(0,5) } });
+      })
   }
 
   return (
@@ -155,8 +173,7 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-          {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
-          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks}></SocketVideo>
+          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
 
           <BlueBox
             className="media-box"

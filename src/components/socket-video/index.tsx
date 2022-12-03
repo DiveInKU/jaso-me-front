@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 import { SocketCamProps } from "types/interview/interview-type";
 
 
-const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishConnector, recordedChunks  }) => {
+const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishConnector, recordedChunks, onSetSocketImg  }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [items, setItems] = useState([]);
   const [socketImg, setSocketImg] = useState('');
@@ -39,6 +39,7 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
         var msg = evt.data;
         var blobUrl = URL.createObjectURL(new Blob([msg]));
         setSocketImg(blobUrl);
+        onSetSocketImg(blobUrl);
       };
       return socket;
   }
@@ -47,26 +48,6 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
   useEffect(() => {
     if (!ws.current) {
         ws.current = getNewSocket();
-    //   ws.current = new WebSocket(webSocketUrl);
-    //   console.log(webSocketUrl);
-    //   ws.current.onopen = () => {
-    //     console.log("connected to " + webSocketUrl);
-    //     setSocketConnected(true);
-    //   };
-    //   ws.current.onclose = (error: Event) => {
-    //     console.log("disconnect from " + webSocketUrl);
-    //     console.log(error);
-    //     setSocketConnected(false);
-    //   };
-    //   ws.current.onerror = (error: Event) => {
-    //     console.log("connection error " + webSocketUrl);
-    //     console.log(error);
-    //   };
-    //   ws.current.onmessage = (evt: MessageEvent) => {
-    //     var msg = evt.data;
-    //     var blobUrl = URL.createObjectURL(new Blob([msg]));
-    //     setSocketImg(blobUrl);
-    //   };
     }
 
     return () => {
@@ -88,12 +69,6 @@ const SocketVideo: React.FC<SocketCamProps> = ({ webSocketUrl, showing, finishCo
           recordedChunks.push(socketImg);
       }
   }, [socketImg])
-
-//   useEffect(() => {
-//     if (sendMsg) {
-       
-//     }
-//   }, [sendMsg]);
 
   useEffect(() => {
     if (socketConnected) {
