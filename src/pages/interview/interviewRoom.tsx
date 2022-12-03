@@ -9,13 +9,13 @@ import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
-import { History, HISTORY_TYPE } from "types/interview/interview-type";
+import { History, HISTORY_TYPE, WordCount } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
-import { getEmotionAnalysisResult } from "apis/interviewService";
+import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewTitle } from "types/interview/interview-type";
 
 const InterviewRoom: React.FC = () => {
@@ -31,6 +31,14 @@ const InterviewRoom: React.FC = () => {
     "협업을 하며 갈등 경험과 해결한 방법을 말해주세요.",
   ];
 
+  const answers: Array<string> = [
+    "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
+    "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
+    "가장 몰입한 경험이라고 생각해보면 이제 할 수 있을것 같습니다.",
+    "목표를 달성하는 방법을 생각해봤을 이제 때 음 협업이란 입니다.",
+    "갈등 경험과 해결한 방법을 말해달라면 이제 입니다."
+  ]
+
   const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
   const [logs, setLogs] = useState<History[]>([
     { text: questions[0], type: HISTORY_TYPE.QUESTION },
@@ -40,6 +48,9 @@ const InterviewRoom: React.FC = () => {
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
   const recordedChunks: string[] = [];
   //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
+
+  // 단어 빈도수 배열
+  const [wordCounts, setWordCounts] = useState<WordCount[]>([]);
 
   // react webcam
   const webcamRef = useRef<Webcam>(null);
@@ -101,23 +112,6 @@ const InterviewRoom: React.FC = () => {
     }
   };
 
-  // const finishInterview = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   // 면접 결과 받아온다
-  //   // getEmotionAnalysisResult().then((res) => {
-  //   //   const blobUrl = URL.createObjectURL(res.data);
-  //   //   const happyPer = res.headers["happy_per"];
-  //   //   navigate("/home/interviewResult", {
-  //   //     state: {
-  //   //       src: blobUrl,
-  //   //         happy: happyPer,
-  //   //       recordeds: recordedChunks
-  //   //     },
-  //   //   });
-  //   // });
-  //   // navigate("/home/interviewList");
-  //   navigate("/home/interviewResult", {state : {recordeds: recordedChunks}});
-  // };
-
   // 최초 렌더링 시 녹화 시작
   useEffect(() => {
     // startInterviewRecording();
@@ -148,8 +142,42 @@ const InterviewRoom: React.FC = () => {
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
     finishInterview();
-    // navigate("/home/interviewList");
-    navigate("/home/interviewResult", { state: { recordeds: recordedChunks } });
+    calcInterviewFrequency();
+    // navigate("/home/interviewResult", { state: { recordeds: recordedChunks } });
+  }
+
+  const calcInterviewFrequency = () => {
+    let text = "";
+    answers.map((answer, idx) => {
+      text += (answer+" ");
+    })
+
+    let tempMap: Map<string, number> = new Map<string, number>();
+
+    calcFrequency(text)
+      .then((res) => {
+        console.log(res);
+        res.return_object.sentence.map((sen: any, idx: number) => {
+          let words = sen.word;
+          words.map((word: any, widx: number) => {
+            let w = word.text; // hi
+            
+            if (tempMap.get(w) == null) {
+              tempMap.set(w, 1);
+            }
+            else {
+              tempMap.set(w, tempMap.get(w) + 1);
+            }
+          })
+        })
+        
+        let tempWordCounts: WordCount[] = []
+        tempMap.forEach((count, word) => {
+          tempWordCounts.push({word: word, count: count});
+        })
+        tempWordCounts.sort((a, b) => b.count - a.count);
+        setWordCounts(tempWordCounts.slice(0,5));
+      })
   }
 
   return (

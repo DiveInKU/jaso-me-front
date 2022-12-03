@@ -76,15 +76,6 @@ const InterviewResult: React.FC = () => {
       await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
           .then((res) => { 
               console.log('getHappyResult', res.data)
-              // const _url = URL.createObjectURL(new Blob([new ArrayBuffer(res.data)], { type: "image/png" }));
-              // const _url = URL.createObjectURL(new Blob([res.data]));
-              // const _url = window.URL.createObjectURL(res.data.blob());
-              // const _happyPer = res.headers["happy"];
-              // console.log(res);
-              // setResultSrc(_url);
-              // setHappyPer(res.data);
-              // console.log("url : " + resultSrc);
-              // console.log("happyPer: " + res.data)
               setEmotions(res.data.emotions)
               setValues(res.data.values)
               return res.data
@@ -93,11 +84,6 @@ const InterviewResult: React.FC = () => {
     };
 
   useEffect(() => {
-  
-    // getEmotionAnalysisResult().then((res) => {
- 
-    // });
-
     retrieveHappyResult();
 
     if (state && state.recordeds) {

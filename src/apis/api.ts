@@ -29,8 +29,18 @@ const NAVER_API = axios.create({
   withCredentials: false,
 });
 
+const AI_OPEN_API = axios.create({
+  baseURL: "http://aiopen.etri.re.kr:8000/WiseNLU_spoken",
+  headers: {
+    'Authorization': 'cc86432a-a6c2-4a96-89ff-f8e5b15e6067'
+  },
+  withCredentials: false,
+})
+
+
 export {
   API,
   NAVER_API,
+  AI_OPEN_API,
   getCustomAPI
 }
