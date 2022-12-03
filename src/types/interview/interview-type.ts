@@ -27,6 +27,7 @@ export interface SocketCamProps {
     showing: boolean;
     recordedChunks: string[];
     finishConnector: Function;
+    onSetSocketImg: Function;
 };
 
 export const HISTORY_TYPE = {
@@ -38,6 +39,10 @@ type HISTORY_TYPE = typeof HISTORY_TYPE[keyof typeof HISTORY_TYPE]
 export interface ChartProps {
     emotions: string[];
     values: number[];
+}
+
+export interface WordCountChartProps {
+    wordCounts: WordCount[];
 }
 
 export interface WordCount {

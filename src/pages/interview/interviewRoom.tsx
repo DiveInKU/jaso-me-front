@@ -46,21 +46,10 @@ const InterviewRoom: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [isRecording, setIsRecording] = useState<boolean>(true);
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
+
+  // 화면+오디오 녹화
   const recordedChunks: string[] = [];
-  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
-
-  // 단어 빈도수 배열
-  const [wordCounts, setWordCounts] = useState<WordCount[]>([]);
-
-  // react webcam
-  const webcamRef = useRef<Webcam>(null);
-  const mediaRecorderRef = useRef<MediaRecorder>(null);
-  const [capturing, setCapturing] = useState<boolean>(false);
-  //   const [recordedChunks, setRecordedChunks] = useState<string[]>([]);
-  // socket 관리
-  const socketVideoRef = useRef<any>();
-
-  // media recorder
+  const [socketImg, setSocketImg] = useState('');
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true, video: true });
 
@@ -73,6 +62,7 @@ const InterviewRoom: React.FC = () => {
     setIsRecording(false);
   };
 
+  // 음성 인식
   const { speak } = useSpeechSynthesis();
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result: string) => {
@@ -143,7 +133,6 @@ const InterviewRoom: React.FC = () => {
   const onFinish = () => {
     finishInterview();
     calcInterviewFrequency();
-    // navigate("/home/interviewResult", { state: { recordeds: recordedChunks } });
   }
 
   const calcInterviewFrequency = () => {
@@ -176,7 +165,7 @@ const InterviewRoom: React.FC = () => {
           tempWordCounts.push({word: word, count: count});
         })
         tempWordCounts.sort((a, b) => b.count - a.count);
-        setWordCounts(tempWordCounts.slice(0,5));
+        navigate("/home/interviewResult", { state: { recordeds: recordedChunks, wordCounts: tempWordCounts.slice(0,5) } });
       })
   }
 
@@ -188,8 +177,7 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-          {/* <object type="text/html" data="http://localhost:8000/" style={{width:'100%', height:'100%'}}></object> */}
-          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks}></SocketVideo>
+          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
 
           <BlueBox
             className="media-box"
