@@ -1,12 +1,14 @@
 import SocketVideo from "components/socket-video";
 import React from "react";
+import { QuestionSet } from "types/mypage/mypage-type";
 
 export interface BubbleProps {
     text: string;
 };
 
-export interface InterviewTitle {
+export interface InterviewInfo {
     title: string;
+    question: QuestionSet[];
 }
 
 export interface History {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
 import TopNavigationBar from 'components/common/TopNavigationBar';
@@ -14,23 +14,48 @@ import { FormGroup,
 } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { startEmotionAnalysis } from "apis/interviewService";
-import { InterviewTitle } from 'types/interview/interview-type';
+import { InterviewInfo } from 'types/interview/interview-type';
+import {getRandomQuestions} from 'apis/myPageService';
+import { QuestionSet } from 'types/mypage/mypage-type';
 
 const Interview: React.FC = () => {
     let navigate = useNavigate();
 
     const [title, setTitle] = useState<string>("");
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
+    const [isRandom, setIsRandom] = useState<boolean>(true);
+    const [isMember, setIsMember] = useState<boolean>(true);
+    const [count, setCount] = useState<number>(1);
+    const [question,setQuestion] = useState<QuestionSet[]>([{content:""}]);
+
+    useEffect(() => {
+        getRandomQuestions(isRandom,isMember,count)
+            .then((res) => {setQuestion(res.result)})
+    }, [isRandom,isMember,count]);
 
     const goToWebcamTestPage = (e: React.MouseEvent<HTMLButtonElement>) => {
-        let interviewTitle: InterviewTitle = { title: title }
+        console.log("질문셋",question)
+        let InterviewInfo: InterviewInfo = { title: title, question: question}
+    
+        console.log("test",InterviewInfo)
         startEmotionAnalysis();
-        navigate("/home/interview/webcamtest", {state : interviewTitle})
+        navigate("/home/interview/webcamtest", {state : InterviewInfo})
     }
 
     const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
     }
+
+    const isRandomQuestion = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsRandom(e.target.checked);
+        //console.log('랜덤질문',isRandom);
+    }
+
+    const isMemberQuestion = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsMember(e.target.checked);
+        //console.log('사용자질문', isMember);
+    }
+
 
     return (
         <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background}}>
@@ -53,30 +78,31 @@ const Interview: React.FC = () => {
                             '&.Mui-checked': {
                                 color: themes.colors.main_blue
                             }
-                         }}/>}
+                         }} onChange={isRandomQuestion}/>}
                         label={'랜덤 질문'}/>
                     <FormControlLabel 
                          control={<Checkbox defaultChecked sx={{
                             '&.Mui-checked': {
                                 color: themes.colors.main_blue
                             }
-                         }}/>}
+                         }} onChange={isMemberQuestion}/>}
                         label={'사용자 정의 질문'}/>
                 </FormGroup>
 
                 <Title>질문 개수</Title>
 
                 <FormControl style={{ width: 100, marginTop: 10, marginBottom: 20}}>
-                    <Select
+                    <Select onChange={(e) => {setCount(e.target.value as number)}}
                         size="small"
                         defaultValue={1}
                         inputProps={{
                         name: 'numbers'
                         }}
                         id="demo-select-small"
+
                     >
-                        {questionNumbers.map((number, idx) => 
-                            { return <MenuItem key={idx} value={number}>{number}</MenuItem> }
+                        {questionNumbers.map((numbers, idx) => 
+                            { return <MenuItem key={idx} value={numbers}>{numbers}</MenuItem> }
                         )}
                     </Select>
                 </FormControl>
