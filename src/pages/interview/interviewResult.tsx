@@ -6,7 +6,7 @@ import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
 import ReactPlayer from 'react-player'
 import ReplayIcon from 'components/interview/ReplayIcon';
-import { History, HISTORY_TYPE, Interview, InterviewMeta } from 'types/interview/interview-type';
+import { History, HISTORY_TYPE, Interview, InterviewMeta, WordCount } from 'types/interview/interview-type';
 import exitIcon from '../../assets/svgs/exitIcon.svg';
 import jasoMeLogo from '../../assets/svgs/jasoMeLogo.svg';
 import { Button } from "@mui/material";
@@ -16,11 +16,13 @@ import { useLocation } from "react-router-dom";
 import { getEmotionAnalysisResult } from "apis/interviewService";
 import { getCustomAPI } from "../../apis/api";
 import InterviewChart from 'components/InterviewChart';
+import WordCountChart from 'components/InterviewChart/WordCountChart';
 
 interface stateType {
     // src: string;
     // happyPer: string;
     recordeds: string[];
+    wordCounts: WordCount[];
 }
 
 interface result {
@@ -51,9 +53,6 @@ const InterviewResult: React.FC = () => {
     const [isHistory, setIsHistory] = useState<boolean>(true);
 
     const getHappyMessage = () => {
-        // happyPer = parseFloat(happyPer).toFixed(2)
-        // var happy = parseFloat(happyPer) * 100
-        // happy = parseFloat(happy.toFixed(2))
         var emotion_all = 0
         var happy = 0
         for (var i = 0; i < emotions.length; i++) {
@@ -76,15 +75,6 @@ const InterviewResult: React.FC = () => {
       await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
           .then((res) => { 
               console.log('getHappyResult', res.data)
-              // const _url = URL.createObjectURL(new Blob([new ArrayBuffer(res.data)], { type: "image/png" }));
-              // const _url = URL.createObjectURL(new Blob([res.data]));
-              // const _url = window.URL.createObjectURL(res.data.blob());
-              // const _happyPer = res.headers["happy"];
-              // console.log(res);
-              // setResultSrc(_url);
-              // setHappyPer(res.data);
-              // console.log("url : " + resultSrc);
-              // console.log("happyPer: " + res.data)
               setEmotions(res.data.emotions)
               setValues(res.data.values)
               return res.data
@@ -93,11 +83,6 @@ const InterviewResult: React.FC = () => {
     };
 
   useEffect(() => {
-  
-    // getEmotionAnalysisResult().then((res) => {
- 
-    // });
-
     retrieveHappyResult();
 
     if (state && state.recordeds) {
@@ -227,15 +212,6 @@ const InterviewResult: React.FC = () => {
                     width:'100%',
                   }}
                 >
-                  {/* <img
-                    src={resultSrc}
-                    alt=""
-                    style={{
-                      width: 30,
-                      height: 30,
-                      marginLeft: 10,
-                    }}
-                  /> */}
                   <InterviewChart emotions={emotions} values={values}></InterviewChart>
 
                   <div
@@ -250,6 +226,7 @@ const InterviewResult: React.FC = () => {
                   >
                     {happyMessage}
                   </div>
+                  <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
                 </GlobalStyled.ViewCol>
               </GlobalStyled.ViewCol>
             </GlobalStyled.ViewRow>

@@ -9,7 +9,6 @@ import {
     Legend,
   } from 'chart.js';
   import { Radar } from 'react-chartjs-2';
-  
 import { ChartProps } from "types/interview/interview-type"
 
 ChartJS.register(

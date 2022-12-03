@@ -91,15 +91,6 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                 let temp = obj.message.result.notag_html
                 let result = temp.replaceAll('<br>', '\n');
 
-                // if (wordCount > 500) {
-                //     setAnswer(frontText + result);
-                //     setWordCount((frontText + result).length)
-                // }
-                // else {
-                //     setAnswer(result);
-                //     setWordCount(result.length)
-                // }
-   
                 setAnswer(result);
                 setWordCount(result.length);
             })

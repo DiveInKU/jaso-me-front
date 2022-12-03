@@ -1,6 +1,3 @@
-import SocketVideo from "components/socket-video";
-import React from "react";
-
 export interface BubbleProps {
     text: string;
 };
@@ -30,7 +27,7 @@ export interface SocketCamProps {
     showing: boolean;
     recordedChunks: string[];
     finishConnector: Function;
-    // ref: React.MutableRefObject<React.FC >;
+    onSetSocketImg: Function;
 };
 
 export const HISTORY_TYPE = {
@@ -43,3 +40,12 @@ export interface ChartProps {
     emotions: string[];
     values: number[];
 }
+
+export interface WordCountChartProps {
+    wordCounts: WordCount[];
+}
+
+export interface WordCount {
+    word: string;
+    count: number;
+};
