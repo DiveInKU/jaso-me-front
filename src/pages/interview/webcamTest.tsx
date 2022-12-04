@@ -8,15 +8,16 @@ import { Button } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import SocketVideo from 'components/socket-video';
-import { InterviewTitle } from 'types/interview/interview-type';
-
+import { InterviewInfo } from 'types/interview/interview-type';
+import { QuestionSet } from 'types/mypage/mypage-type';
 
 const WebcamTest: React.FC = () => {
 
     let navigate = useNavigate();
     const location = useLocation();
-    const state = location.state as InterviewTitle;
+    const state = location.state as InterviewInfo;
     const [title, setTitle] = useState<string>(state.title);
+    const [question,setQuestion] = useState<QuestionSet[]>(state.question);
     const [value, setValue] = useState<string>(""); // 마이크 테스트를 위한 text value
 
     const infoMessage: Array<string> =
@@ -24,9 +25,11 @@ const WebcamTest: React.FC = () => {
       "준비가 되었으면 면접 시작 버튼을 눌러주세요."];
 
     const goToInterviewRoom = () => {
-        let interviewTitle: InterviewTitle = { title: title }
-        stop();
-        navigate("/home/interview/webcamtest/interviewroom", {state: interviewTitle});
+      let InterviewInfo: InterviewInfo = { title: title, question: question}
+      console.log("webcamtest",InterviewInfo)
+      console.log("질문셋",question[0].content)
+      stop();
+      navigate("/home/interview/webcamtest/interviewroom", {state: InterviewInfo});
     }
 
   const { listen, listening, stop } = useSpeechRecognition({

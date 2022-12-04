@@ -1,9 +1,12 @@
+import { QuestionSet } from "types/mypage/mypage-type";
+
 export interface BubbleProps {
     text: string;
 };
 
-export interface InterviewTitle {
+export interface InterviewInfo {
     title: string;
+    question: QuestionSet[];
 }
 
 export interface History {
