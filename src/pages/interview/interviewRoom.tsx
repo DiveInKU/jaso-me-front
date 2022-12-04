@@ -5,7 +5,6 @@ import themes from "styles/themes";
 import styled from "styled-components";
 import iconMike from "../../assets/svgs/iconMike.svg";
 import iconNoMike from "../../assets/svgs/iconNoMike.svg";
-import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
@@ -17,6 +16,7 @@ import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
 import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewTitle } from "types/interview/interview-type";
+import { writeFile, writeFileSync } from "fs";
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
@@ -44,23 +44,34 @@ const InterviewRoom: React.FC = () => {
     { text: questions[0], type: HISTORY_TYPE.QUESTION },
   ]); // 질문 + 답변 기록 배열
   const [value, setValue] = useState<string>("");
-  const [isRecording, setIsRecording] = useState<boolean>(true);
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
 
-  // 화면+오디오 녹화
   const recordedChunks: string[] = [];
-  const [socketImg, setSocketImg] = useState('');
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ audio: true, video: true });
+  const [socketImg, setSocketImg] = useState<Blob>();
+  let videoBlob: Blob = null;
+  let recordedVideoURL: string = null;
+
+  let videoData: Blob[] = [];
+  let videoFile: File = null;
 
   const startInterviewRecording = () => {
-    startRecording();
+    
   };
 
+  useEffect(() => {
+    videoData.push(socketImg);
+  }, [socketImg]);
+
   const stopInterviewRecording = () => {
-    stopRecording();
-    setIsRecording(false);
+    makeVideoFile();
   };
+  
+  const makeVideoFile = () => {
+    videoBlob = new Blob(videoData, { type: "video/webm" });
+    recordedVideoURL = window.URL.createObjectURL(videoBlob);
+    let filename = title.replaceAll(' ', '_') + ".avi";
+    videoFile = new File([recordedVideoURL], filename);
+  }
 
   // 음성 인식
   const { speak } = useSpeechSynthesis();
@@ -69,7 +80,6 @@ const InterviewRoom: React.FC = () => {
       setValue(result);
     },
   });
-
 
   const changeShowingEmotion = (e: React.MouseEvent<HTMLButtonElement>) => {
     // api 요청 보내야함
@@ -82,10 +92,6 @@ const InterviewRoom: React.FC = () => {
       // 마지막 답변 저장
       const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
       setLogs([...logs, curAnswer]);
-
-      // 녹화 중지
-      // stopInterviewRecording();
-      // handleStopCapture();
       stop();
     } else {
       // 다음 질문 출력
@@ -102,12 +108,6 @@ const InterviewRoom: React.FC = () => {
     }
   };
 
-  // 최초 렌더링 시 녹화 시작
-  useEffect(() => {
-    // startInterviewRecording();
-    // handleStartCapture();
-  }, []);
-
   useEffect(() => {
     showEmotionPrediction(showingEmotion ? "true" : "false");
   }, [showingEmotion]);
@@ -121,19 +121,20 @@ const InterviewRoom: React.FC = () => {
   const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!listening)
       listen();
-  }
+  };
 
   // SocketVideo 컴포넌트에서 함수를 받아오기 위함
   let finishInterview = () => { }
   const finishConnector = (endSocket: () => void) => {
     finishInterview = endSocket;
-  }
+  };
 
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
     finishInterview();
+    stopInterviewRecording();
     calcInterviewFrequency();
-  }
+  };
 
   const calcInterviewFrequency = () => {
     let text = "";
@@ -149,7 +150,7 @@ const InterviewRoom: React.FC = () => {
         res.return_object.sentence.map((sen: any, idx: number) => {
           let words = sen.word;
           words.map((word: any, widx: number) => {
-            let w = word.text; // hi
+            let w = word.text;
             
             if (tempMap.get(w) == null) {
               tempMap.set(w, 1);
@@ -165,7 +166,7 @@ const InterviewRoom: React.FC = () => {
           tempWordCounts.push({word: word, count: count});
         })
         tempWordCounts.sort((a, b) => b.count - a.count);
-        navigate("/home/interviewResult", { state: { recordeds: recordedChunks, wordCounts: tempWordCounts.slice(0,5) } });
+        navigate("/home/interviewResult", { state: { recordeds: videoData, wordCounts: tempWordCounts.slice(0,5), videoFile: videoFile, videoUrl: recordedVideoURL } });
       })
   }
 
