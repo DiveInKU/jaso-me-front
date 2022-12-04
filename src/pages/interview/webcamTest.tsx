@@ -27,6 +27,7 @@ const WebcamTest: React.FC = () => {
     const goToInterviewRoom = () => {
       let InterviewInfo: InterviewInfo = { title: title, question: question}
       console.log("webcamtest",InterviewInfo)
+      console.log("질문셋",question[0].content)
       stop();
       navigate("/home/interview/webcamtest/interviewroom", {state: InterviewInfo});
     }

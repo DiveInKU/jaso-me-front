@@ -5,7 +5,6 @@ import themes from "styles/themes";
 import styled from "styled-components";
 import iconMike from "../../assets/svgs/iconMike.svg";
 import iconNoMike from "../../assets/svgs/iconNoMike.svg";
-import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
@@ -15,9 +14,9 @@ import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
-import { getEmotionAnalysisResult } from "apis/interviewService";
+import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewInfo } from "types/interview/interview-type";
-import { QuestionSet } from 'types/mypage/mypage-type';
+import { QuestionSet } from "types/mypage/mypage-type";
 
 
 const InterviewRoom: React.FC = () => {
@@ -26,7 +25,8 @@ const InterviewRoom: React.FC = () => {
   const state = location.state as InterviewInfo;
   const [title, setTitle] = useState<string>(state.title);
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
-
+  const [questions,setQuestions] = useState<string[]>([]);
+  
   const answers: Array<string> = [
     "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
     "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
@@ -73,7 +73,7 @@ const InterviewRoom: React.FC = () => {
   };
 
   const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (stage == question.length - 1) {
+    if (stage === question.length - 1) {
       listen();
       // 마지막 답변 저장
       const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
@@ -98,8 +98,14 @@ const InterviewRoom: React.FC = () => {
     }
   };
 
-  // 최초 렌더링 시 녹화 시작
+  // 최초 렌더링 시작
   useEffect(() => {
+    console.log("content 값",question[0].content)
+    question.map((text, idx) => {
+      questions.push(text.content);
+    });
+
+    
     // startInterviewRecording();
     // handleStartCapture();
   }, []);
@@ -110,8 +116,10 @@ const InterviewRoom: React.FC = () => {
 
   // stage가 변할 때 마다 질문 읽어준다.
   useEffect(() => {
+    
     if (stage < 0) setStage(0);
-    speak({ text: question[stage].content });
+    console.log("이번 질문",questions[stage]);
+    speak({ text: questions[stage] });
   }, [stage]);
 
   const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -208,7 +216,7 @@ const InterviewRoom: React.FC = () => {
                 marginTop: 5 
               }}
             >
-              {stage == question.length - 1 ? "면접 종료" : "다음으로"}
+              {stage === question.length - 1 ? "면접 종료" : "다음으로"}
             </Button>
 
             <div onClick={handleSpeaking} style={{ cursor: "pointer", float: 'right', marginRight: 20, marginTop: 5 }}>

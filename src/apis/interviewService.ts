@@ -1,5 +1,4 @@
-import axios, { Axios, AxiosResponse } from "axios";
-import { API,  getCustomAPI, AI_OPEN_API } from "./api";
+import { getCustomAPI, AI_OPEN_API } from "./api";
 
 const showEmotionPrediction = async (show: string) => {
     return await getCustomAPI('http://localhost', '8000').get(`/emotion?show=${show}`)
