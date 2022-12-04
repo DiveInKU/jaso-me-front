@@ -1,3 +1,5 @@
+import { QuestionSet } from "types/mypage/mypage-type";
+
 export interface BubbleProps {
     text: string;
 };

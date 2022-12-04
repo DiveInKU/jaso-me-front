@@ -5,7 +5,6 @@ import themes from "styles/themes";
 import styled from "styled-components";
 import iconMike from "../../assets/svgs/iconMike.svg";
 import iconNoMike from "../../assets/svgs/iconNoMike.svg";
-import Webcam from "react-webcam";
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
@@ -15,9 +14,9 @@ import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
-import { getEmotionAnalysisResult } from "apis/interviewService";
+import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewInfo } from "types/interview/interview-type";
-import { QuestionSet } from 'types/mypage/mypage-type';
+import { QuestionSet } from "types/mypage/mypage-type";
 
 
 const InterviewRoom: React.FC = () => {
