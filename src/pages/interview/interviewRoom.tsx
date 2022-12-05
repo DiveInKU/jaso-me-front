@@ -10,12 +10,11 @@ import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE, WordCount } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
-import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
 import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
-import { InterviewInfo } from "types/interview/interview-type";
+import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
 import { writeFile, writeFileSync } from "fs";
 
@@ -27,6 +26,8 @@ const InterviewRoom: React.FC = () => {
   const [title, setTitle] = useState<string>(state.title);
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
   const [questions,setQuestions] = useState<string[]>([]);
+
+  const [histories, setHistories] = useState<HistorySet[]>([]);
   
   const answers: Array<string> = [
     "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
@@ -39,6 +40,7 @@ const InterviewRoom: React.FC = () => {
   const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
   const [logs, setLogs] = useState<History[]>([
     { text: question[0].content, type: HISTORY_TYPE.QUESTION },
+
   ]); // 질문 + 답변 기록 배열
   const [value, setValue] = useState<string>("");
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
@@ -57,6 +59,7 @@ const InterviewRoom: React.FC = () => {
 
   useEffect(() => {
     videoData.push(socketImg);
+    console.log(socketImg)
   }, [socketImg]);
 
   const stopInterviewRecording = () => {
@@ -84,17 +87,11 @@ const InterviewRoom: React.FC = () => {
   };
 
   const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (stage === question.length - 1) {
-      listen();
-      // 마지막 답변 저장
-      const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
-      setLogs([...logs, curAnswer]);
-      stop();
-    } else {
       // 다음 질문 출력
       setStage(stage + 1);
-
+      
       const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
+
       const nextQuestion: History = {
         text: question[stage + 1].content,
         type: HISTORY_TYPE.QUESTION,
@@ -102,14 +99,14 @@ const InterviewRoom: React.FC = () => {
 
       setLogs([...logs, curAnswer, nextQuestion]);
       stop();
-    }
   };
 
   // 최초 렌더링 시작
   useEffect(() => {
-    console.log("content 값",question[0].content)
     question.map((text, idx) => {
       questions.push(text.content);
+      let history = { question: text.content, answer: ""}
+      histories.push(history);
     });
   }, []);
 
@@ -117,17 +114,16 @@ const InterviewRoom: React.FC = () => {
     showEmotionPrediction(showingEmotion ? "true" : "false");
   }, [showingEmotion]);
 
-  // stage가 변할 때 마다 질문 읽어준다.
+  // tts : stage가 변할 때 마다 질문 읽어준다.
   useEffect(() => {
     
     if (stage < 0) setStage(0);
-    console.log("이번 질문",questions[stage]);
     speak({ text: questions[stage] });
   }, [stage]);
 
   const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!listening)
-      listen();
+    if (!listening) listen();
+    alert(stage);
   };
 
   // SocketVideo 컴포넌트에서 함수를 받아오기 위함
@@ -138,6 +134,14 @@ const InterviewRoom: React.FC = () => {
 
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
+
+    // // 마지막 답변 저장
+    const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
+    logs.push(curAnswer);
+    // setLogs([...logs, curAnswer]);
+    stop();
+    console.log(logs);
+
     finishInterview();
     stopInterviewRecording();
     calcInterviewFrequency();
@@ -145,15 +149,20 @@ const InterviewRoom: React.FC = () => {
 
   const calcInterviewFrequency = () => {
     let text = "";
-    answers.map((answer, idx) => {
-      text += (answer+" ");
+    logs.map((log, idx) => {
+      if (log.type == HISTORY_TYPE.ANSWER)
+        text += (log.text + " ");
     })
+
+    // answers.map((answer, idx) => {
+    //   text += (answer+" ");
+    // })
 
     let tempMap: Map<string, number> = new Map<string, number>();
 
     calcFrequency(text)
       .then((res) => {
-        console.log(res);
+        
         res.return_object.sentence.map((sen: any, idx: number) => {
           let words = sen.word;
           words.map((word: any, widx: number) => {
@@ -172,6 +181,7 @@ const InterviewRoom: React.FC = () => {
         tempMap.forEach((count, word) => {
           tempWordCounts.push({word: word, count: count});
         })
+
         tempWordCounts.sort((a, b) => b.count - a.count);
         navigate("/home/interviewResult", { state: { recordeds: videoData, wordCounts: tempWordCounts.slice(0,5), videoFile: videoFile, videoUrl: recordedVideoURL } });
       })

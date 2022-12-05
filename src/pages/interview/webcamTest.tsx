@@ -25,15 +25,15 @@ const WebcamTest: React.FC = () => {
       "준비가 되었으면 면접 시작 버튼을 눌러주세요."];
 
     const goToInterviewRoom = () => {
-      let InterviewInfo: InterviewInfo = { title: title, question: question}
-      console.log("webcamtest",InterviewInfo)
-      console.log("질문셋",question[0].content)
+      let InterviewInfo: InterviewInfo = { title: title, question: question }
       stop();
+      console.log("mike 정지");
       navigate("/home/interview/webcamtest/interviewroom", {state: InterviewInfo});
     }
 
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result: string) => {
+      console.log(result);
       setValue(result);
     },
   });
@@ -50,7 +50,6 @@ const WebcamTest: React.FC = () => {
                 웹캠 및 마이크 테스트
             </Header>
             <GlobalStyled.ViewCol style={{ width: 500, height: 400}}>
-                {/* <Webcam mirrored={true}/> */}
                 <SocketVideo finishConnector={() => { } } webSocketUrl={'ws://localhost:8000/test-cam'} showing={false} recordedChunks={[]} onSetSocketImg={() => {}} ></SocketVideo>
             </GlobalStyled.ViewCol>
 
