@@ -17,7 +17,8 @@ import SocketVideo from "components/socket-video"
 import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewInfo } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
-
+import Webcam from "react-webcam";
+import EmbeddedWebcam from "./embeddedWebcam";
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
@@ -181,7 +182,8 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+          <EmbeddedWebcam></EmbeddedWebcam>
+          {/* <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo> */}
 
           <BlueBox
             className="media-box"
