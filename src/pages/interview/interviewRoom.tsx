@@ -154,15 +154,11 @@ const InterviewRoom: React.FC = () => {
         text += (log.text + " ");
     })
 
-    // answers.map((answer, idx) => {
-    //   text += (answer+" ");
-    // })
-
     let tempMap: Map<string, number> = new Map<string, number>();
 
     calcFrequency(text)
       .then((res) => {
-        
+
         res.return_object.sentence.map((sen: any, idx: number) => {
           let words = sen.word;
           words.map((word: any, widx: number) => {
@@ -207,8 +203,6 @@ const InterviewRoom: React.FC = () => {
               variant="contained"
               onClick={changeShowingEmotion}
               style={{
-                // backgroundColor: 'white',
-                // color: themes.colors.main_blue,
                 backgroundColor: "transparent",
                 padding: 0,
                 fontSize: "1.8rem",
