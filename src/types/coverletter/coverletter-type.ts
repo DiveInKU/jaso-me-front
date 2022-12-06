@@ -21,6 +21,5 @@ export interface CoverLetter {
     qnas: Array<QnAPair>
     category: string,
     title: string,
-    
 }
 

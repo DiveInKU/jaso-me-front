@@ -20,10 +20,8 @@ import WordCountChart from 'components/InterviewChart/WordCountChart';
 import ScatterChart from 'components/InterviewChart/ScatterChart'; 
 
 interface stateType {
-    // src: string;
-    // happyPer: string;
-    recordeds: string[];
     wordCounts: WordCount[];
+    videoUrl: string;
 }
 
 interface result {
@@ -35,7 +33,7 @@ interface result {
 const InterviewResult: React.FC = () => {
     const location = useLocation();
     const state = location.state as stateType;
-    const [interviewSrc, setInterviewSrc] = useState<string>('');
+    const [interviewSrc, setInterviewSrc] = useState('');
 
     const [resultSrc, setResultSrc] = useState('');
     const [happyPer, setHappyPer] = useState('');
@@ -95,11 +93,6 @@ const InterviewResult: React.FC = () => {
       setXData(data.x_data);
       setYData(data.y_data);
     });
-
-    if (state && state.recordeds) {
-        const recordedBlob = new Blob(state.recordeds, { type: "video/webm" });
-        setInterviewSrc(URL.createObjectURL(recordedBlob));
-    }
   }, []);
 
   useEffect(() => {
@@ -129,7 +122,7 @@ const InterviewResult: React.FC = () => {
     const onExit = () => {
         setIsReplaying(false);
         // Revoke Blob URL after DOM updates..
-        if(resultSrc)
+        if(resultSrc) 
           window.URL.revokeObjectURL(resultSrc);
     }
 
@@ -184,15 +177,16 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <video
-                    src={interviewSrc}
+                    src={state.videoUrl}
                     controls
                     autoPlay
-                    loop
                     style={{
                       width: "100%",
                       height: "100%",
                     }}
-                  />
+                  >
+                    Sorry, your browser doesn't support embedded videos.
+                  </video>
                 </div>
               </GlobalStyled.ViewCol>
               <GlobalStyled.ViewCol

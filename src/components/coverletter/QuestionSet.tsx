@@ -9,9 +9,6 @@ import { checkSpell } from 'apis/coverLetterService';
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, defaultQuestion, defaultAnswer, defaultCategory}) => {
-
-    //let content: string[] = [];
-
     const [question, setQuestion] = useState<string>(defaultQuestion);
     const [answer, setAnswer] = useState<string>(defaultAnswer);
     const [content, setContent] = useState<string[]>([]);
