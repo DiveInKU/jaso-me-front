@@ -16,6 +16,7 @@ import SocketVideo from "components/socket-video"
 import { calcFrequency } from "apis/interviewService";
 import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
+import { saveVideo } from "apis/interviewService";
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
@@ -87,7 +88,7 @@ const InterviewRoom: React.FC = () => {
   const startInterviewRecording = async () => {
     // desktop stream
     desktopStream.current = await window.navigator.mediaDevices.getDisplayMedia({
-      video: { width: 640 , height: 480 }, audio: true
+      video: { width: 1280 , height: 720 }, audio: true
     })
 
     // auido stream
@@ -113,10 +114,6 @@ const InterviewRoom: React.FC = () => {
     mediaRecorder.current.onstop = async () => {
       videoBlob.current = new Blob(blobs, {type: 'video/webm'});
       videoUrl.current = window.URL.createObjectURL(videoBlob.current);
-      // let filename = title.replaceAll(' ', '_') + ".webm";
-      // videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
-      // let directoryPath = `${process.env.PUBLIC_URL}/videos`;
-      // let totalPath = `${directoryPath}/${filename}`;
     }
 
     mediaRecorder.current.start();
@@ -227,7 +224,17 @@ const InterviewRoom: React.FC = () => {
           histories.push(temp);
         }
 
-        navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
+        let formData = new FormData();
+        let file = new File([videoBlob.current], "test.webm");
+        formData.append("video", file);
+
+        saveVideo(formData)
+          .then((res) => {
+            let result: string = res.result;
+            navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoSrc: videoUrl.current, videoResult: result } });
+          })
+          .catch((err) => console.log(err))
+
       })
   }
 

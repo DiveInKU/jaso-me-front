@@ -4,14 +4,14 @@ import TopNavigationBar from 'components/common/TopNavigationBar';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
-import { HistorySet, Interview, WordCount } from 'types/interview/interview-type';
+import { HistorySet, Interview, MockInterview, WordCount } from 'types/interview/interview-type';
 import exitIcon from '../../assets/svgs/exitIcon.svg';
 import jasoMeLogo from '../../assets/svgs/jasoMeLogo.svg';
 import { Button } from "@mui/material";
 import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
 import { useLocation } from "react-router-dom";
-import { getEmotionAnalysisResult } from "apis/interviewService";
+import { getEmotionAnalysisResult, createInterview } from "apis/interviewService";
 import InterviewChart from 'components/InterviewChart/RadarChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
 import ScatterChart from 'components/InterviewChart/ScatterChart'; 
@@ -20,6 +20,7 @@ interface stateType {
     title: String;
     histories: HistorySet[];
     wordCounts: WordCount[];
+    videoSrc: string;
     videoUrl: string;
 }
 
@@ -68,12 +69,12 @@ const InterviewResult: React.FC = () => {
   useEffect(() => {
     getEmotionAnalysisResult()
     .then((data)=>{
-      console.log('data...', data)
       setEmotions(data.emotions)
       setValues(data.values)
       setXData(data.x_data);
       setYData(data.y_data);
     });
+
   }, []);
 
   useEffect(() => {
@@ -92,7 +93,6 @@ const InterviewResult: React.FC = () => {
           }
         })
       );
-      console.log('combinedData', xData, yData);
     }
   }, [xData, yData]);
 
@@ -110,6 +110,26 @@ const InterviewResult: React.FC = () => {
     const onClickStatistics = () => {
         if (isHistory)
             setIsHistory(false);
+    }
+
+    const onSave = () => {
+      
+      const body = {
+        "title": state.title,
+        "qnas": state.histories,
+        "emotions": emotions,
+        "values": values,
+        "wordCounts": state.wordCounts,
+        "x": xData,
+        "y": yData,
+        "videoUrl": state.videoUrl 
+      }
+
+      console.log(body);
+
+      createInterview(body)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
     }
 
     return (
@@ -145,6 +165,7 @@ const InterviewResult: React.FC = () => {
                   <div style={{ marginLeft: 140 }} className="interview-title">
                     {state.title}
                   </div>
+                  <Button onClick={onSave}>저장</Button>
                 </BlueBox>
                 <div
                   style={{
@@ -153,7 +174,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <video
-                    src={state.videoUrl}
+                    src={state.videoSrc}
                     controls
                     autoPlay
                     style={{
