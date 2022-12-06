@@ -166,8 +166,8 @@ const InterviewResult: React.FC = () => {
                       marginLeft: 10,
                     }}
                   />
-                  <div style={{ marginLeft: 140 }} className="interview-title">
-                    2022 상반기 네이버 공채 모의 면접
+                  <div style={{ marginLeft: 300 }} className="interview-title">
+                    모의면접 TEST
                   </div>
                 </BlueBox>
                 <div
@@ -232,7 +232,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                  
+
                   <div
                     style={{
                       fontSize: 22,
