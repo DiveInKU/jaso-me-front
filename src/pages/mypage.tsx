@@ -12,7 +12,6 @@ import { QuestionSet } from 'types/mypage/mypage-type';
 
 const MyPage: React.FC = () => {
 
-    let navigate = useNavigate();
     const [pairs,setPairs] = useState<QuestionSet[]>([{content: ""}]);
 
     // 최초 렌더링 시 사용자 정의 질문 조회
@@ -22,20 +21,14 @@ const MyPage: React.FC = () => {
                 console.log('result', res.result);
                 setPairs(res.result);
                 console.log('pair', pairs);
-                // let len = res.result.length;
-                // const items=[];
-                // for(let i=0; i<len;i++){
-                //     items.push(res.result[i].content)
-                // }W
-                // setQusList(items)
-                // //console.log(items);
-                // console.log(qusList);
+
             })
     }, []);
 
     const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newQuestion = { content: "" };
         setPairs([...pairs, newQuestion])
+        console.log('addquestion',pairs);
     }
 
     const saveQustions = async () => {
@@ -46,10 +39,11 @@ const MyPage: React.FC = () => {
     }
 
     const onSetPair = (content: string, index: number) => {
-        const pair: QuestionSet = { content: content}
+        const pair: QuestionSet = { content: content }
         let tempPairs = pairs;
         tempPairs.splice(index,1,pair)
         setPairs(tempPairs)
+        //console.log('onsetpair',pairs)
     }
 
     return(
@@ -62,7 +56,7 @@ const MyPage: React.FC = () => {
                     {pairs.map((pair, idx) => {
                         return (
                             <UserQuestionSet
-                                key={pair.content} 
+                                key={idx+pair.content} 
                                 index={idx} 
                                 onSetPair={onSetPair} 
                                 defaultContent={pair.content}
