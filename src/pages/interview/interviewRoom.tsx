@@ -16,6 +16,7 @@ import SocketVideo from "components/socket-video"
 import { calcFrequency } from "apis/interviewService";
 import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
+import { saveVideo } from "apis/interviewService";
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
@@ -55,6 +56,8 @@ const InterviewRoom: React.FC = () => {
   let videoBlob = useRef<Blob>(null);
   let videoUrl = useRef<string>(null);
 
+  const [isStartRecording, setIsStartRecording] = useState(false);
+
   // 비디오, 오디오스트림 연결
   const mergeAudioStreams = (desktopStream: MediaStream, voiceStream: MediaStream) => {
     const context = new AudioContext();
@@ -85,7 +88,7 @@ const InterviewRoom: React.FC = () => {
   const startInterviewRecording = async () => {
     // desktop stream
     desktopStream.current = await window.navigator.mediaDevices.getDisplayMedia({
-      video: { width: 640 , height: 480 }, audio: true
+      video: { width: 1280 , height: 720 }, audio: true
     })
 
     // auido stream
@@ -104,16 +107,13 @@ const InterviewRoom: React.FC = () => {
     mediaRecorder.current.ondataavailable = (event) => blobs.push(event.data);
 
     mediaRecorder.current.onstart = () => { 
+      setIsStartRecording(true);
       setStage(0);
     }
 
     mediaRecorder.current.onstop = async () => {
       videoBlob.current = new Blob(blobs, {type: 'video/webm'});
       videoUrl.current = window.URL.createObjectURL(videoBlob.current);
-      // let filename = title.replaceAll(' ', '_') + ".webm";
-      // videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
-      // let directoryPath = `${process.env.PUBLIC_URL}/videos`;
-      // let totalPath = `${directoryPath}/${filename}`;
     }
 
     mediaRecorder.current.start();
@@ -214,7 +214,27 @@ const InterviewRoom: React.FC = () => {
         })
 
         tempWordCounts.sort((a, b) => b.count - a.count);
-        navigate("/home/interviewResult", { state: { wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
+
+        let histories: HistorySet[] = []
+        for (let i=0; i<logs.length; i+=2) {
+          let temp = {
+            question: logs[i].text,
+            answer: logs[i+1].text
+          }
+          histories.push(temp);
+        }
+
+        let formData = new FormData();
+        let file = new File([videoBlob.current], "test.webm");
+        formData.append("video", file);
+
+        saveVideo(formData)
+          .then((res) => {
+            let result: string = res.result;
+            navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoSrc: videoUrl.current, videoResult: result } });
+          })
+          .catch((err) => console.log(err))
+
       })
   }
 
@@ -243,9 +263,8 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-            <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+            {isStartRecording ? <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo> : null}
      
-
           <BlueBox
             className="media-box"
             style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80 }}>

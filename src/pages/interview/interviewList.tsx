@@ -19,6 +19,7 @@ const InterviewList: React.FC = () => {
     const [selectedInterview, setSelectedInterview] = useState<InterviewMeta>({interviewId: -1, title: ""});
     
     // 선택한 인터뷰 상세 정보 (동영상 + 대화기록 + 통계)
+    // TODO : Interview type 서버랑 맞추기
     const [curInterview, setCurInterview] = useState<Interview>();
 
     const [isReplyaing, setIsReplaying] = useState<boolean>(false);
@@ -78,7 +79,6 @@ const InterviewList: React.FC = () => {
             histories: histories,
             gazeUrl: '',
             smileUrl: ''};
-        
         setCurInterview(tempInterview);
    };
 

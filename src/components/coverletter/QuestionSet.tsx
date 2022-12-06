@@ -34,7 +34,6 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const qChange=(e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
         onSetQnas(question, answer, index);
-        //console.log('질문',question);
     }
 
     const aChange=(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +51,6 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const CopyClipBoard = async(text:string) => {
         try{
             await navigator.clipboard.writeText(text);
-            //alert('클립보드에 복사되었습니다.')
         }catch(error){
             alert('복사 실패,,')
         }
@@ -87,8 +85,9 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                 let obj = JSON.parse(data);
                 let temp = obj.message.result.notag_html
                 let result = temp.replaceAll('<br>', '\n');
+                result = result.replaceAll('&#39;', '\'');
 
-                setAnswer(result);
+                setAnswer(decodeURI(result));
                 setWordCount(result.length);
             })
             .catch((err) => console.log(err))
