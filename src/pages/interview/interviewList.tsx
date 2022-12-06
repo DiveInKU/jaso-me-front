@@ -78,7 +78,6 @@ const InterviewList: React.FC = () => {
             histories: histories,
             gazeUrl: '',
             smileUrl: ''};
-        
         setCurInterview(tempInterview);
    };
 

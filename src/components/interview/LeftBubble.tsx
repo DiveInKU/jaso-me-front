@@ -14,9 +14,9 @@ const LeftBubble: React.FC<BubbleProps> = ({ text }) => {
                 margin: 20,
                 backgroundColor: themes.colors.main_blue,
                 color: themes.colors.white,
-                borderTopRightRadius: 6,
-                borderBottomLeftRadius: 6,
-                borderBottomRightRadius: 6
+                borderTopRightRadius: 15,
+                borderBottomLeftRadius: 15,
+                borderBottomRightRadius: 15
             }}>
             {text}
         </div>

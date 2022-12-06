@@ -55,6 +55,8 @@ const InterviewRoom: React.FC = () => {
   let videoBlob = useRef<Blob>(null);
   let videoUrl = useRef<string>(null);
 
+  const [isStartRecording, setIsStartRecording] = useState(false);
+
   // 비디오, 오디오스트림 연결
   const mergeAudioStreams = (desktopStream: MediaStream, voiceStream: MediaStream) => {
     const context = new AudioContext();
@@ -104,6 +106,7 @@ const InterviewRoom: React.FC = () => {
     mediaRecorder.current.ondataavailable = (event) => blobs.push(event.data);
 
     mediaRecorder.current.onstart = () => { 
+      setIsStartRecording(true);
       setStage(0);
     }
 
@@ -214,7 +217,17 @@ const InterviewRoom: React.FC = () => {
         })
 
         tempWordCounts.sort((a, b) => b.count - a.count);
-        navigate("/home/interviewResult", { state: { wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
+
+        let histories: HistorySet[] = []
+        for (let i=0; i<logs.length; i+=2) {
+          let temp = {
+            question: logs[i].text,
+            answer: logs[i+1].text
+          }
+          histories.push(temp);
+        }
+
+        navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
       })
   }
 
@@ -243,9 +256,8 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-            <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+            {isStartRecording ? <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo> : null}
      
-
           <BlueBox
             className="media-box"
             style={{ display: 'block', flex: 1, paddingLeft: 30, paddingRight: 30, height: 80 }}>

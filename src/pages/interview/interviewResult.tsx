@@ -4,9 +4,7 @@ import TopNavigationBar from 'components/common/TopNavigationBar';
 import styled from 'styled-components';
 import themes from 'styles/themes';
 import GlobalStyled from 'styles/GlobalStyled';
-import ReactPlayer from 'react-player'
-import ReplayIcon from 'components/interview/ReplayIcon';
-import { History, HISTORY_TYPE, Interview, InterviewMeta, WordCount } from 'types/interview/interview-type';
+import { HistorySet, Interview, WordCount } from 'types/interview/interview-type';
 import exitIcon from '../../assets/svgs/exitIcon.svg';
 import jasoMeLogo from '../../assets/svgs/jasoMeLogo.svg';
 import { Button } from "@mui/material";
@@ -14,12 +12,13 @@ import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
 import { useLocation } from "react-router-dom";
 import { getEmotionAnalysisResult } from "apis/interviewService";
-import { getCustomAPI } from "../../apis/api";
 import InterviewChart from 'components/InterviewChart/RadarChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
 import ScatterChart from 'components/InterviewChart/ScatterChart'; 
 
 interface stateType {
+    title: String;
+    histories: HistorySet[];
     wordCounts: WordCount[];
     videoUrl: string;
 }
@@ -29,11 +28,9 @@ interface result {
   happyPer: string;
 }
 
-
 const InterviewResult: React.FC = () => {
     const location = useLocation();
     const state = location.state as stateType;
-    const [interviewSrc, setInterviewSrc] = useState('');
 
     const [resultSrc, setResultSrc] = useState('');
     const [happyPer, setHappyPer] = useState('');
@@ -45,13 +42,9 @@ const InterviewResult: React.FC = () => {
     const [yData, setYData] = useState<number[]>();
     const [combinedData, setCombinedData] = useState<object>();
 
-    const [interviewList, setInterviewList] = useState<InterviewMeta[]>();
-    const [selectedInterview, setSelectedInterview] = useState<InterviewMeta>({interviewId: -1, title: ""});
-    
     // 선택한 인터뷰 상세 정보 (동영상 + 대화기록 + 통계)
     const [curInterview, setCurInterview] = useState<Interview>();
 
-    const [isReplyaing, setIsReplaying] = useState<boolean>(true);
     const [isHistory, setIsHistory] = useState<boolean>(true);
 
     const getHappyMessage = () => {
@@ -72,18 +65,6 @@ const InterviewResult: React.FC = () => {
         }
     }
   
-
-    // const retrieveHappyResult = async () => {
-    //   await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
-    //       .then((res) => { 
-    //           console.log('happy!!!', res);
-    //           console.log('getHappyResult', res.data)
-    //           setEmotions(res.data.emotions)
-    //           setValues(res.data.values)
-    //           return res.data
-    //       })
-    //       .catch((e) => console.log(e));
-    // };
   useEffect(() => {
     getEmotionAnalysisResult()
     .then((data)=>{
@@ -115,12 +96,7 @@ const InterviewResult: React.FC = () => {
     }
   }, [xData, yData]);
 
-    const onReplay = () => {
-        setIsReplaying(true);
-    }; 
-
     const onExit = () => {
-        setIsReplaying(false);
         // Revoke Blob URL after DOM updates..
         if(resultSrc) 
           window.URL.revokeObjectURL(resultSrc);
@@ -167,7 +143,7 @@ const InterviewResult: React.FC = () => {
                     }}
                   />
                   <div style={{ marginLeft: 140 }} className="interview-title">
-                    2022 상반기 네이버 공채 모의 면접
+                    {state.title}
                   </div>
                 </BlueBox>
                 <div
@@ -203,19 +179,19 @@ const InterviewResult: React.FC = () => {
                 >
                   <GlobalStyled.ViewRow style={{ height: 30 }}>
                     <WhiteBox
-                      // onClick={onClickHistory}
-                      style={{
-                        backgroundColor: themes.colors.main_blue,
-                        color: themes.colors.white,
+                      onClick={onClickHistory}
+                      style={{ 
+                        backgroundColor: isHistory ? themes.colors.white : themes.colors.main_blue,
+                        color: isHistory ? themes.colors.black : themes.colors.white
                       }}
                     >
                       대화 기록
                     </WhiteBox>
                     <WhiteBox
-                      // onClick={onClickStatistics}
-                      style={{
-                        backgroundColor: themes.colors.white,
-                        color: themes.colors.black
+                      onClick={onClickStatistics}
+                      style={{ 
+                        backgroundColor: !isHistory ? themes.colors.white : themes.colors.main_blue,
+                        color: !isHistory ? themes.colors.black : themes.colors.white
                       }}
                     >
                       통계
@@ -231,21 +207,34 @@ const InterviewResult: React.FC = () => {
                     width:'100%',
                   }}
                 >
-                  <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                  <ScatterChart combinedData={combinedData}></ScatterChart>
-                  <div
-                    style={{
-                      fontSize: 22,
-                      fontWeight: "bold",
-                      marginBottom: 15,
-                      padding: '20px',
-                      paddingTop: '50px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {happyMessage}
-                  </div>
-                  <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
+                  {
+                    isHistory ? state.histories.map((history, idx)=> {
+                      return (
+                        <>
+                          <LeftBubble text={history.question} /> 
+                          <RightBubble text={history.answer} />
+                        </>
+                      )
+                    })
+                    :
+                    <>
+                      <InterviewChart emotions={emotions} values={values}></InterviewChart>
+                      <ScatterChart combinedData={combinedData}></ScatterChart>
+                      <div
+                        style={{
+                        fontSize: 22,
+                        fontWeight: "bold",
+                        marginBottom: 15,
+                        padding: '20px',
+                        paddingTop: '50px',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {happyMessage}
+                    </div>
+                      <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
+                    </>
+                }
                 </GlobalStyled.ViewCol>
               </GlobalStyled.ViewCol>
             </GlobalStyled.ViewRow>
