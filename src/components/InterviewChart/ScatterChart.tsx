@@ -17,24 +17,30 @@ export const options = {
     x: {
         beginAtZero: true,
         min: 0.2,
-        max: 0.7,
+        max: 0.75,
+        ticks: {
+          display: false,
+        }
       },
     y: {
       beginAtZero: true,
       min: 0.2,
-      max: 0.7,
+      max: 0.85,
+      ticks: {
+        display: false,
+      }
     },
   },
 };
 
-const ScatterChart: React.FC<ScatterChartProps> = ({combinedData: combinedData}) => {
+const ScatterChart: React.FC<ScatterChartProps> = ({combinedData}) => {
     const data = {
             datasets: [
                 {
                     label: '시선',
                     data: combinedData,
-                    backgroundColor: 'rgba(255, 99, 132, 1)',
-                    pointRadius: 8,
+                    backgroundColor: 'rgba(255, 99, 132, 0.3)',
+                    pointRadius: 5,
                 }
             ]
         };
