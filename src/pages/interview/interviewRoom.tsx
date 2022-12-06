@@ -10,52 +10,127 @@ import LeftBubble from "components/interview/LeftBubble";
 import RightBubble from "components/interview/RightBubble";
 import { History, HISTORY_TYPE, WordCount } from "types/interview/interview-type";
 import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
-import { ReactMediaRecorder, useReactMediaRecorder } from "react-media-recorder";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
-import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
-import { InterviewInfo } from "types/interview/interview-type";
+import { calcFrequency } from "apis/interviewService";
+import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
-
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const state = location.state as InterviewInfo;
+
+  // 면접 제목
   const [title, setTitle] = useState<string>(state.title);
+
+  // 생성 된 질문
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
   const [questions,setQuestions] = useState<string[]>([]);
-  
-  const answers: Array<string> = [
-    "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
-    "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
-    "가장 몰입한 경험이라고 생각해보면 이제 할 수 있을것 같습니다.",
-    "목표를 달성하는 방법을 생각해봤을 이제 때 음 협업이란 입니다.",
-    "갈등 경험과 해결한 방법을 말해달라면 이제 입니다."
-  ]
 
-  const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
+  // 현재 질문 단계
+  const [stage, setStage] = useState<number>(-1);
+
+  // 질문 + 답변 기록 배열
   const [logs, setLogs] = useState<History[]>([
     { text: question[0].content, type: HISTORY_TYPE.QUESTION },
-  ]); // 질문 + 답변 기록 배열
+  ]); 
+  
+  // 음성 인식 값 
   const [value, setValue] = useState<string>("");
-  const [isRecording, setIsRecording] = useState<boolean>(true);
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
 
-  // 화면+오디오 녹화
+  // 녹화 관련
   const recordedChunks: string[] = [];
-  const [socketImg, setSocketImg] = useState('');
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ audio: true, video: true });
+  const [socketImg, setSocketImg] = useState<Blob>();
 
-  const startInterviewRecording = () => {
-    startRecording();
+  // media recorder
+  const mediaRecorder = useRef<MediaRecorder>(null);
+  let blobs: Blob[] = [];
+
+  let desktopStream = useRef<MediaStream>(null);
+  let audioStream = useRef<MediaStream>(null);
+  let stream = useRef<MediaStream>(null);
+  let videoBlob = useRef<Blob>(null);
+  let videoUrl = useRef<string>(null);
+
+  // 비디오, 오디오스트림 연결
+  const mergeAudioStreams = (desktopStream: MediaStream, voiceStream: MediaStream) => {
+    const context = new AudioContext();
+    const destination = context.createMediaStreamDestination();
+
+    let hasDesktop = false;
+    let hasVoice = false;
+
+    if (desktopStream && desktopStream.getAudioTracks().length > 0) {
+      const source1 = context.createMediaStreamSource(desktopStream);
+      const desktopGain = context.createGain();
+      desktopGain.gain.value = 0.7;
+      source1.connect(desktopGain).connect(destination);
+      hasDesktop = true;
+    }
+    
+    if (voiceStream && voiceStream.getAudioTracks().length > 0) {
+      const source2 = context.createMediaStreamSource(voiceStream);
+      const voiceGain = context.createGain();
+      voiceGain.gain.value = 0.7;
+      source2.connect(voiceGain).connect(destination);
+      hasVoice = true;
+    }
+      
+    return (hasDesktop || hasVoice) ? destination.stream.getAudioTracks() : [];
+  };
+
+  const startInterviewRecording = async () => {
+    // desktop stream
+    desktopStream.current = await window.navigator.mediaDevices.getDisplayMedia({
+      video: { width: 640 , height: 480 }, audio: true
+    })
+
+    // auido stream
+    audioStream.current = await window.navigator.mediaDevices.getUserMedia({ 
+      audio: true, video: false
+    });
+
+    const tracks = [
+      ...desktopStream.current.getVideoTracks(),
+      ...mergeAudioStreams(desktopStream.current, audioStream.current)
+    ];
+
+    stream.current = new MediaStream(tracks);
+
+    mediaRecorder.current = new MediaRecorder(stream.current, {mimeType: 'video/webm; codecs=vp9,opus'});
+    mediaRecorder.current.ondataavailable = (event) => blobs.push(event.data);
+
+    mediaRecorder.current.onstart = () => { 
+      setStage(0);
+    }
+
+    mediaRecorder.current.onstop = async () => {
+      videoBlob.current = new Blob(blobs, {type: 'video/webm'});
+      videoUrl.current = window.URL.createObjectURL(videoBlob.current);
+      // let filename = title.replaceAll(' ', '_') + ".webm";
+      // videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
+      // let directoryPath = `${process.env.PUBLIC_URL}/videos`;
+      // let totalPath = `${directoryPath}/${filename}`;
+    }
+
+    mediaRecorder.current.start();
+    console.log(mediaRecorder);
+    console.log("media stream 생성");
   };
 
   const stopInterviewRecording = () => {
-    stopRecording();
-    setIsRecording(false);
+    console.log(mediaRecorder.current);
+    mediaRecorder.current.stop();
+    console.log("media stream 해제");
+
+    // stream 해제
+    desktopStream.current.getTracks().forEach(s => s.stop())
+    audioStream.current.getTracks().forEach(s => s.stop())
+    desktopStream = null;
+    audioStream = null;
   };
 
   // 음성 인식
@@ -66,28 +141,16 @@ const InterviewRoom: React.FC = () => {
     },
   });
 
-
   const changeShowingEmotion = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // api 요청 보내야함
     setShowingEmotion(!showingEmotion);
   };
 
   const moveToNext = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (stage === question.length - 1) {
-      listen();
-      // 마지막 답변 저장
-      const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
-      setLogs([...logs, curAnswer]);
-
-      // 녹화 중지
-      // stopInterviewRecording();
-      // handleStopCapture();
-      stop();
-    } else {
       // 다음 질문 출력
       setStage(stage + 1);
-
+      
       const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
+
       const nextQuestion: History = {
         text: question[stage + 1].content,
         type: HISTORY_TYPE.QUESTION,
@@ -95,65 +158,46 @@ const InterviewRoom: React.FC = () => {
 
       setLogs([...logs, curAnswer, nextQuestion]);
       stop();
-    }
   };
 
-  // 최초 렌더링 시작
-  useEffect(() => {
-    console.log("content 값",question[0].content)
-    question.map((text, idx) => {
-      questions.push(text.content);
-    });
-
-    
-    // startInterviewRecording();
-    // handleStartCapture();
-  }, []);
-
-  useEffect(() => {
-    showEmotionPrediction(showingEmotion ? "true" : "false");
-  }, [showingEmotion]);
-
-  // stage가 변할 때 마다 질문 읽어준다.
-  useEffect(() => {
-    
-    if (stage < 0) setStage(0);
-    console.log("이번 질문",questions[stage]);
-    speak({ text: questions[stage] });
-  }, [stage]);
-
   const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!listening)
-      listen();
-  }
+    if (!listening) listen();
+  };
 
   // SocketVideo 컴포넌트에서 함수를 받아오기 위함
   let finishInterview = () => { }
   const finishConnector = (endSocket: () => void) => {
     finishInterview = endSocket;
-  }
+  };
 
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
+    // 마지막 답변 저장
+    const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
+    logs.push(curAnswer);
+    stop();
+
     finishInterview();
+    stopInterviewRecording();
     calcInterviewFrequency();
-  }
+  };
 
   const calcInterviewFrequency = () => {
     let text = "";
-    answers.map((answer, idx) => {
-      text += (answer+" ");
+    logs.map((log, idx) => {
+      if (log.type == HISTORY_TYPE.ANSWER)
+        text += (log.text + " ");
     })
 
     let tempMap: Map<string, number> = new Map<string, number>();
 
     calcFrequency(text)
       .then((res) => {
-        console.log(res);
+
         res.return_object.sentence.map((sen: any, idx: number) => {
           let words = sen.word;
           words.map((word: any, widx: number) => {
-            let w = word.text; // hi
+            let w = word.text;
             
             if (tempMap.get(w) == null) {
               tempMap.set(w, 1);
@@ -168,10 +212,28 @@ const InterviewRoom: React.FC = () => {
         tempMap.forEach((count, word) => {
           tempWordCounts.push({word: word, count: count});
         })
+
         tempWordCounts.sort((a, b) => b.count - a.count);
-        navigate("/home/interviewResult", { state: { recordeds: recordedChunks, wordCounts: tempWordCounts.slice(0,5) } });
+        navigate("/home/interviewResult", { state: { wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
       })
   }
+
+  // 최초 렌더링 시작
+  useEffect(() => {
+    question.map((text, idx) => {
+      questions.push(text.content);
+    });
+    startInterviewRecording();
+  }, []);
+
+  useEffect(() => {
+    showEmotionPrediction(showingEmotion ? "true" : "false");
+  }, [showingEmotion]);
+
+  // tts : stage가 변할 때 마다 질문 읽어준다.
+  useEffect(() => {
+    speak({ text: questions[stage] });
+  }, [stage]);
 
   return (
     <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background }}>
@@ -181,7 +243,8 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+            <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+     
 
           <BlueBox
             className="media-box"
@@ -193,8 +256,6 @@ const InterviewRoom: React.FC = () => {
               variant="contained"
               onClick={changeShowingEmotion}
               style={{
-                // backgroundColor: 'white',
-                // color: themes.colors.main_blue,
                 backgroundColor: "transparent",
                 padding: 0,
                 fontSize: "1.8rem",

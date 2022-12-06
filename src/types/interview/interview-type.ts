@@ -56,3 +56,8 @@ export interface WordCount {
     word: string;
     count: number;
 };
+
+export interface HistorySet {
+    question: string;
+    answer: string;
+}
