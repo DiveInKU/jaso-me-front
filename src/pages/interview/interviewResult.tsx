@@ -238,7 +238,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                  <ScatterChart combinedData={combinedData}></ScatterChart>
+                  
                   <div
                     style={{
                       fontSize: 22,
@@ -251,6 +251,10 @@ const InterviewResult: React.FC = () => {
                   >
                     {happyMessage}
                   </div>
+                  
+
+                  <ScatterChart combinedData={combinedData}></ScatterChart>
+                 
                   <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
                 </GlobalStyled.ViewCol>
               </GlobalStyled.ViewCol>
