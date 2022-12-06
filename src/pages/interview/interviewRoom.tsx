@@ -62,9 +62,6 @@ const InterviewRoom: React.FC = () => {
   let videoBlob = useRef<Blob>(null);
   let videoUrl = useRef<string>(null);
 
-  // let videoBlob: Blob = null;
-  // let videoUrl: string = null;
-
   // 비디오, 오디오스트림 연결
   const mergeAudioStreams = (desktopStream: MediaStream, voiceStream: MediaStream) => {
     const context = new AudioContext();
@@ -116,11 +113,8 @@ const InterviewRoom: React.FC = () => {
     mediaRecorder.current.onstop = async () => {
       videoBlob.current = new Blob(blobs, {type: 'video/webm'});
       videoUrl.current = window.URL.createObjectURL(videoBlob.current);
-      let filename = title.replaceAll(' ', '_') + ".webm";
-      videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
-
-      navigate("/home/interviewResult", { state: { wordCounts: ['a', 'b'], videoFile: videoFile, videoUrl: videoUrl.current } });
-
+      // let filename = title.replaceAll(' ', '_') + ".webm";
+      // videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
       // let directoryPath = `${process.env.PUBLIC_URL}/videos`;
       // let totalPath = `${directoryPath}/${filename}`;
     }
@@ -142,13 +136,6 @@ const InterviewRoom: React.FC = () => {
     audioStream = null;
   };
 
-  // const makeVideoFile = () => {
-  //   videoBlob = new Blob(videoData, { type: "video/webm" });
-  //   recordedVideoURL = window.URL.createObjectURL(videoBlob);
-  //   let filename = title.replaceAll(' ', '_') + ".avi";
-  //   videoFile = new File([recordedVideoURL], filename);
-  // }
-
     // 최초 렌더링 시작
   useEffect(() => {
     question.map((text, idx) => {
@@ -156,11 +143,6 @@ const InterviewRoom: React.FC = () => {
     });
     startInterviewRecording();
   }, []);
-
-  // useEffect(() => {
-  //   videoData.push(socketImg);
-  // }, [socketImg]);
-
 
   // 음성 인식
   const { speak } = useSpeechSynthesis();
@@ -196,7 +178,6 @@ const InterviewRoom: React.FC = () => {
 
   // tts : stage가 변할 때 마다 질문 읽어준다.
   useEffect(() => {
-    
     if (stage < 0) setStage(0);
     speak({ text: questions[stage] });
   }, [stage]);
@@ -219,7 +200,6 @@ const InterviewRoom: React.FC = () => {
     const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
     logs.push(curAnswer);
     stop();
-    console.log(logs);
 
     finishInterview();
     stopInterviewRecording();
@@ -258,7 +238,7 @@ const InterviewRoom: React.FC = () => {
         })
 
         tempWordCounts.sort((a, b) => b.count - a.count);
-        navigate("/home/interviewResult", { state: { recordeds: videoData, wordCounts: tempWordCounts.slice(0,5), videoFile: videoFile, videoUrl: recordedVideoURL } });
+        navigate("/home/interviewResult", { state: { wordCounts: tempWordCounts.slice(0,5), videoUrl: videoUrl.current } });
       })
   }
 

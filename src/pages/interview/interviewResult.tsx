@@ -20,7 +20,6 @@ import WordCountChart from 'components/InterviewChart/WordCountChart';
 
 interface stateType {
     wordCounts: WordCount[];
-    videoFile: File;
     videoUrl: string;
 }
 
@@ -83,13 +82,6 @@ const InterviewResult: React.FC = () => {
 
   useEffect(() => {
     retrieveHappyResult();
-
-    // if (state && state.videoFile) {
-    //     // const recordedBlob = new Blob(state.recordeds, { type: "video/webm" });
-    //     // setInterviewSrc(URL.createObjectURL(recordedBlob));
-    //     console.log(state.videoFile);
-    //     // setInterviewSrc(URL.createObjectURL(state.videoFile));
-    //   }
     }, []);
 
   useEffect(() => {
