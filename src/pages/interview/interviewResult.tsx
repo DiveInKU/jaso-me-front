@@ -74,7 +74,7 @@ const InterviewResult: React.FC = () => {
     const retrieveHappyResult = async () => {
       await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
           .then((res) => { 
-              console.log('getHappyResult', res.data)
+              console.log('getHappyResult', res)
               setEmotions(res.data.emotions)
               setValues(res.data.values)
               return res.data
