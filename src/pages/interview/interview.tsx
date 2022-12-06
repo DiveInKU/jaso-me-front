@@ -38,7 +38,7 @@ const Interview: React.FC = () => {
         let InterviewInfo: InterviewInfo = { title: title, question: question}
     
         console.log("test",InterviewInfo)
-        startEmotionAnalysis();
+        // startEmotionAnalysis();
         navigate("/home/interview/webcamtest", {state : InterviewInfo})
     }
 

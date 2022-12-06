@@ -82,6 +82,8 @@ const InterviewResult: React.FC = () => {
           .catch((e) => console.log(e));
     };
 
+    // 
+
   useEffect(() => {
     retrieveHappyResult();
 

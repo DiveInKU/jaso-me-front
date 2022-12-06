@@ -27,7 +27,8 @@ const InterviewRoom: React.FC = () => {
   const [title, setTitle] = useState<string>(state.title);
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
   const [questions,setQuestions] = useState<string[]>([]);
-  
+  const [interviewNumber, setInterviewNumber] = useState<number>(0);
+
   const answers: Array<string> = [
     "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
     "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
@@ -182,7 +183,7 @@ const InterviewRoom: React.FC = () => {
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
           </BlueBox>
-          <EmbeddedWebcam></EmbeddedWebcam>
+          <EmbeddedWebcam interviewNumber={interviewNumber} setInterviewNumber={setInterviewNumber}></EmbeddedWebcam>
           {/* <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo> */}
 
           <BlueBox
