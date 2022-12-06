@@ -19,7 +19,7 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
     const [visible,setVisible] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
 
-    const [wordCount, setWordCount] = useState<number>(0);
+    const [wordCount, setWordCount] = useState<number>(defaultAnswer.length);
 
     useEffect(() => {
         setQuestion(question);
@@ -133,12 +133,12 @@ const QuestionSet:React.FC<QuestionSetProps> = ({ index, onSearch, onSetQnas, de
                             fontWeight: "500", fontSize:"13px", width:"110px", height:"30px"
                         }} >맞춤법 검사</Button>
 
-                <div style={{position:"absolute", top: 0, left:"650px"}}>{wordCount}/1000</div>
+                <div style={(wordCount>1000)?{position:"absolute", top: 0, left:"620px",color:"red"}:{position:"absolute", top: 0, left:"620px"}}>{wordCount}/1000</div>
             </div>
             <TextField type="text" multiline rows={7} className='input-property' variant="outlined" size="small" placeholder='질문에 대한 자기소개서를 입력하고 검색을 눌러보세요.'
                 onChange={aChange}
                 error={wordCount > 1000}
-                inputProps ={{ maxLength: 1000}}
+                //inputProps ={{ maxLength: 1000}}
                 style={{
                     width:"700px",
                     marginBottom:"30px",

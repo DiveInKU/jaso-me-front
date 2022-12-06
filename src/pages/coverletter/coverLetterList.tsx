@@ -53,9 +53,9 @@ const CoverLetterList: React.FC = () => {
             .then((res) => { 
                 console.log("결과 값 확인",res.result);
                 const data: CoverLetter = res.result
-                console.log('length', data.qnas.length)
+                console.log('length', data.qnas.length);
                 const newCoverLetter = { title: data.title, qnas: data.qnas, category: data.category,}
-                
+                console.log('title', data.qnas);
                 //console.log("카테고리 확인",data.category);
                 setCategory(data.category);
                 setQnas(data.qnas);
@@ -168,8 +168,8 @@ const CoverLetterList: React.FC = () => {
                                         index={idx}
                                         defaultQuestion={qna.question}
                                         defaultAnswer={qna.answer} 
-                                        defaultCategory={category}/>
-                                )   
+                                        defaultCategory={category}/> 
+                                )
                             }) : null}
                     </GlobalStyled.ViewCol>
                 </GlobalStyled.ViewRow>     

@@ -10,6 +10,11 @@ const UserQuestionSet:React.FC<MyPageProps> = ({index, onSetPair, defaultContent
         onSetPair(content, index);
     }
 
+    // useEffect(() => {
+    //     onSetPair(content, index);
+    //     console.log('content 저장',content);
+    // },[content]);
+
     return(
         <TextField onChange={contentChange} style={{ marginTop: 10, marginBottom: 10, width: 1000}}
                         type="text" 

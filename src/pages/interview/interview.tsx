@@ -72,7 +72,7 @@ const Interview: React.FC = () => {
                     placeholder='제목을 입력하세요.'/>
 
                 <Title>질문 선택</Title>
-                <FormGroup row={true} style={{ marginBottom: 30}}>
+                <FormGroup row={true} >
                     <FormControlLabel 
                         control={<Checkbox defaultChecked sx={{
                             '&.Mui-checked': {
@@ -88,8 +88,10 @@ const Interview: React.FC = () => {
                          }} onChange={isMemberQuestion}/>}
                         label={'사용자 정의 질문'}/>
                 </FormGroup>
+                {(!isMember&&!isRandom) &&<div>
+                    <div style={{ fontWeight: 500, fontSize: 12, color: "red", marginBottom: 30}}>* 최소 하나의 질문을 선택해 주세요.</div></div>}
 
-                <Title>질문 개수</Title>
+                <Title style={{marginTop:30}}>질문 개수</Title>
 
                 <FormControl style={{ width: 100, marginTop: 10, marginBottom: 20}}>
                     <Select onChange={(e) => {setCount(e.target.value as number)}}
@@ -108,6 +110,7 @@ const Interview: React.FC = () => {
                 </FormControl>
                 
                 <Button 
+                    disabled={(isRandom||isMember)?false:true}
                     style={{ 
                         width: 120,
                         backgroundColor: themes.colors.main_blue,
