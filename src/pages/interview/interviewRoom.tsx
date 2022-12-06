@@ -16,62 +16,151 @@ import SocketVideo from "components/socket-video"
 import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
 import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
-import { writeFile, writeFileSync } from "fs";
-
+import { saveAs } from 'file-saver';
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const state = location.state as InterviewInfo;
+
+  // 면접 제목
   const [title, setTitle] = useState<string>(state.title);
+
+  // 생성 된 질문
   const [question,setQuestion] = useState<QuestionSet[]>(state.question);
   const [questions,setQuestions] = useState<string[]>([]);
 
-  const [histories, setHistories] = useState<HistorySet[]>([]);
-  
-  const answers: Array<string> = [
-    "제가 생각하기에 흥미라는 것은 음 꾸준히 하는 것을 목표로 하는게 음 맞지 않을까",
-    "음 인상깊은 과목을 생각했을 때 이제 맞습니다.",
-    "가장 몰입한 경험이라고 생각해보면 이제 할 수 있을것 같습니다.",
-    "목표를 달성하는 방법을 생각해봤을 이제 때 음 협업이란 입니다.",
-    "갈등 경험과 해결한 방법을 말해달라면 이제 입니다."
-  ]
+  // 현재 질문 단계
+  const [stage, setStage] = useState<number>(-1);
 
-  const [stage, setStage] = useState<number>(-1); // 현재 질문 단계
+  // 질문 + 답변 기록 배열
   const [logs, setLogs] = useState<History[]>([
     { text: question[0].content, type: HISTORY_TYPE.QUESTION },
 
-  ]); // 질문 + 답변 기록 배열
+  ]); 
+  
+  // 음성 인식 값 
   const [value, setValue] = useState<string>("");
   const [showingEmotion, setShowingEmotion] = useState<boolean>(false);
 
+  // 녹화 관련
   const recordedChunks: string[] = [];
   const [socketImg, setSocketImg] = useState<Blob>();
-  let videoBlob: Blob = null;
+  // let videoBlob: Blob = null;
   let recordedVideoURL: string = null;
 
   let videoData: Blob[] = [];
   let videoFile: File = null;
 
-  const startInterviewRecording = () => {
+  // media recorder
+  const mediaRecorder = useRef<MediaRecorder>(null);
+  let blobs: Blob[] = [];
+
+  let desktopStream = useRef<MediaStream>(null);
+  let audioStream = useRef<MediaStream>(null);
+  let stream = useRef<MediaStream>(null);
+  let videoBlob = useRef<Blob>(null);
+  let videoUrl = useRef<string>(null);
+
+  // let videoBlob: Blob = null;
+  // let videoUrl: string = null;
+
+  // 비디오, 오디오스트림 연결
+  const mergeAudioStreams = (desktopStream: MediaStream, voiceStream: MediaStream) => {
+    const context = new AudioContext();
+    const destination = context.createMediaStreamDestination();
+
+    let hasDesktop = false;
+    let hasVoice = false;
+
+    if (desktopStream && desktopStream.getAudioTracks().length > 0) {
+      const source1 = context.createMediaStreamSource(desktopStream);
+      const desktopGain = context.createGain();
+      desktopGain.gain.value = 0.7;
+      source1.connect(desktopGain).connect(destination);
+      hasDesktop = true;
+    }
     
+    if (voiceStream && voiceStream.getAudioTracks().length > 0) {
+      const source2 = context.createMediaStreamSource(voiceStream);
+      const voiceGain = context.createGain();
+      voiceGain.gain.value = 0.7;
+      source2.connect(voiceGain).connect(destination);
+      hasVoice = true;
+    }
+      
+    return (hasDesktop || hasVoice) ? destination.stream.getAudioTracks() : [];
   };
 
-  useEffect(() => {
-    videoData.push(socketImg);
-    console.log(socketImg)
-  }, [socketImg]);
+  const startInterviewRecording = async () => {
+    // desktop stream
+    desktopStream.current = await window.navigator.mediaDevices.getDisplayMedia({
+      video: { width: 640 , height: 480 }, audio: true
+    })
+
+    // auido stream
+    audioStream.current = await window.navigator.mediaDevices.getUserMedia({ 
+      audio: true, video: false
+    });
+
+    const tracks = [
+      ...desktopStream.current.getVideoTracks(),
+      ...mergeAudioStreams(desktopStream.current, audioStream.current)
+    ];
+
+    stream.current = new MediaStream(tracks);
+
+    mediaRecorder.current = new MediaRecorder(stream.current, {mimeType: 'video/webm; codecs=vp9,opus'});
+    mediaRecorder.current.ondataavailable = (event) => blobs.push(event.data);
+    
+    mediaRecorder.current.onstop = async () => {
+      videoBlob.current = new Blob(blobs, {type: 'video/webm'});
+      videoUrl.current = window.URL.createObjectURL(videoBlob.current);
+      let filename = title.replaceAll(' ', '_') + ".webm";
+      videoFile = new File([videoUrl.current], filename, {type: 'video/webm'});
+
+      navigate("/home/interviewResult", { state: { wordCounts: ['a', 'b'], videoFile: videoFile, videoUrl: videoUrl.current } });
+
+      // let directoryPath = `${process.env.PUBLIC_URL}/videos`;
+      // let totalPath = `${directoryPath}/${filename}`;
+    }
+
+    mediaRecorder.current.start();
+    console.log(mediaRecorder);
+    console.log("media stream 생성");
+  };
 
   const stopInterviewRecording = () => {
-    makeVideoFile();
+    console.log(mediaRecorder.current);
+    mediaRecorder.current.stop();
+    console.log("media stream 해제");
+
+    // stream 해제
+    desktopStream.current.getTracks().forEach(s => s.stop())
+    audioStream.current.getTracks().forEach(s => s.stop())
+    desktopStream = null;
+    audioStream = null;
   };
-  
-  const makeVideoFile = () => {
-    videoBlob = new Blob(videoData, { type: "video/webm" });
-    recordedVideoURL = window.URL.createObjectURL(videoBlob);
-    let filename = title.replaceAll(' ', '_') + ".avi";
-    videoFile = new File([recordedVideoURL], filename);
-  }
+
+  // const makeVideoFile = () => {
+  //   videoBlob = new Blob(videoData, { type: "video/webm" });
+  //   recordedVideoURL = window.URL.createObjectURL(videoBlob);
+  //   let filename = title.replaceAll(' ', '_') + ".avi";
+  //   videoFile = new File([recordedVideoURL], filename);
+  // }
+
+    // 최초 렌더링 시작
+  useEffect(() => {
+    question.map((text, idx) => {
+      questions.push(text.content);
+    });
+    startInterviewRecording();
+  }, []);
+
+  // useEffect(() => {
+  //   videoData.push(socketImg);
+  // }, [socketImg]);
+
 
   // 음성 인식
   const { speak } = useSpeechSynthesis();
@@ -101,15 +190,6 @@ const InterviewRoom: React.FC = () => {
       stop();
   };
 
-  // 최초 렌더링 시작
-  useEffect(() => {
-    question.map((text, idx) => {
-      questions.push(text.content);
-      let history = { question: text.content, answer: ""}
-      histories.push(history);
-    });
-  }, []);
-
   useEffect(() => {
     showEmotionPrediction(showingEmotion ? "true" : "false");
   }, [showingEmotion]);
@@ -138,7 +218,6 @@ const InterviewRoom: React.FC = () => {
     // // 마지막 답변 저장
     const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
     logs.push(curAnswer);
-    // setLogs([...logs, curAnswer]);
     stop();
     console.log(logs);
 
@@ -190,8 +269,20 @@ const InterviewRoom: React.FC = () => {
         <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float: 'left', width: '48%' }}>
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
+            <Button
+              disableElevation
+              variant="contained"
+              onClick={stopInterviewRecording}
+              style={{
+                backgroundColor: "transparent",
+                padding: 0,
+              }}
+            >
+              {"다운로드"}
+            </Button>
           </BlueBox>
-          <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+            <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
+     
 
           <BlueBox
             className="media-box"

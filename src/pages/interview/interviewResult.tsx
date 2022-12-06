@@ -19,9 +19,6 @@ import InterviewChart from 'components/InterviewChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
 
 interface stateType {
-    // src: string;
-    // happyPer: string;
-    recordeds: Blob[];
     wordCounts: WordCount[];
     videoFile: File;
     videoUrl: string;
@@ -163,7 +160,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <video
-                    src={URL.createObjectURL(state.videoFile)}
+                    src={state.videoUrl}
                     controls
                     autoPlay
                     style={{
