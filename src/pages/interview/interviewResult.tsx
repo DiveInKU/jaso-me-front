@@ -73,6 +73,9 @@ const InterviewResult: React.FC = () => {
       setValues(data.values)
       setXData(data.x_data);
       setYData(data.y_data);
+
+      console.log(values);
+      // onSave(data.emotions, data.values, data.x_data, data.y_data)
     });
 
   }, []);
@@ -112,7 +115,7 @@ const InterviewResult: React.FC = () => {
             setIsHistory(false);
     }
 
-    const onSave = () => {
+    const onSave = (emotions: string[], values: number[], xData: number[], yData: number[]) => {
       
       const body = {
         "title": state.title,
@@ -165,7 +168,7 @@ const InterviewResult: React.FC = () => {
                   <div style={{ marginLeft: 140 }} className="interview-title">
                     {state.title}
                   </div>
-                  <Button onClick={onSave}>저장</Button>
+                  {/* <Button onClick={onSave}>저장</Button> */}
                 </BlueBox>
                 <div
                   style={{
