@@ -8,7 +8,7 @@ const showEmotionPrediction = async (show: string) => {
 const getEmotionAnalysisResult = async () => {
     return await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
         // .then((res) => console.log("apiRes" + res.headers["happy"]))
-        .then((res) => console.log('getEmotionAnalysisResult', res))
+        .then((res) => (res.data))
         .catch((e) => console.log(e));
 };
 

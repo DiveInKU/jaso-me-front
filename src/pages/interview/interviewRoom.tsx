@@ -13,10 +13,9 @@ import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { showEmotionPrediction } from "apis/interviewService";
 import SocketVideo from "components/socket-video"
-import { getEmotionAnalysisResult, calcFrequency } from "apis/interviewService";
+import { calcFrequency } from "apis/interviewService";
 import { InterviewInfo, HistorySet } from "types/interview/interview-type";
 import { QuestionSet } from "types/mypage/mypage-type";
-import { saveAs } from 'file-saver';
 
 const InterviewRoom: React.FC = () => {
   let navigate = useNavigate();
@@ -36,7 +35,6 @@ const InterviewRoom: React.FC = () => {
   // 질문 + 답변 기록 배열
   const [logs, setLogs] = useState<History[]>([
     { text: question[0].content, type: HISTORY_TYPE.QUESTION },
-
   ]); 
   
   // 음성 인식 값 
@@ -46,11 +44,6 @@ const InterviewRoom: React.FC = () => {
   // 녹화 관련
   const recordedChunks: string[] = [];
   const [socketImg, setSocketImg] = useState<Blob>();
-  // let videoBlob: Blob = null;
-  let recordedVideoURL: string = null;
-
-  let videoData: Blob[] = [];
-  let videoFile: File = null;
 
   // media recorder
   const mediaRecorder = useRef<MediaRecorder>(null);
@@ -109,7 +102,11 @@ const InterviewRoom: React.FC = () => {
 
     mediaRecorder.current = new MediaRecorder(stream.current, {mimeType: 'video/webm; codecs=vp9,opus'});
     mediaRecorder.current.ondataavailable = (event) => blobs.push(event.data);
-    
+
+    mediaRecorder.current.onstart = () => { 
+      setStage(0);
+    }
+
     mediaRecorder.current.onstop = async () => {
       videoBlob.current = new Blob(blobs, {type: 'video/webm'});
       videoUrl.current = window.URL.createObjectURL(videoBlob.current);
@@ -136,14 +133,6 @@ const InterviewRoom: React.FC = () => {
     audioStream = null;
   };
 
-    // 최초 렌더링 시작
-  useEffect(() => {
-    question.map((text, idx) => {
-      questions.push(text.content);
-    });
-    startInterviewRecording();
-  }, []);
-
   // 음성 인식
   const { speak } = useSpeechSynthesis();
   const { listen, listening, stop } = useSpeechRecognition({
@@ -153,7 +142,6 @@ const InterviewRoom: React.FC = () => {
   });
 
   const changeShowingEmotion = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // api 요청 보내야함
     setShowingEmotion(!showingEmotion);
   };
 
@@ -172,19 +160,8 @@ const InterviewRoom: React.FC = () => {
       stop();
   };
 
-  useEffect(() => {
-    showEmotionPrediction(showingEmotion ? "true" : "false");
-  }, [showingEmotion]);
-
-  // tts : stage가 변할 때 마다 질문 읽어준다.
-  useEffect(() => {
-    if (stage < 0) setStage(0);
-    speak({ text: questions[stage] });
-  }, [stage]);
-
   const handleSpeaking = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!listening) listen();
-    alert(stage);
   };
 
   // SocketVideo 컴포넌트에서 함수를 받아오기 위함
@@ -195,8 +172,7 @@ const InterviewRoom: React.FC = () => {
 
   // 실제 면접 종료시 호출되는 함수
   const onFinish = () => {
-
-    // // 마지막 답변 저장
+    // 마지막 답변 저장
     const curAnswer: History = { text: value, type: HISTORY_TYPE.ANSWER };
     logs.push(curAnswer);
     stop();
@@ -242,6 +218,23 @@ const InterviewRoom: React.FC = () => {
       })
   }
 
+  // 최초 렌더링 시작
+  useEffect(() => {
+    question.map((text, idx) => {
+      questions.push(text.content);
+    });
+    startInterviewRecording();
+  }, []);
+
+  useEffect(() => {
+    showEmotionPrediction(showingEmotion ? "true" : "false");
+  }, [showingEmotion]);
+
+  // tts : stage가 변할 때 마다 질문 읽어준다.
+  useEffect(() => {
+    speak({ text: questions[stage] });
+  }, [stage]);
+
   return (
     <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background }}>
       <TopNavigationBar state="모의 면접" />
@@ -249,17 +242,6 @@ const InterviewRoom: React.FC = () => {
         <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float: 'left', width: '48%' }}>
           <BlueBox style={{ flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'center' }}>
             <div className="interview-title">{title}</div>
-            <Button
-              disableElevation
-              variant="contained"
-              onClick={stopInterviewRecording}
-              style={{
-                backgroundColor: "transparent",
-                padding: 0,
-              }}
-            >
-              {"다운로드"}
-            </Button>
           </BlueBox>
             <SocketVideo finishConnector={finishConnector} webSocketUrl={'ws://localhost:8000/emotion-cam'} showing={showingEmotion} recordedChunks={recordedChunks} onSetSocketImg={setSocketImg}></SocketVideo>
      

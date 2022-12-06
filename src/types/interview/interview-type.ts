@@ -48,6 +48,10 @@ export interface WordCountChartProps {
     wordCounts: WordCount[];
 }
 
+export interface ScatterChartProps {
+    combinedData: object;
+}
+
 export interface WordCount {
     word: string;
     count: number;

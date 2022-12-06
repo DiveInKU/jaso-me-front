@@ -15,8 +15,9 @@ import RightBubble from "components/interview/RightBubble";
 import { useLocation } from "react-router-dom";
 import { getEmotionAnalysisResult } from "apis/interviewService";
 import { getCustomAPI } from "../../apis/api";
-import InterviewChart from 'components/InterviewChart';
+import InterviewChart from 'components/InterviewChart/RadarChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
+import ScatterChart from 'components/InterviewChart/ScatterChart'; 
 
 interface stateType {
     wordCounts: WordCount[];
@@ -40,6 +41,9 @@ const InterviewResult: React.FC = () => {
 
     const [emotions, setEmotions] = useState<string[]>();
     const [values, setValues] = useState<number[]>();
+    const [xData, setXData] = useState<number[]>();
+    const [yData, setYData] = useState<number[]>();
+    const [combinedData, setCombinedData] = useState<object>();
 
     const [interviewList, setInterviewList] = useState<InterviewMeta[]>();
     const [selectedInterview, setSelectedInterview] = useState<InterviewMeta>({interviewId: -1, title: ""});
@@ -69,26 +73,47 @@ const InterviewResult: React.FC = () => {
     }
   
 
-    const retrieveHappyResult = async () => {
-      await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
-          .then((res) => { 
-              console.log('getHappyResult', res.data)
-              setEmotions(res.data.emotions)
-              setValues(res.data.values)
-              return res.data
-          })
-          .catch((e) => console.log(e));
-    };
-
+    // const retrieveHappyResult = async () => {
+    //   await getCustomAPI('http://localhost', '8000').get(`/stop-interview`)
+    //       .then((res) => { 
+    //           console.log('happy!!!', res);
+    //           console.log('getHappyResult', res.data)
+    //           setEmotions(res.data.emotions)
+    //           setValues(res.data.values)
+    //           return res.data
+    //       })
+    //       .catch((e) => console.log(e));
+    // };
   useEffect(() => {
-    retrieveHappyResult();
-    }, []);
+    getEmotionAnalysisResult()
+    .then((data)=>{
+      console.log('data...', data)
+      setEmotions(data.emotions)
+      setValues(data.values)
+      setXData(data.x_data);
+      setYData(data.y_data);
+    });
+  }, []);
 
   useEffect(() => {
     if(emotions && values){
       setHappyMessage(getHappyMessage())
     }
   }, [emotions, values]);
+
+  useEffect(()=>{
+    if(xData && yData){
+      setCombinedData(
+        xData.map((x, i)=>{
+          return {
+            x: Math.min(0.68 ,Math.max(0.2, x)),
+            y: Math.min(0.68 ,Math.max(0.2, yData[i])),
+          }
+        })
+      );
+      console.log('combinedData', xData, yData);
+    }
+  }, [xData, yData]);
 
     const onReplay = () => {
         setIsReplaying(true);
@@ -207,7 +232,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <InterviewChart emotions={emotions} values={values}></InterviewChart>
-
+                  <ScatterChart combinedData={combinedData}></ScatterChart>
                   <div
                     style={{
                       fontSize: 22,
