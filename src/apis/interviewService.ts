@@ -49,11 +49,26 @@ const createInterview = async (body: object) => {
         .catch((e) => { console.log(e) })
 }
 
+
+const getInterviewList = async () => {
+    return await API.get("interviews/result")
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+};
+
+const getInterview = async (resumeId: number) => {
+    return await API.get(`interviews/result/${resumeId}`)
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+}
+
 export {
     showEmotionPrediction,
     getEmotionAnalysisResult,
     startEmotionAnalysis,
     calcFrequency,
     saveVideo,
-    createInterview
+    createInterview,
+    getInterviewList,
+    getInterview
 }
