@@ -80,7 +80,8 @@ const InterviewResult: React.FC = () => {
       setYData(data.y_data);
 
       // 여기서 저장중임
-      onSave(data.emotions, data.values, data.x_data, data.y_data)
+      
+    onSave(data.emotions, data.values, data.x_data, data.y_data)
     });
 
   }, []);
@@ -98,8 +99,8 @@ const InterviewResult: React.FC = () => {
       setCombinedData(
         xData.map((x, i)=>{
           return {
-            x: Math.min(0.75 ,Math.max(0.2, x)),
-            y: Math.min(0.80 ,Math.max(0.2, yData[i])),
+            x: Math.min(0.74 ,Math.max(0.25, x)),
+            y: Math.min(0.74 ,Math.max(0.2, yData[i])),
           }
         })
       );
@@ -141,9 +142,9 @@ const InterviewResult: React.FC = () => {
       const image = scatterRef.current.chartInstance.toBase64Image('image/jpeg', 1);
       console.log(image);
 
-      // createInterview(body)
-      //   .then((res) => console.log(res))
-      //   .catch((err) => console.log(err))
+      createInterview(body)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
     }
 
     return (
@@ -254,7 +255,6 @@ const InterviewResult: React.FC = () => {
                     :
                     <>
                       <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                      <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
                       <div
                         style={{
                         fontSize: 22,
@@ -267,6 +267,9 @@ const InterviewResult: React.FC = () => {
                     >
                       {happyMessage}
                     </div>
+
+                      <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
+                      
                       <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
                     </>
                 }

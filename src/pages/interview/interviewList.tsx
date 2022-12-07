@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef} from 'react'
 import { useNavigate } from 'react-router'
 import TopNavigationBar from 'components/common/TopNavigationBar';
 import styled from 'styled-components';
@@ -30,7 +30,7 @@ const InterviewList: React.FC = () => {
     // TODO : Interview type 서버랑 맞추기
     const [curInterview, setCurInterview] = useState<InterviewSet>();
 
-    const [isReplyaing, setIsReplaying] = useState<boolean>(false);
+    const [isReplaying, setIsReplaying] = useState<boolean>(false);
     const [isHistory, setIsHistory] = useState<boolean>(true);
     const [id, setId] = useState<number>(0);
 
@@ -76,6 +76,31 @@ const InterviewList: React.FC = () => {
         if (isHistory)
             setIsHistory(false);
     }
+    const scatterRef = useRef(null);
+
+    useEffect(() => {
+        if(emotions && values){
+          setHappyMessage(getHappyMessage())
+        }
+      }, [emotions, values]);
+      
+    const getHappyMessage = () => {
+        var emotion_all = 0
+        var happy = 0
+        for (var i = 0; i < emotions.length; i++) {
+          emotion_all += values[i]
+          if(emotions[i]=="happy")
+            happy = values[i]
+        }
+        happy = (happy / emotion_all) * 100
+        happy = Math.round(happy)
+        
+        if (happy > 60) {
+            return happy + "% 미소 지었어요! \n 절반 이상 웃었군요. 좋아요! 👏";
+        } else {
+            return happy + "% 미소 지었군요.. 조금 더 웃어볼까요? 😃";
+        }
+    }
 
     const onSelectInterview = (interviewId: number) => {
         setSelectedInterview(interviewList.filter(interviewMeta => interviewMeta.interviewId == interviewId)[0]);
@@ -118,7 +143,7 @@ const InterviewList: React.FC = () => {
             <Background>
                 <TopNavigationBar state="모의면접"/>
                 <GlobalStyled.ViewRow style = {{display:'block'}}>
-                    {isReplyaing ?  
+                    {isReplaying ?  
                     <GlobalStyled.ViewRow style = {{display:'block'}}>
                     <GlobalStyled.ViewCol className="webcam-div" style={{ flex: 4, float:'left', width:'48%' }}>
                     <BlueBox style={{flex: 1, paddingTop: 20, paddingBottom: 20, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -191,7 +216,7 @@ const InterviewList: React.FC = () => {
                   </div>
                   
 
-                  <ScatterChart combinedData={combinedData}></ScatterChart>
+                  <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
                  
                   <WordCountChart wordCounts={wordcount}></WordCountChart>
                 </GlobalStyled.ViewCol>
