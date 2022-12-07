@@ -102,6 +102,19 @@ const InterviewList: React.FC = () => {
         }
     }
 
+    useEffect(()=>{
+        if (xData && yData){
+          setCombinedData(
+            xData.map((x, i)=>{
+              return {
+                x: Math.min(0.74 ,Math.max(0.25, x)),
+                y: Math.min(0.74 ,Math.max(0.2, yData[i])),
+              }
+            })
+          );
+        }
+      }, [xData, yData]);
+
     const onSelectInterview = (interviewId: number) => {
         setSelectedInterview(interviewList.filter(interviewMeta => interviewMeta.interviewId == interviewId)[0]);
         setId(interviewId);
@@ -121,18 +134,6 @@ const InterviewList: React.FC = () => {
             setWordcount(data.wordCounts);
             setXData(data.x);
             setYData(data.y);
-
-            if(xData && yData){
-                setCombinedData(
-                  xData.map((x, i)=>{
-                    return {
-                      x: Math.min(0.75 ,Math.max(0.2, x)),
-                      y: Math.min(0.80 ,Math.max(0.2, yData[i])),
-                    }
-                  })
-                );
-              }
-            
             setCurInterview(newInterview);
         });
         

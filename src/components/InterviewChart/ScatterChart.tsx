@@ -25,7 +25,7 @@ export const options = {
     y: {
       beginAtZero: true,
       min: 0.2,
-      max: 0.80,
+      max: 0.75,
       ticks: {
         display: false,
       }

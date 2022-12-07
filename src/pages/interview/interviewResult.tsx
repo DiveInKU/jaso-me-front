@@ -143,7 +143,7 @@ const InterviewResult: React.FC = () => {
       console.log(image);
 
       createInterview(body)
-        .then((res) => console.log(res))
+        .then((res) => console.log("모의면접 저장",res))
         .catch((err) => console.log(err))
     }
 
