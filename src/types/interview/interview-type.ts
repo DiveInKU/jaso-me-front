@@ -50,6 +50,7 @@ export interface WordCountChartProps {
 
 export interface ScatterChartProps {
     combinedData: object;
+    chartRef: any;
 }
 
 export interface WordCount {

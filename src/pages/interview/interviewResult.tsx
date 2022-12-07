@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import TopNavigationBar from 'components/common/TopNavigationBar';
 import styled from 'styled-components';
@@ -15,13 +15,18 @@ import { getEmotionAnalysisResult, createInterview } from "apis/interviewService
 import InterviewChart from 'components/InterviewChart/RadarChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
 import ScatterChart from 'components/InterviewChart/ScatterChart'; 
+import { Chart } from 'react-chartjs-2';
 
 interface stateType {
     title: String;
     histories: HistorySet[];
     wordCounts: WordCount[];
-    videoSrc: string;
-    videoUrl: string;
+    videoPair: VideoPair;
+}
+
+interface VideoPair {
+  videoSrc: string;
+  videoUrl: string;
 }
 
 interface result {
@@ -74,8 +79,8 @@ const InterviewResult: React.FC = () => {
       setXData(data.x_data);
       setYData(data.y_data);
 
-      console.log(values);
-      // onSave(data.emotions, data.values, data.x_data, data.y_data)
+      // 여기서 저장중임
+      onSave(data.emotions, data.values, data.x_data, data.y_data)
     });
 
   }, []);
@@ -86,8 +91,10 @@ const InterviewResult: React.FC = () => {
     }
   }, [emotions, values]);
 
+  const scatterRef = useRef(null);
+
   useEffect(()=>{
-    if(xData && yData){
+    if (xData && yData){
       setCombinedData(
         xData.map((x, i)=>{
           return {
@@ -121,18 +128,22 @@ const InterviewResult: React.FC = () => {
         "title": state.title,
         "qnas": state.histories,
         "emotions": emotions,
-        "values": values,
+        "emotionValues": values,
         "wordCounts": state.wordCounts,
         "x": xData,
         "y": yData,
-        "videoUrl": state.videoUrl 
+        "videoUrl": state.videoPair.videoUrl
       }
 
       console.log(body);
 
-      createInterview(body)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
+      console.log(scatterRef.current)
+      const image = scatterRef.current.chartInstance.toBase64Image('image/jpeg', 1);
+      console.log(image);
+
+      // createInterview(body)
+      //   .then((res) => console.log(res))
+      //   .catch((err) => console.log(err))
     }
 
     return (
@@ -177,7 +188,7 @@ const InterviewResult: React.FC = () => {
                   }}
                 >
                   <video
-                    src={state.videoSrc}
+                    src={state.videoPair.videoSrc}
                     controls
                     autoPlay
                     style={{
@@ -243,7 +254,7 @@ const InterviewResult: React.FC = () => {
                     :
                     <>
                       <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                      <ScatterChart combinedData={combinedData}></ScatterChart>
+                      <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
                       <div
                         style={{
                         fontSize: 22,

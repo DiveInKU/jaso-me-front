@@ -231,7 +231,7 @@ const InterviewRoom: React.FC = () => {
         saveVideo(formData)
           .then((res) => {
             let result: string = res.result;
-            navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoSrc: videoUrl.current, videoResult: result } });
+            navigate("/home/interviewResult", { state: { title: title, histories: histories, wordCounts: tempWordCounts.slice(0,5), videoPair: {'videoSrc': videoUrl.current, 'videoUrl': result} } });
           })
           .catch((err) => console.log(err))
 

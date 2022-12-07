@@ -44,7 +44,7 @@ const saveVideo = async (formData: FormData) => {
 }
 
 const createInterview = async (body: object) => {
-    return await API.post("interviews/result/interview", body)
+    return await API.post("interviews/result", body)
         .then((res) => res.data)
         .catch((e) => { console.log(e) })
 }
