@@ -15,7 +15,6 @@ import { getEmotionAnalysisResult, createInterview } from "apis/interviewService
 import InterviewChart from 'components/InterviewChart/RadarChart';
 import WordCountChart from 'components/InterviewChart/WordCountChart';
 import ScatterChart from 'components/InterviewChart/ScatterChart'; 
-import { Chart } from 'react-chartjs-2';
 
 interface stateType {
     title: String;
@@ -79,9 +78,7 @@ const InterviewResult: React.FC = () => {
       setXData(data.x_data);
       setYData(data.y_data);
 
-      // 여기서 저장중임
-      
-    onSave(data.emotions, data.values, data.x_data, data.y_data)
+      onSave(data.emotions, data.values, data.x_data, data.y_data);
     });
 
   }, []);
@@ -136,16 +133,18 @@ const InterviewResult: React.FC = () => {
         "videoUrl": state.videoPair.videoUrl
       }
 
-      console.log(body);
-
-      console.log(scatterRef.current)
-      const image = scatterRef.current.chartInstance.toBase64Image('image/jpeg', 1);
-      console.log(image);
-
       createInterview(body)
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
+
+    // useEffect(() => {
+    //   if (scatterRef.current) {
+    //     const image = scatterRef.current.chartInstance.toBase64Image('image/jpeg', 1);
+    //     console.log(image);
+    //     // onSave(emotions, values, xData, yData);
+    //   }
+    // }, [scatterRef.current])
 
     return (
       <div className="Main">
