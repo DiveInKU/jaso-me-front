@@ -96,8 +96,8 @@ const InterviewResult: React.FC = () => {
       setCombinedData(
         xData.map((x, i)=>{
           return {
-            x: Math.min(0.75 ,Math.max(0.2, x)),
-            y: Math.min(0.80 ,Math.max(0.2, yData[i])),
+            x: Math.min(0.74 ,Math.max(0.25, x)),
+            y: Math.min(0.74 ,Math.max(0.2, yData[i])),
           }
         })
       );
@@ -254,7 +254,6 @@ const InterviewResult: React.FC = () => {
                     :
                     <>
                       <InterviewChart emotions={emotions} values={values}></InterviewChart>
-                      <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
                       <div
                         style={{
                         fontSize: 22,
@@ -267,6 +266,9 @@ const InterviewResult: React.FC = () => {
                     >
                       {happyMessage}
                     </div>
+
+                      <ScatterChart chartRef={scatterRef} combinedData={combinedData}></ScatterChart>
+                      
                       <WordCountChart wordCounts={state.wordCounts}></WordCountChart>
                     </>
                 }

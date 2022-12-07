@@ -21,9 +21,7 @@ export interface InterviewMeta {
 
 export interface Interview {
     videoUrl: string,
-    histories: History[],
-    gazeUrl: string,
-    smileUrl: string,
+    history: HistorySet[],
 }
 export interface SocketCamProps {
     webSocketUrl: string;
@@ -72,4 +70,16 @@ export interface MockInterview {
     x: number[];
     y: number[];
     videoUrl: string;
+}
+
+export interface InterviewSet {
+    emotionValues: number[];
+    emotions: string[];
+    qnas: HistorySet[];
+    title: string;
+    videoUrl: string;
+    wordCounts: WordCount[];
+    x: number[];
+    y: number[];
+    
 }

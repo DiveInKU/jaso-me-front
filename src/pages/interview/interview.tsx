@@ -58,7 +58,7 @@ const Interview: React.FC = () => {
 
 
     return (
-        <GlobalStyled.ViewCol style={{ backgroundColor: themes.colors.background}}>
+        <Background>
             <TopNavigationBar state='모의 면접' />
             <GlobalStyled.ViewCol style={{ paddingTop: 20, paddingLeft: 30}}>
                 <Title>모의 면접 제목</Title>
@@ -122,11 +122,16 @@ const Interview: React.FC = () => {
                     >
                         모의 면접 생성
                 </Button>
-                
             </GlobalStyled.ViewCol>
-        </GlobalStyled.ViewCol>
+        </Background>
     )
 }
+
+const Background = styled.div`
+    flex: 1;
+    background-color: ${themes.colors.background};
+    height: 750;
+`;
 
 const Title = styled.text`
     font-size: 18px;
