@@ -33,7 +33,7 @@ export const options = {
   },
 };
 
-const ScatterChart: React.FC<ScatterChartProps> = ({combinedData}) => {
+const ScatterChart: React.FC<ScatterChartProps> = ({combinedData, chartRef}) => {
     const data = {
             datasets: [
                 {
@@ -44,22 +44,8 @@ const ScatterChart: React.FC<ScatterChartProps> = ({combinedData}) => {
                 }
             ]
         };
-
-    
-    // useEffect(()=>{
-    //     if(xData && yData){
-    //         console.log(xData, yData);
-    //         data.datasets[0].data = xData.map((x, i) => {
-    //             return {
-    //                 x: x,
-    //                 y: yData[i],
-    //             }
-    //         });
-    //     }
-    // }, [xData, yData])
-
     return (
-        <Scatter options={options} data={data} style={{  margin:'5% auto 0 auto', width:'75%',}}/>
+        <Scatter ref={chartRef} options={options} data={data} style={{  margin:'5% auto 0 auto', width:'75%',}}/>
     )
 };
 
