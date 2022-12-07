@@ -16,8 +16,8 @@ export const options = {
   scales: {
     x: {
         beginAtZero: true,
-        min: 0.3,
-        max: 0.75,
+        min: 0.2,
+        max: 0.9,
         ticks: {
           display: false,
         }
@@ -25,7 +25,7 @@ export const options = {
     y: {
       beginAtZero: true,
       min: 0.2,
-      max: 0.75,
+      max: 1.0,
       ticks: {
         display: false,
       }

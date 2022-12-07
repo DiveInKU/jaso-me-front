@@ -107,8 +107,8 @@ const InterviewList: React.FC = () => {
           setCombinedData(
             xData.map((x, i)=>{
               return {
-                x: Math.min(0.74 ,Math.max(0.25, x)),
-                y: Math.min(0.74 ,Math.max(0.2, yData[i])),
+                x: Math.min(0.89 ,Math.max(0.2, x)),
+                y: Math.min(0.99 ,Math.max(0.2, yData[i])),
               }
             })
           );
