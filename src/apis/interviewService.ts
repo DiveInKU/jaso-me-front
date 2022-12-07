@@ -1,4 +1,5 @@
-import { getCustomAPI, AI_OPEN_API } from "./api";
+import { getCustomAPI, AI_OPEN_API, API } from "./api";
+import { MockInterview } from "types/interview/interview-type";
 
 const showEmotionPrediction = async (show: string) => {
     return await getCustomAPI('http://localhost', '8000').get(`/emotion?show=${show}`)
@@ -29,10 +30,45 @@ const calcFrequency = async (text: string) => {
         .catch((e) => { console.log(e) });
 }
 
+const saveVideo = async (formData: FormData) => {
+    return await API.post("interviews/result/video",
+    formData,
+    {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    )
+        .then((res) => res.data)
+        .catch((e) => { console.log(e) })
+}
+
+const createInterview = async (body: object) => {
+    return await API.post("interviews/result/interview", body)
+        .then((res) => res.data)
+        .catch((e) => { console.log(e) })
+}
+
+
+const getInterviewList = async () => {
+    return await API.get("interviews/result")
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+};
+
+const getInterview = async (resumeId: number) => {
+    return await API.get(`interviews/result/${resumeId}`)
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+}
 
 export {
     showEmotionPrediction,
     getEmotionAnalysisResult,
     startEmotionAnalysis,
     calcFrequency,
+    saveVideo,
+    createInterview,
+    getInterviewList,
+    getInterview
 }

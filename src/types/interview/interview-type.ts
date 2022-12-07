@@ -59,3 +59,26 @@ export interface HistorySet {
     question: string;
     answer: string;
 }
+
+export interface MockInterview {
+    title: string;
+    qnas: HistorySet[];
+    emotions: string[];
+    values: number[];
+    wordCounts: WordCount[];
+    x: number[];
+    y: number[];
+    videoUrl: string;
+}
+
+export interface InterviewSet {
+    emotionValues: number[];
+    emotions: string[];
+    qnas: HistorySet[];
+    title: string;
+    videoUrl: string;
+    wordCounts: WordCount[];
+    x: number[];
+    y: number[];
+    
+}
